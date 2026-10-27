@@ -1,0 +1,52 @@
+# ArchLens .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+.env
+!.env.example
+
+# Node / Frontend
+node_modules/
+dist/
+.vite/
+*.local
+
+# Data (large files)
+data/uploads/
+data/results/
+data/repositories/
+
+# ML artifacts
+*.pt
+*.pth
+*.onnx
+*.pkl
+mlflow/
+mlruns/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Docker
+*.log
