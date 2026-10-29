@@ -15,12 +15,18 @@ engine = ConformanceEngine()
 async def check_conformance(request: CheckConformanceRequest):
     """
     Compare the intended (G_I) and current (G_C) architecture graphs
-    and return all detected violations.
+    and return all detected violations and conformance verdicts.
     """
     try:
-        # TODO: Load graphs from DB/cache by ID in full implementation
-        # For now, accept inline graphs in request body
-        return {"message": "Conformance engine ready. Provide graph data inline."}
+        if request.intended_graph and request.current_graph:
+            result = engine.check_conformance(
+                request.intended_graph, request.current_graph, request.ruleset
+            )
+            return result
+        return {
+            "message": "Conformance engine ready. Provide intended_graph and current_graph in request body.",
+            "supported_verdicts": ["CONFORMANT", "VIOLATION", "MISSING", "UNEXPECTED", "UNCERTAIN"],
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -28,17 +34,18 @@ async def check_conformance(request: CheckConformanceRequest):
 @router.post("/check-conformance/inline", response_model=dict)
 async def check_conformance_inline(body: dict):
     """
-    Check conformance with graphs provided inline in the request body.
+    Check conformance with graphs and optional ruleset provided inline in the request body.
     """
     intended = body.get("intended_graph", {})
     current = body.get("current_graph", {})
+    ruleset = body.get("ruleset")
     if not intended or not current:
         raise HTTPException(
             status_code=400, detail="Both intended_graph and current_graph are required."
         )
 
     try:
-        result = engine.check_conformance(intended, current)
+        result = engine.check_conformance(intended, current, ruleset)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

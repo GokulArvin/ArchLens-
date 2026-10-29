@@ -1,6 +1,12 @@
 """
 Pydantic schemas for ArchLens data models.
 Shared across all modules for consistent JSON/graph schema.
+
+Sprint 1 (P3 Deliverables):
+- Versioned graph schema (ArchGraph, IntendedGraph G_I, CurrentGraph G_C)
+- Node/Edge vocabulary specification
+- ALLOW/FORBID/REQUIRE rule schema (ArchitectureRule, RuleSet)
+- 5-verdict taxonomy (CONFORMANT, VIOLATION, MISSING, UNEXPECTED, UNCERTAIN)
 """
 
 from pydantic import BaseModel, Field
@@ -9,9 +15,11 @@ from enum import Enum
 import uuid
 
 
-# ─── Component / Node ────────────────────────────────────────────────────────
+# ─── Component / Node Vocabulary (Sprint 1 D1/D2) ────────────────────────────
 
 class ComponentType(str, Enum):
+    # Core types from Module C & architectural taxonomy
+    COMPONENT = "component"
     SERVICE = "service"
     DATABASE = "database"
     QUEUE = "queue"
@@ -19,6 +27,16 @@ class ComponentType(str, Enum):
     FRONTEND = "frontend"
     CACHE = "cache"
     EXTERNAL = "external"
+    EXTERNAL_SYSTEM = "external_system"
+    MODULE = "module"
+    INTERFACE = "interface"
+
+    # Layered architecture roles (recovered from AST / static analysis)
+    CONTROLLER = "controller"
+    REPOSITORY = "repository"
+    MODEL = "model"
+    UTILITY = "utility"
+
     UNKNOWN = "unknown"
 
 
@@ -38,7 +56,7 @@ class ArchComponent(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
-# ─── Relationship / Edge ─────────────────────────────────────────────────────
+# ─── Relationship / Edge Vocabulary (Sprint 1 D1/D2) ─────────────────────────
 
 class RelationshipType(str, Enum):
     DEPENDS_ON = "depends_on"
@@ -47,32 +65,84 @@ class RelationshipType(str, Enum):
     IMPLEMENTS = "implements"
     USES = "uses"
     CONTAINS = "contains"
+    PUBLISHES_TO = "publishes_to"
+    READS_FROM = "reads_from"
+    WRITES_TO = "writes_to"
     UNKNOWN = "unknown"
 
 
 class ArchRelationship(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    source: str  # component id
-    target: str  # component id
+    source: str  # component id or component name
+    target: str  # component id or component name
     type: RelationshipType = RelationshipType.DEPENDS_ON
     confidence: float = 1.0
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
-# ─── Architecture Graph ───────────────────────────────────────────────────────
+# ─── Architecture Graph Schemas (Sprint 1 D2) ────────────────────────────────
 
 class ArchGraph(BaseModel):
-    """Unified graph model for both intended (G_I) and current (G_C) architectures."""
+    """Unified versioned graph model for both intended (G_I) and current (G_C) architectures."""
+    schema_version: str = "1.0.0"
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     graph_type: Literal["intended", "current"] = "intended"
     components: List[ArchComponent] = Field(default_factory=list)
     relationships: List[ArchRelationship] = Field(default_factory=list)
-    source: Optional[str] = None  # e.g., diagram path or repo path
+    source: Optional[str] = None  # e.g., diagram image path or repository directory
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
-# ─── Conformance / Violation ──────────────────────────────────────────────────
+class IntendedGraph(ArchGraph):
+    """Intended architecture graph (G_I) extracted from diagrams."""
+    graph_type: Literal["intended"] = "intended"
+
+
+class CurrentGraph(ArchGraph):
+    """Current architecture graph (G_C) extracted from source code."""
+    graph_type: Literal["current"] = "current"
+
+
+# ─── Rules Representation: ALLOW / FORBID / REQUIRE (Sprint 1 D3) ────────────
+
+class RuleAction(str, Enum):
+    ALLOW = "ALLOW"
+    FORBID = "FORBID"
+    REQUIRE = "REQUIRE"
+
+
+class RuleCategory(str, Enum):
+    LAYER_RULE = "layer_rule"
+    DEPENDENCY_RULE = "dependency_rule"
+    CYCLE_RULE = "cycle_rule"
+    INTERFACE_RULE = "interface_rule"
+
+
+class ArchitectureRule(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    action: RuleAction = RuleAction.ALLOW  # ALLOW | FORBID | REQUIRE
+    category: RuleCategory = RuleCategory.LAYER_RULE
+    source: Optional[str] = None  # Name or type filter (e.g., 'controller', 'OrderController')
+    target: Optional[str] = None  # Name or type filter (e.g., 'repository', 'OrderRepository')
+    source_type: Optional[ComponentType] = None
+    target_type: Optional[ComponentType] = None
+    relation_type: Optional[RelationshipType] = None
+    severity: Literal["low", "medium", "high", "critical"] = "medium"
+    description: str = ""
+
+
+class RuleSet(BaseModel):
+    schema_version: str = "1.0.0"
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: str = ""
+    rules: List[ArchitectureRule] = Field(default_factory=list)
+    confidence_threshold: float = 0.6  # below which verdicts are marked UNCERTAIN
+
+
+# ─── Conformance / Verdict Taxonomy (Sprint 1 D1 / D3) ────────────────────────
 
 class ViolationVerdict(str, Enum):
     CONFORMANT = "CONFORMANT"
@@ -89,6 +159,7 @@ class ViolationType(str, Enum):
     UNEXPECTED_DEPENDENCY = "unexpected_dependency"
     CYCLE_VIOLATION = "cycle_violation"
     INTERFACE_VIOLATION = "interface_violation"
+    UNCERTAIN_DEPENDENCY = "uncertain_dependency"
 
 
 class ArchViolation(BaseModel):
@@ -100,7 +171,9 @@ class ArchViolation(BaseModel):
     expected: Optional[str] = None
     actual: Optional[str] = None
     severity: Literal["low", "medium", "high", "critical"] = "medium"
+    confidence: float = 1.0
     description: str = ""
+    rule_id: Optional[str] = None
 
 
 # ─── Git Evidence ─────────────────────────────────────────────────────────────
@@ -142,6 +215,7 @@ class ConformanceReport(BaseModel):
     diagram_path: Optional[str] = None
     intended_graph: Optional[ArchGraph] = None
     current_graph: Optional[ArchGraph] = None
+    ruleset: Optional[RuleSet] = None
     violations: List[ArchViolation] = Field(default_factory=list)
     git_evidence: List[GitEvidence] = Field(default_factory=list)
     rca_outputs: List[RCAOutput] = Field(default_factory=list)
@@ -162,8 +236,11 @@ class AnalyzeRepositoryRequest(BaseModel):
 
 
 class CheckConformanceRequest(BaseModel):
-    intended_graph_id: str
-    current_graph_id: str
+    intended_graph_id: Optional[str] = None
+    current_graph_id: Optional[str] = None
+    intended_graph: Optional[ArchGraph] = None
+    current_graph: Optional[ArchGraph] = None
+    ruleset: Optional[RuleSet] = None
 
 
 class AnalyzeViolationRequest(BaseModel):

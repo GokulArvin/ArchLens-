@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "id": "current-graph-violations-001",
+  "name": "Order Management Implemented Architecture (With Violations)",
+  "graph_type": "current",
+  "source": "repos/ecommerce-backend-drifted",
+  "components": [
+    {
+      "id": "frontend",
+      "name": "WebFrontend",
+      "type": "frontend",
+      "confidence": 1.0
+    },
+    {
+      "id": "controller",
+      "name": "OrderController",
+      "type": "controller",
+      "confidence": 1.0
+    },
+    {
+      "id": "service",
+      "name": "OrderService",
+      "type": "service",
+      "confidence": 1.0
+    },
+    {
+      "id": "repository",
+      "name": "OrderRepository",
+      "type": "repository",
+      "confidence": 1.0
+    },
+    {
+      "id": "database",
+      "name": "OrderDatabase",
+      "type": "database",
+      "confidence": 1.0
+    },
+    {
+      "id": "cache",
+      "name": "RedisCache",
+      "type": "cache",
+      "confidence": 1.0
+    },
+    {
+      "id": "external_payment",
+      "name": "StripeGateway",
+      "type": "external",
+      "confidence": 0.45
+    },
+    {
+      "id": "auth_service",
+      "name": "AuthService",
+      "type": "service",
+      "confidence": 1.0
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel-v1",
+      "source": "frontend",
+      "target": "controller",
+      "type": "calls",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel-v2",
+      "source": "controller",
+      "target": "service",
+      "type": "depends_on",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel-v3-forbidden",
+      "source": "controller",
+      "target": "repository",
+      "type": "depends_on",
+      "confidence": 1.0,
+      "metadata": { "comment": "Layer violation: Controller directly accesses Repository" }
+    },
+    {
+      "id": "rel-v4",
+      "source": "service",
+      "target": "repository",
+      "type": "depends_on",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel-v5",
+      "source": "repository",
+      "target": "database",
+      "type": "reads_from",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel-v6-unexpected",
+      "source": "controller",
+      "target": "cache",
+      "type": "depends_on",
+      "confidence": 1.0,
+      "metadata": { "comment": "Unexpected dependency: Controller bypasses service to cache" }
+    },
+    {
+      "id": "rel-v7-uncertain",
+      "source": "service",
+      "target": "external_payment",
+      "type": "depends_on",
+      "confidence": 0.45,
+      "metadata": { "comment": "Low extraction confidence below 0.6 threshold" }
+    },
+    {
+      "id": "rel-cycle-1",
+      "source": "service",
+      "target": "auth_service",
+      "type": "calls",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel-cycle-2",
+      "source": "auth_service",
+      "target": "service",
+      "type": "calls",
+      "confidence": 1.0,
+      "metadata": { "comment": "Circular dependency between OrderService and AuthService" }
+    }
+  ],
+  "metadata": {
+    "extracted_by": "ArchLens Static AST Parser",
+    "language": "python"
+  }
+}

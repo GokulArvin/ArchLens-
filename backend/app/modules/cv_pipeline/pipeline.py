@@ -13,7 +13,10 @@ Stages:
 8. Relationship extraction
 """
 
-import cv2
+try:
+    import cv2
+except ImportError:
+    cv2 = None
 import numpy as np
 from pathlib import Path
 from typing import List, Tuple, Dict, Any, Optional

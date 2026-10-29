@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0.0",
+  "id": "current-graph-conformant-001",
+  "name": "Order Management Implemented Architecture (Conformant)",
+  "graph_type": "current",
+  "source": "repos/ecommerce-backend",
+  "components": [
+    {
+      "id": "frontend",
+      "name": "WebFrontend",
+      "type": "frontend",
+      "confidence": 1.0,
+      "metadata": { "file": "src/App.jsx" }
+    },
+    {
+      "id": "controller",
+      "name": "OrderController",
+      "type": "controller",
+      "confidence": 1.0,
+      "metadata": { "file": "app/controllers/order_controller.py" }
+    },
+    {
+      "id": "service",
+      "name": "OrderService",
+      "type": "service",
+      "confidence": 1.0,
+      "metadata": { "file": "app/services/order_service.py" }
+    },
+    {
+      "id": "notification_service",
+      "name": "NotificationService",
+      "type": "service",
+      "confidence": 1.0,
+      "metadata": { "file": "app/services/notification_service.py" }
+    },
+    {
+      "id": "repository",
+      "name": "OrderRepository",
+      "type": "repository",
+      "confidence": 1.0,
+      "metadata": { "file": "app/repositories/order_repository.py" }
+    },
+    {
+      "id": "database",
+      "name": "OrderDatabase",
+      "type": "database",
+      "confidence": 1.0,
+      "metadata": { "file": "app/db/connection.py" }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "c-rel-1",
+      "source": "frontend",
+      "target": "controller",
+      "type": "calls",
+      "confidence": 1.0
+    },
+    {
+      "id": "c-rel-2",
+      "source": "controller",
+      "target": "service",
+      "type": "depends_on",
+      "confidence": 1.0
+    },
+    {
+      "id": "c-rel-3",
+      "source": "service",
+      "target": "repository",
+      "type": "depends_on",
+      "confidence": 1.0
+    },
+    {
+      "id": "c-rel-4",
+      "source": "service",
+      "target": "notification_service",
+      "type": "depends_on",
+      "confidence": 1.0
+    },
+    {
+      "id": "c-rel-5",
+      "source": "repository",
+      "target": "database",
+      "type": "reads_from",
+      "confidence": 1.0
+    }
+  ],
+  "metadata": {
+    "extracted_by": "ArchLens Static AST Parser",
+    "language": "python"
+  }
+}

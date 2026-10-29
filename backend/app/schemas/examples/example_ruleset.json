@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "id": "ruleset-ecommerce-001",
+  "name": "Standard Tiered Conformance Ruleset",
+  "description": "Enforces strict 3-tier layering with explicit ALLOW, FORBID, and REQUIRE constraints",
+  "confidence_threshold": 0.6,
+  "rules": [
+    {
+      "id": "rule-allow-fe-ctrl",
+      "name": "Allow Frontend to Controller",
+      "action": "ALLOW",
+      "category": "layer_rule",
+      "source": "frontend",
+      "target": "controller",
+      "severity": "low",
+      "description": "Frontend clients may invoke controllers"
+    },
+    {
+      "id": "rule-allow-ctrl-svc",
+      "name": "Allow Controller to Service",
+      "action": "ALLOW",
+      "category": "layer_rule",
+      "source": "controller",
+      "target": "service",
+      "severity": "low",
+      "description": "Controllers may delegate business logic to services"
+    },
+    {
+      "id": "rule-allow-svc-repo",
+      "name": "Allow Service to Repository",
+      "action": "ALLOW",
+      "category": "layer_rule",
+      "source": "service",
+      "target": "repository",
+      "severity": "low",
+      "description": "Services may interact with repositories for data persistence"
+    },
+    {
+      "id": "rule-allow-repo-db",
+      "name": "Allow Repository to Database",
+      "action": "ALLOW",
+      "category": "layer_rule",
+      "source": "repository",
+      "target": "database",
+      "severity": "low",
+      "description": "Repositories may issue queries to databases"
+    },
+    {
+      "id": "rule-forbid-ctrl-repo",
+      "name": "Forbid Controller to Repository",
+      "action": "FORBID",
+      "category": "layer_rule",
+      "source": "controller",
+      "target": "repository",
+      "severity": "high",
+      "description": "Controllers must NOT bypass the business logic service layer"
+    },
+    {
+      "id": "rule-forbid-ctrl-db",
+      "name": "Forbid Controller to Database",
+      "action": "FORBID",
+      "category": "layer_rule",
+      "source": "controller",
+      "target": "database",
+      "severity": "critical",
+      "description": "Controllers must NOT communicate directly with databases"
+    },
+    {
+      "id": "rule-forbid-fe-db",
+      "name": "Forbid Frontend to Database",
+      "action": "FORBID",
+      "category": "layer_rule",
+      "source": "frontend",
+      "target": "database",
+      "severity": "critical",
+      "description": "Frontend clients must NOT directly query database storage"
+    },
+    {
+      "id": "rule-require-svc-repo",
+      "name": "Require Service to Repository",
+      "action": "REQUIRE",
+      "category": "dependency_rule",
+      "source": "service",
+      "target": "repository",
+      "severity": "high",
+      "description": "Service implementations MUST maintain a persistence relationship"
+    }
+  ]
+}

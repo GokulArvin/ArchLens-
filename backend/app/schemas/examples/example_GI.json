@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0.0",
+  "id": "intended-graph-001",
+  "name": "E-Commerce Order Management Intended Architecture",
+  "graph_type": "intended",
+  "source": "docs/architecture_diagrams/order_system_c4.png",
+  "components": [
+    {
+      "id": "frontend",
+      "name": "WebFrontend",
+      "type": "frontend",
+      "confidence": 0.98,
+      "metadata": { "technology": "React" }
+    },
+    {
+      "id": "controller",
+      "name": "OrderController",
+      "type": "controller",
+      "confidence": 0.95,
+      "metadata": { "layer": "presentation" }
+    },
+    {
+      "id": "service",
+      "name": "OrderService",
+      "type": "service",
+      "confidence": 0.96,
+      "metadata": { "layer": "domain" }
+    },
+    {
+      "id": "notification_service",
+      "name": "NotificationService",
+      "type": "service",
+      "confidence": 0.92,
+      "metadata": { "layer": "domain" }
+    },
+    {
+      "id": "repository",
+      "name": "OrderRepository",
+      "type": "repository",
+      "confidence": 0.95,
+      "metadata": { "layer": "persistence" }
+    },
+    {
+      "id": "database",
+      "name": "OrderDatabase",
+      "type": "database",
+      "confidence": 0.99,
+      "metadata": { "technology": "PostgreSQL" }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel-1",
+      "source": "frontend",
+      "target": "controller",
+      "type": "calls",
+      "confidence": 0.95
+    },
+    {
+      "id": "rel-2",
+      "source": "controller",
+      "target": "service",
+      "type": "depends_on",
+      "confidence": 0.97
+    },
+    {
+      "id": "rel-3",
+      "source": "service",
+      "target": "repository",
+      "type": "depends_on",
+      "confidence": 0.96
+    },
+    {
+      "id": "rel-4",
+      "source": "service",
+      "target": "notification_service",
+      "type": "depends_on",
+      "confidence": 0.91
+    },
+    {
+      "id": "rel-5",
+      "source": "repository",
+      "target": "database",
+      "type": "reads_from",
+      "confidence": 0.98
+    }
+  ],
+  "metadata": {
+    "extracted_by": "ArchLens CV + VLM Pipeline",
+    "status": "APPROVED_INTENDED_BASELINE"
+  }
+}
