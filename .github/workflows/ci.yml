@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, Bhumika]
+  pull_request:
+    branches: [main, Bhumika]
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install CPU-only PyTorch (avoids multi-GB GPU wheels in CI)
+        run: |
+          pip install torch==2.5.1 torchvision==0.20.1 \
+            --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install project dependencies
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt
+
+      - name: Lint with ruff
+        working-directory: backend
+        run: |
+          ruff check app/
+
+      - name: Run tests with coverage
+        working-directory: backend
+        run: |
+          pytest --cov=app --cov-report=term-missing -v
