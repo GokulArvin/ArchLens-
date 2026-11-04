@@ -42,12 +42,15 @@ def render(diagram_id: str, alignment_by_component: dict[str, dict]):
         alignment = alignment_by_component.get(c.id)
         if alignment and alignment["predicted"]:
             color = "limegreen" if alignment["correct"] else "orange"
-            label = f"{c.name} -> {alignment['predicted']} ({alignment['score']:.2f})"
+            label = f"{alignment['predicted']} ({alignment['score']:.2f})"
         else:
             color = "red"
-            label = f"{c.name} -> (no match)"
+            label = "no match"
         ax.add_patch(patches.Rectangle((c.bbox.x1, c.bbox.y1), w, h, fill=False, edgecolor=color, linewidth=2))
-        ax.text(c.bbox.x1, max(c.bbox.y1 - 6, 0), label, color=color, fontsize=8, weight="bold")
+        ax.text(
+            c.bbox.x1, max(c.bbox.y1 - 6, 0), label, color=color, fontsize=7, weight="bold",
+            bbox=dict(facecolor="white", alpha=0.85, edgecolor="none", pad=1),
+        )
 
     ax.set_title(f"{diagram_id}: diagram node -> real code module alignment (Sprint 6)")
     ax.axis("off")

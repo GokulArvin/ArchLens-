@@ -179,16 +179,27 @@ error taxonomy cross-referencing Sprints 3-5's per-diagram findings
 (`docs/sprint9_evaluation_report.md`); final comparison figure
 (`experiments/results/sprint9_baseline_comparison.png`).
 
-## Sprint 10 — Days 46-50: Stabilization, Research Writing, Demonstration
+## Sprint 10 — Days 46-50: Stabilization, Research Writing, Demonstration ✅ *done*
 
-- [ ] **D46**: Rerun final CV experiments from frozen config.
-- [ ] **D47**: Verify figures/example overlays are publication quality.
-- [ ] **D48**: Write CV method/results/error-analysis section.
-- [ ] **D49**: Verify limitations and claims against measured results.
-- [ ] **D50**: Present the CV path in the final demo; answer questions.
+- [x] **D46**: Rerun final CV experiments from frozen config.
+- [x] **D47**: Verify figures/example overlays are publication quality.
+- [x] **D48**: Write CV method/results/error-analysis section.
+- [x] **D49**: Verify limitations and claims against measured results.
+- [x] **D50**: Present the CV path in the final demo; answer questions.
 
-**Deliverables**: Final CV figures/tables; method/results draft; demo
-walkthrough; limitations documented.
+**Deliverables**: Full clean-room regeneration of every artifact in the
+project (all data/models/repos/experiments wiped and rebuilt from scripts
+alone - every result matched exactly); figure legibility fixes (Sprint 6
+overlay labels, Sprint 8 graph layout); consolidated method/results/error-
+analysis report (`docs/cv_method_results_report.md`, every number
+independently re-verified - caught and fixed one real error during the
+check); explicit limitations doc (`docs/sprint10_limitations_and_verification.md`);
+executed end-to-end demo notebook exercising every P1 module on one
+consistent real example (`notebooks/03_final_demo_walkthrough.ipynb`).
+
+---
+
+## All 10 sprints (Days 1-50) complete.
 
 ---
 

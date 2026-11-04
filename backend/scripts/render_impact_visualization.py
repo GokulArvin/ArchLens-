@@ -36,7 +36,7 @@ def render(g: nx.DiGraph, source: str, target: str):
     render_graph = g.copy()
     render_graph.add_edge(source, target)  # the controlled (inserted) violating edge
 
-    pos = nx.spring_layout(render_graph, seed=42)
+    pos = nx.spring_layout(render_graph, seed=42, k=1.4, iterations=100)
     fig, ax = plt.subplots(figsize=(10, 8))
 
     node_colors = []
