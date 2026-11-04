@@ -111,16 +111,21 @@ detection (`backend/app/modules/cv_pipeline/geometry_relations.py`) scoring
 baseline in the project so far; full failure-category analysis in
 `docs/sprint5_vit_geometry_report.md`.
 
-## Sprint 6 — Days 26-30: Graph Alignment & Deterministic Conformance
+## Sprint 6 — Days 26-30: Graph Alignment & Deterministic Conformance ✅ *done*
 
-- [ ] **D26**: Help define mapping between diagram component names and code modules/classes.
-- [ ] **D27**: Implement candidate component matching features (normalized names, aliases, type hints).
-- [ ] **D28**: Test graph alignment on manually verified examples.
-- [ ] **D29**: Review diagram-originated uncertainty and its effect on conformance.
-- [ ] **D30**: Add sample visual overlays linking diagram nodes to code nodes.
+- [x] **D26**: Help define mapping between diagram component names and code modules/classes.
+- [x] **D27**: Implement candidate component matching features (normalized names, aliases, type hints).
+- [x] **D28**: Test graph alignment on manually verified examples.
+- [x] **D29**: Review diagram-originated uncertainty and its effect on conformance.
+- [x] **D30**: Add sample visual overlays linking diagram nodes to code nodes.
 
-**Deliverables**: Component-alignment baseline; mismatch examples; trace from
-selected diagram node to code entity.
+**Deliverables**: Component-alignment baseline (`backend/app/modules/cv_pipeline/name_matching.py`
+- normalized names, suffix-stripped exact/substring match, type hints);
+tested against **real** repository directory listings (GitHub API) for 2
+real diagram-repo pairs, **21/21 (100%) correct** on manually verified
+examples; visual overlays linking diagram nodes to real code module names
+(`experiments/results/sprint6_alignment_overlay_*.png`); uncertainty/
+conformance analysis in `docs/sprint6_graph_alignment_report.md`.
 
 ## Sprint 7 — Days 31-35: Git Evidence & Evidence-Grounded LLM RCA
 

@@ -1,0 +1,196 @@
+{
+  "accuracy": 1.0,
+  "correct": 21,
+  "total": 21,
+  "results": [
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "loadgenerator",
+      "component_name": "loadgenerator",
+      "expected": "loadgenerator",
+      "predicted": "loadgenerator",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "frontend",
+      "component_name": "frontend",
+      "expected": "frontend",
+      "predicted": "frontend",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "ad",
+      "component_name": "ad",
+      "expected": "adservice",
+      "predicted": "adservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "recommendation",
+      "component_name": "recommendation",
+      "expected": "recommendationservice",
+      "predicted": "recommendationservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "checkout",
+      "component_name": "checkout",
+      "expected": "checkoutservice",
+      "predicted": "checkoutservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "payment",
+      "component_name": "payment",
+      "expected": "paymentservice",
+      "predicted": "paymentservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "email",
+      "component_name": "email",
+      "expected": "emailservice",
+      "predicted": "emailservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "productcatalog",
+      "component_name": "productcatalog",
+      "expected": "productcatalogservice",
+      "predicted": "productcatalogservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "cart",
+      "component_name": "cart",
+      "expected": "cartservice",
+      "predicted": "cartservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "shipping",
+      "component_name": "shipping",
+      "expected": "shippingservice",
+      "predicted": "shippingservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "currency",
+      "component_name": "currency",
+      "expected": "currencyservice",
+      "predicted": "currencyservice",
+      "score": 0.6,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "rediscache",
+      "component_name": "Redis cache",
+      "expected": null,
+      "predicted": null,
+      "score": 0.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "loadgen",
+      "component_name": "loadgen",
+      "expected": "loadgenerator",
+      "predicted": "loadgenerator",
+      "score": 0.3,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "frontend",
+      "component_name": "frontend",
+      "expected": "frontend",
+      "predicted": "frontend",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "userservice",
+      "component_name": "userservice",
+      "expected": "userservice",
+      "predicted": "userservice",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "contacts",
+      "component_name": "contacts",
+      "expected": "contacts",
+      "predicted": "contacts",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "ledgerwriter",
+      "component_name": "ledgerwriter",
+      "expected": "ledgerwriter",
+      "predicted": "ledgerwriter",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "balancereader",
+      "component_name": "balancereader",
+      "expected": "balancereader",
+      "predicted": "balancereader",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "transactionhistory",
+      "component_name": "transactionhistory",
+      "expected": "transactionhistory",
+      "predicted": "transactionhistory",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "accountsdb",
+      "component_name": "accounts db",
+      "expected": "accounts-db",
+      "predicted": "accounts-db",
+      "score": 1.0,
+      "correct": true
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "ledgerdb",
+      "component_name": "ledger db",
+      "expected": "ledger-db",
+      "predicted": "ledger-db",
+      "score": 1.0,
+      "correct": true
+    }
+  ]
+}
