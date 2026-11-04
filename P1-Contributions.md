@@ -162,16 +162,22 @@ graph topology (13 tests total) correctly localizing blast radius from
 3 nodes to 10+ nodes depending on topology; full report in
 `docs/sprint8_impact_recommendations_report.md`.
 
-## Sprint 9 — Days 41-45: Baselines, Ablations, Research Evaluation
+## Sprint 9 — Days 41-45: Baselines, Ablations, Research Evaluation ✅ *done*
 
-- [ ] **D41**: Freeze diagram train/validation/test splits and evaluation scripts.
-- [ ] **D42**: Evaluate detector/segmentation/geometry variants.
-- [ ] **D43**: Evaluate component/relationship precision/recall/F1 (and IoU/Dice where applicable).
-- [ ] **D44**: Categorize missed arrows, overlapping boxes, OCR issues, ambiguous symbols.
-- [ ] **D45**: Produce final CV tables and figures.
+- [x] **D41**: Freeze diagram train/validation/test splits and evaluation scripts.
+- [x] **D42**: Evaluate detector/segmentation/geometry variants.
+- [x] **D43**: Evaluate component/relationship precision/recall/F1 (and IoU/Dice where applicable).
+- [x] **D44**: Categorize missed arrows, overlapping boxes, OCR issues, ambiguous symbols.
+- [x] **D45**: Produce final CV tables and figures.
 
-**Deliverables**: CV results table; error taxonomy; plots/figures; frozen
-split/config.
+**Deliverables**: Frozen split (`data/annotations/splits.json`, seed 42,
+6/2/2, idempotent `backend/scripts/freeze_splits.py`); all 3 baselines
+re-evaluated on the held-out test split alone
+(`backend/scripts/evaluate_on_frozen_test_split.py`) - **geometry relations
+F1=0.667 confirmed as the strongest baseline on genuinely held-out data**;
+error taxonomy cross-referencing Sprints 3-5's per-diagram findings
+(`docs/sprint9_evaluation_report.md`); final comparison figure
+(`experiments/results/sprint9_baseline_comparison.png`).
 
 ## Sprint 10 — Days 46-50: Stabilization, Research Writing, Demonstration
 
