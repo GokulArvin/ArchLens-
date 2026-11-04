@@ -127,16 +127,22 @@ examples; visual overlays linking diagram nodes to real code module names
 (`experiments/results/sprint6_alignment_overlay_*.png`); uncertainty/
 conformance analysis in `docs/sprint6_graph_alignment_report.md`.
 
-## Sprint 7 — Days 31-35: Git Evidence & Evidence-Grounded LLM RCA
+## Sprint 7 — Days 31-35: Git Evidence & Evidence-Grounded LLM RCA ✅ *done*
 
-- [ ] **D31**: Link diagram nodes/edges to conformance report identifiers.
-- [ ] **D32**: Help retrieve the affected code entities for a violation.
-- [ ] **D33**: Define candidate-commit retrieval inputs (with P3).
-- [ ] **D34**: Create RCA test cases where the introducing commit is known.
-- [ ] **D35**: Review whether diagram context changes the RCA explanation.
+- [x] **D31**: Link diagram nodes/edges to conformance report identifiers.
+- [x] **D32**: Help retrieve the affected code entities for a violation.
+- [x] **D33**: Define candidate-commit retrieval inputs (with P3).
+- [x] **D34**: Create RCA test cases where the introducing commit is known.
+- [x] **D35**: Review whether diagram context changes the RCA explanation.
 
-**Deliverables**: Cross-modal IDs/evidence links; RCA fixtures;
-diagram-to-violation traceability examples.
+**Deliverables**: Cross-modal IDs/evidence links - a real `ArchViolation`
+referencing real manifest component ids (`backend/scripts/demo_violation_evidence_chain.py`);
+real code retrieval (`backend/app/modules/cv_pipeline/code_retrieval.py`);
+real Git pickaxe evidence mining (`backend/app/modules/cv_pipeline/git_evidence.py`,
+cloned via `backend/scripts/clone_demo_repo.py`) against a real repository,
+with a known-commit RCA test case (`backend/tests/unit/test_git_evidence.py`,
+6 tests) correctly identifying the real introducing commit; honest
+diagram-context analysis in `docs/sprint7_git_evidence_report.md`.
 
 ## Sprint 8 — Days 36-40: Impact Analysis, Recommendations, Integration
 
