@@ -1,4 +1,3 @@
-
 """
 ArchLens - Computer Vision Pipeline
 
@@ -152,7 +151,7 @@ class ComponentDetector:
             closed,
             cv2.RETR_LIST,
             cv2.CHAIN_APPROX_SIMPLE
-)
+        )
 
         image_area = img.shape[0] * img.shape[1]
         candidates = []
@@ -163,7 +162,7 @@ class ComponentDetector:
 
             if area < image_area * 0.002:
                 continue
-            
+
             # Reject contours that cover too much of the diagram.
             if area > image_area * 0.15:
                 continue
@@ -192,7 +191,9 @@ class ComponentDetector:
                 "class_name": "architecture_component"
             })
 
-        # Remove heavily overlapping detections.
+        # Remove duplicate and strongly nested detections.
+        # Larger boxes are considered first so that small contours
+        # created by text/icons inside a component can be suppressed.
         candidates.sort(
             key=lambda item: (
                 (item["bbox"][2] - item["bbox"][0]) *
@@ -204,11 +205,68 @@ class ComponentDetector:
         filtered = []
 
         for candidate in candidates:
-            if all(
-                self._iou(candidate["bbox"], existing["bbox"]) < 0.65
-                for existing in filtered
-            ):
+            x1, y1, x2, y2 = candidate["bbox"]
+            candidate_area = max(0, x2 - x1) * max(0, y2 - y1)
+
+            is_duplicate = False
+
+            for existing in filtered:
+                ex1, ey1, ex2, ey2 = existing["bbox"]
+                existing_area = (
+                    max(0, ex2 - ex1) *
+                    max(0, ey2 - ey1)
+                )
+
+                intersection_width = max(
+                    0, min(x2, ex2) - max(x1, ex1)
+                )
+
+                intersection_height = max(
+                    0, min(y2, ey2) - max(y1, ey1)
+                )
+
+                intersection = (
+                    intersection_width * intersection_height
+                )
+
+                smaller_area = min(
+                    candidate_area, existing_area
+                )
+
+                larger_area = max(
+                    candidate_area, existing_area
+                )
+
+                overlap_over_smaller = (
+                    intersection / smaller_area
+                    if smaller_area > 0 else 0.0
+                )
+
+                iou = self._iou(
+                    candidate["bbox"],
+                    existing["bbox"]
+                )
+
+                # Suppress near-identical boxes or much smaller
+                # boxes almost completely contained in larger boxes.
+                strongly_nested = (
+                    overlap_over_smaller >= 0.92
+                    and larger_area > 0
+                    and smaller_area / larger_area < 0.55
+                )
+
+                if iou >= 0.65 or strongly_nested:
+                    is_duplicate = True
+                    break
+
+            if not is_duplicate:
                 filtered.append(candidate)
+
+        logger.info(
+            "OpenCV contour detection: %d candidates, %d after filtering",
+            len(candidates),
+            len(filtered)
+        )
 
         return filtered
 
@@ -304,6 +362,181 @@ class CLIPClassifier:
             for i in range(len(self.COMPONENT_PROMPTS))
         }
 
+class EasyOCRLabelReader:
+    """Extract text labels and associate them with components."""
+
+    def __init__(self, enabled=True, languages=None, gpu=False):
+        self.enabled = enabled
+        self.reader = None
+        self.available = False
+
+        if not enabled:
+            logger.info("EasyOCR disabled")
+            return
+
+        try:
+            import easyocr
+
+            self.reader = easyocr.Reader(
+                languages or ["en"],
+                gpu=gpu
+            )
+
+            self.available = True
+            logger.info("EasyOCR initialized successfully")
+
+        except Exception as exc:
+            logger.exception(
+                "EasyOCR initialization failed: %s", exc
+            )
+
+    @staticmethod
+    def _text_box_bounds(points):
+        points = np.asarray(
+            points, dtype=np.float32
+        ).reshape(-1, 2)
+
+        return [
+            float(np.min(points[:, 0])),
+            float(np.min(points[:, 1])),
+            float(np.max(points[:, 0])),
+            float(np.max(points[:, 1]))
+        ]
+
+    @staticmethod
+    def _box_distance(box_a, box_b):
+        ax1, ay1, ax2, ay2 = box_a
+        bx1, by1, bx2, by2 = box_b
+
+        dx = max(bx1 - ax2, 0, ax1 - bx2)
+        dy = max(by1 - ay2, 0, ay1 - by2)
+
+        return float(np.hypot(dx, dy))
+
+    def extract_and_assign(
+        self,
+        image,
+        components,
+        min_confidence=0.25,
+        max_distance=45.0
+    ):
+        """Extract text and associate it with component bounding boxes."""
+
+        if not self.available or not components:
+            return {}
+
+        try:
+            rgb_image = cv2.cvtColor(
+                image, cv2.COLOR_BGR2RGB
+            )
+
+            results = self.reader.readtext(
+                rgb_image,
+                detail=1,
+                paragraph=False
+            )
+
+        except Exception as exc:
+            logger.exception(
+                "EasyOCR inference failed: %s", exc
+            )
+            return {}
+
+        assigned = {
+            component["id"]: []
+            for component in components
+        }
+
+        for result in results:
+
+            if len(result) < 3:
+                continue
+
+            polygon = result[0]
+            text = str(result[1]).strip()
+            confidence = float(result[2])
+
+            if not text or confidence < min_confidence:
+                continue
+
+            text_box = self._text_box_bounds(polygon)
+
+            tx = (text_box[0] + text_box[2]) / 2
+            ty = (text_box[1] + text_box[3]) / 2
+
+            containing = []
+
+            # First, find components containing the text center.
+            for component in components:
+
+                bbox = component["bbox"]
+
+                if (
+                    bbox["x1"] <= tx <= bbox["x2"]
+                    and bbox["y1"] <= ty <= bbox["y2"]
+                ):
+                    area = (
+                        (bbox["x2"] - bbox["x1"])
+                        * (bbox["y2"] - bbox["y1"])
+                    )
+
+                    containing.append(
+                        (area, component)
+                    )
+
+            if containing:
+
+                # Prefer the smallest containing component.
+                target = min(
+                    containing,
+                    key=lambda item: item[0]
+                )[1]
+
+            else:
+
+                # Otherwise, find the nearest component.
+                distances = []
+
+                for component in components:
+
+                    bbox = component["bbox"]
+
+                    distance = self._box_distance(
+                        text_box,
+                        [
+                            bbox["x1"],
+                            bbox["y1"],
+                            bbox["x2"],
+                            bbox["y2"]
+                        ]
+                    )
+
+                    distances.append(
+                        (distance, component)
+                    )
+
+                distance, target = min(
+                    distances,
+                    key=lambda item: item[0]
+                )
+
+                if distance > max_distance:
+                    continue
+
+            assigned[target["id"]].append({
+                "text": text,
+                "confidence": confidence,
+                "bbox": [
+                    round(value, 2)
+                    for value in text_box
+                ]
+            })
+
+        return {
+            component_id: labels
+            for component_id, labels in assigned.items()
+            if labels
+        }
 
 class CVPipeline:
     """Main architecture diagram analysis pipeline."""
@@ -327,7 +560,13 @@ class CVPipeline:
 
         self.clip_classifier = CLIPClassifier()
         
-    
+        # Initialize EasyOCR
+        self.ocr_reader = EasyOCRLabelReader(
+            enabled=self.config.get("enable_ocr", True),
+            languages=self.config.get("ocr_languages", ["en"]),
+            gpu=self.config.get("ocr_gpu", False)
+        )  
+
     @staticmethod
     def _point_rect_distance(point, bbox):
         x, y = point
@@ -367,7 +606,12 @@ class CVPipeline:
         seen = set()
 
         for line in lines:
-            x1, y1, x2, y2 = map(int, line[0])
+            line_coordinates = np.asarray(line).reshape(-1)
+            
+            if line_coordinates.size != 4:
+                continue
+            
+            x1, y1, x2, y2 = map(int, line_coordinates)
 
             endpoint1 = (x1, y1)
             endpoint2 = (x2, y2)
@@ -419,12 +663,14 @@ class CVPipeline:
                 "metadata": {
                     "extraction_method": "hough_line_candidate",
                     "direction_verified": False,
-                    "note": "Possible connection; arrow direction is unverified."
+                    "note": (
+                        "Possible connection; "
+                        "arrow direction is unverified."
+                    )
                 }
             })
 
         return relationships
-
 
     def analyze(self, image_path: str) -> Dict[str, Any]:
 
@@ -497,7 +743,59 @@ class CVPipeline:
                 }
             })
 
-        # Stage 5: Relationship candidates.
+        # Stage 5: OCR label extraction and component naming.
+
+        
+        ocr_assignments = self.ocr_reader.extract_and_assign(
+            img,
+            components,
+            min_confidence=self.config.get(
+                "ocr_min_confidence", 0.25
+            ),
+            max_distance=self.config.get(
+                "ocr_max_label_distance", 45.0
+            )
+        )
+
+        for component in components:
+            labels = ocr_assignments.get(
+            component["id"], []
+ )
+
+            if labels:
+
+            # Sort labels from top to bottom, then left to right.
+                labels.sort(
+                    key=lambda item: (
+                        item["bbox"][1],
+                        item["bbox"][0]
+                    )
+             )
+
+                component["name"] = " ".join(
+                    label["text"] for label in labels
+            )
+
+                component["metadata"]["ocr_labels"] = labels
+
+                component["metadata"]["ocr_confidence"] = float(
+                    sum(
+                        label["confidence"]
+                        for label in labels
+            ) / len(labels)
+        )
+
+                component["metadata"]["name_source"] = "easyocr"
+
+            else:
+
+                component["metadata"]["name_source"] = (
+                    "detector_fallback"
+                )
+
+
+        # Stage 6: Relationship candidates.
+
         relationships = self._extract_relationships(
             components, edges
         )
@@ -516,6 +814,12 @@ class CVPipeline:
                     else "opencv_contours"
                 ),
                 "relationship_method": "hough_lines",
+                "ocr_method": (
+                    "easyocr"
+                    if self.ocr_reader.available
+                    else "unavailable"
+                ),
+                "ocr_enabled": self.ocr_reader.enabled,
                 "is_interim_detector": (
                     self.component_detector.model is None
                 )
@@ -529,120 +833,3 @@ class CVPipeline:
         )
 
         return result
-
-    
-@staticmethod
-def _point_rect_distance(point, bbox):
-    x, y = point
-
-    # Support dictionary and list bounding boxes.
-    if isinstance(bbox, dict):
-        x1 = bbox["x1"]
-        y1 = bbox["y1"]
-        x2 = bbox["x2"]
-        y2 = bbox["y2"]
-    else:
-        x1, y1, x2, y2 = bbox
-
-    dx = max(x1 - x, 0, x - x2)
-    dy = max(y1 - y, 0, y - y2)
-
-    return float(np.hypot(dx, dy))
-
-def _extract_relationships(
-        self,
-        components: List[Dict[str, Any]],
-        edges: np.ndarray
-    ) -> List[Dict[str, Any]]:
-        """
-        Find possible connections between component regions.
-
-        These are geometric candidates, not verified arrow directions.
-        """
-
-        if len(components) < 2:
-            return []
-
-        lines = cv2.HoughLinesP(
-            edges,
-            rho=1,
-            theta=np.pi / 180,
-            threshold=40,
-            minLineLength=25,
-            maxLineGap=15
-        )
-
-        if lines is None:
-            return []
-
-        relationships = []
-        seen = set()
-
-        for line in lines:
-            x1, y1, x2, y2 = map(
-                int, line[0]
-            )
-
-            endpoint1 = (x1, y1)
-            endpoint2 = (x2, y2)
-
-            nearest1 = None
-            nearest2 = None
-            distance1 = float("inf")
-            distance2 = float("inf")
-
-            for component in components:
-                bbox = component["bbox"]
-
-                d1 = self._point_rect_distance(
-                    endpoint1, bbox
-                )
-                d2 = self._point_rect_distance(
-                    endpoint2, bbox
-                )
-
-                if d1 < distance1:
-                    distance1 = d1
-                    nearest1 = component
-
-                if d2 < distance2:
-                    distance2 = d2
-                    nearest2 = component
-
-            # Require both endpoints to be near distinct components.
-            if (
-                nearest1 is None
-                or nearest2 is None
-                or nearest1["id"] == nearest2["id"]
-                or distance1 > 25
-                or distance2 > 25
-            ):
-                continue
-
-            pair = tuple(sorted((
-                nearest1["id"],
-                nearest2["id"]
-            )))
-
-            if pair in seen:
-                continue
-
-            seen.add(pair)
-
-            relationships.append({
-                "id": str(uuid.uuid4()),
-                "source": nearest1["id"],
-                "target": nearest2["id"],
-                "type": "depends_on",
-                "confidence": 0.3,
-                "metadata": {
-                    "extraction_method": "hough_line_candidate",
-                    "direction_verified": False,
-                    "note": (
-                        "Possible geometric connection; "
-                        "arrow direction has not been verified."
-                    )
-                }
-            })
-
-        return relationships
