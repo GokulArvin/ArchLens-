@@ -1,0 +1,156 @@
+# P1 (CV Pipeline Lead) — Consolidated Contributions Tracker
+
+Every deliverable P1 owns across the 50-day / 10-sprint ArchLens plan, extracted
+from `ArchLens_Detailed_50_Day_Person_Sprint_Plan.docx`. Sprint-by-sprint
+sections below are the source of truth for day-by-day tracking; the
+**Recurring Threads** section groups near-duplicate deliverable types that
+repeat across sprints, so it's easy to see the shape of the work as a whole
+rather than 50 disconnected days.
+
+Nothing here is omitted from the source plan — every P1 day (D1-D50) is
+listed below.
+
+## Recurring Threads (cross-sprint groupings)
+
+- **Dataset & annotation work**: Sprint 1 (initial manifest/annotation guide),
+  Sprint 2 (annotated pilot set, preprocessing comparison), Sprint 3 (clean
+  pilot annotations, label normalization, hard-case set).
+- **Baseline implementation + comparison**: Sprint 3 (YOLO detector baseline),
+  Sprint 4 (segmentation/region-cropping baseline), Sprint 5 (ViT/embedding +
+  geometry baseline), Sprint 9 (freeze splits, evaluate all CV variants).
+- **Failure-case / error documentation**: Sprint 1 (`cv_failure_cases.md`),
+  Sprint 3 (false positive/negative review), Sprint 5 (component/relation
+  failure categories), Sprint 9 (error taxonomy), Sprint 10 (final
+  limitations writeup).
+- **Diagram ↔ code graph alignment**: Sprint 6 (component-alignment
+  baseline), Sprint 7 (cross-modal IDs/evidence links), Sprint 8
+  (diagram-linked impact highlighting).
+- **Evaluation & reporting**: Sprint 9 (CV results table/plots), Sprint 10
+  (final figures, method/results writeup, demo).
+- **Cross-training reviews with P2/P3** (see source doc §13): rotations 1, 2,
+  3, 4, 6, 7, 8 all involve P1 reviewing or being reviewed on schema,
+  annotation, graph, or RCA work.
+
+---
+
+## Sprint 1 — Days 1-5: Scope, Dataset, Interfaces ✅ *done*
+
+- [x] **D1**: Inspect candidate diagram datasets, select initial examples.
+- [x] **D2**: Define image input formats, resolution policy, preprocessing stages.
+- [x] **D3**: Draft annotation guide for component boxes and connector/arrow evidence.
+- [x] **D4**: Create 10-15 sample diagram manifest entries + CV experiment template.
+- [x] **D5**: Review shared schema with P2/P3 (self-review); document CV failure cases.
+
+**Deliverables**: CV pipeline note (`docs/cv_pipeline_note.md`); sample
+diagram manifest (`data/annotations/manifest.json`, 10 real diagrams);
+annotation guide (`docs/annotation_guide.md`); preprocessing experiment
+notebook (`notebooks/01_cv_experiment_template.ipynb`). ✅ ≥10 diagrams load
+and preview with overlays (verified via notebook execution).
+
+## Sprint 2 — Days 6-10: Preprocessing
+
+- [ ] **D6**: Implement image loading, RGB/grayscale conversion, resizing.
+- [ ] **D7**: Add normalization and image-quality metadata.
+- [ ] **D8**: Compare original vs resized/normalized images on sample diagrams.
+- [ ] **D9**: Write a batch preprocessing script; save processed images with stable IDs.
+- [ ] **D10**: Add tests for unreadable files, aspect ratio, output dimensions.
+
+**Deliverables**: Reusable preprocessing module; before/after sample grid;
+metadata log; tests for common input errors.
+
+## Sprint 3 — Days 11-15: Component Detection & First Graphs
+
+- [ ] **D11**: Choose a pretrained YOLO detector; inspect supported classes.
+- [ ] **D12**: Map diagram labels to a generic `architecture_component` class.
+- [ ] **D13**: Run inference on annotated samples; save boxes/confidences.
+- [ ] **D14**: Implement a simple evaluation script for box overlap and class labels.
+- [ ] **D15**: Inspect false positives/negatives; record a baseline.
+
+**Deliverables**: Detector inference script; bounding-box outputs in common
+JSON; initial precision/recall or mAP-style evaluation.
+
+## Sprint 4 — Days 16-20: Segmentation & Graph Representation
+
+- [ ] **D16**: Determine whether pretrained segmentation is viable for diagram components.
+- [ ] **D17**: Build a simple mask baseline or region-cropping fallback.
+- [ ] **D18**: Compare component boxes with masks on a small labeled subset.
+- [ ] **D19**: Integrate edge maps as an additional input feature (not a final parser).
+- [ ] **D20**: Document which segmentation approach is retained for the MVP.
+
+**Deliverables**: Segmentation/region-cropping baseline; comparison figures;
+justified keep/drop decision.
+
+## Sprint 5 — Days 21-25: VLM/ViT/CLIP Semantics & Relationship Extraction
+
+- [ ] **D21**: Establish a ViT/image-embedding baseline using pretrained weights.
+- [ ] **D22**: Crop detected components; associate OCR text/region metadata.
+- [ ] **D23**: Implement geometry-based relation candidates using boxes/edge endpoints.
+- [ ] **D24**: Compare geometric candidates with annotated edges.
+- [ ] **D25**: Report component and relation failure categories.
+
+**Deliverables**: ViT/embedding baseline; geometry-based relation extractor;
+preliminary relation metrics and failure analysis.
+
+## Sprint 6 — Days 26-30: Graph Alignment & Deterministic Conformance
+
+- [ ] **D26**: Help define mapping between diagram component names and code modules/classes.
+- [ ] **D27**: Implement candidate component matching features (normalized names, aliases, type hints).
+- [ ] **D28**: Test graph alignment on manually verified examples.
+- [ ] **D29**: Review diagram-originated uncertainty and its effect on conformance.
+- [ ] **D30**: Add sample visual overlays linking diagram nodes to code nodes.
+
+**Deliverables**: Component-alignment baseline; mismatch examples; trace from
+selected diagram node to code entity.
+
+## Sprint 7 — Days 31-35: Git Evidence & Evidence-Grounded LLM RCA
+
+- [ ] **D31**: Link diagram nodes/edges to conformance report identifiers.
+- [ ] **D32**: Help retrieve the affected code entities for a violation.
+- [ ] **D33**: Define candidate-commit retrieval inputs (with P3).
+- [ ] **D34**: Create RCA test cases where the introducing commit is known.
+- [ ] **D35**: Review whether diagram context changes the RCA explanation.
+
+**Deliverables**: Cross-modal IDs/evidence links; RCA fixtures;
+diagram-to-violation traceability examples.
+
+## Sprint 8 — Days 36-40: Impact Analysis, Recommendations, Integration
+
+- [ ] **D36**: Connect diagram nodes to graph nodes and offending edges.
+- [ ] **D37**: Implement affected-node highlighting on the architecture graph.
+- [ ] **D38**: Draft architecture-aware recommendation patterns for common violation classes.
+- [ ] **D39**: Check whether recommendations preserve intended diagram paths/layers.
+- [ ] **D40**: Test impact visualization against known controlled violations.
+
+**Deliverables**: Diagram-linked impact highlighting; recommendation examples
+checked against architecture rules.
+
+## Sprint 9 — Days 41-45: Baselines, Ablations, Research Evaluation
+
+- [ ] **D41**: Freeze diagram train/validation/test splits and evaluation scripts.
+- [ ] **D42**: Evaluate detector/segmentation/geometry variants.
+- [ ] **D43**: Evaluate component/relationship precision/recall/F1 (and IoU/Dice where applicable).
+- [ ] **D44**: Categorize missed arrows, overlapping boxes, OCR issues, ambiguous symbols.
+- [ ] **D45**: Produce final CV tables and figures.
+
+**Deliverables**: CV results table; error taxonomy; plots/figures; frozen
+split/config.
+
+## Sprint 10 — Days 46-50: Stabilization, Research Writing, Demonstration
+
+- [ ] **D46**: Rerun final CV experiments from frozen config.
+- [ ] **D47**: Verify figures/example overlays are publication quality.
+- [ ] **D48**: Write CV method/results/error-analysis section.
+- [ ] **D49**: Verify limitations and claims against measured results.
+- [ ] **D50**: Present the CV path in the final demo; answer questions.
+
+**Deliverables**: Final CV figures/tables; method/results draft; demo
+walkthrough; limitations documented.
+
+---
+
+## Dataset Allocation Duty (ongoing, not day-specific)
+
+Diagram image inventory, image quality, component boxes and connector
+annotation coordination → clean diagram manifest and annotated pilot set.
+**Status**: ✅ initial manifest of 10 real diagrams complete (Sprint 1);
+ongoing refinement expected in Sprints 2-3.

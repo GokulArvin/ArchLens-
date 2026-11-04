@@ -1,0 +1,2227 @@
+[
+  {
+    "id": "gcp_microservices_demo",
+    "name": "Online Boutique (GoogleCloudPlatform/microservices-demo)",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "loadgenerator",
+        "name": "loadgenerator",
+        "type": "service",
+        "bbox": {
+          "x1": 610.0,
+          "y1": 60.0,
+          "x2": 765.0,
+          "y2": 130.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "frontend",
+        "name": "frontend",
+        "type": "frontend",
+        "bbox": {
+          "x1": 610.0,
+          "y1": 235.0,
+          "x2": 765.0,
+          "y2": 295.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "ad",
+        "name": "ad",
+        "type": "service",
+        "bbox": {
+          "x1": 45.0,
+          "y1": 375.0,
+          "x2": 185.0,
+          "y2": 445.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "recommendation",
+        "name": "recommendation",
+        "type": "service",
+        "bbox": {
+          "x1": 210.0,
+          "y1": 375.0,
+          "x2": 390.0,
+          "y2": 445.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "checkout",
+        "name": "checkout",
+        "type": "service",
+        "bbox": {
+          "x1": 1020.0,
+          "y1": 363.0,
+          "x2": 1155.0,
+          "y2": 422.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "payment",
+        "name": "payment",
+        "type": "service",
+        "bbox": {
+          "x1": 1195.0,
+          "y1": 305.0,
+          "x2": 1330.0,
+          "y2": 365.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "email",
+        "name": "email",
+        "type": "service",
+        "bbox": {
+          "x1": 1195.0,
+          "y1": 435.0,
+          "x2": 1330.0,
+          "y2": 495.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "productcatalog",
+        "name": "productcatalog",
+        "type": "service",
+        "bbox": {
+          "x1": 340.0,
+          "y1": 552.0,
+          "x2": 500.0,
+          "y2": 615.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "cart",
+        "name": "cart",
+        "type": "service",
+        "bbox": {
+          "x1": 620.0,
+          "y1": 552.0,
+          "x2": 758.0,
+          "y2": 615.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "shipping",
+        "name": "shipping",
+        "type": "service",
+        "bbox": {
+          "x1": 803.0,
+          "y1": 562.0,
+          "x2": 940.0,
+          "y2": 622.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "currency",
+        "name": "currency",
+        "type": "service",
+        "bbox": {
+          "x1": 980.0,
+          "y1": 562.0,
+          "x2": 1118.0,
+          "y2": 622.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "rediscache",
+        "name": "Redis cache",
+        "type": "cache",
+        "bbox": {
+          "x1": 618.0,
+          "y1": 663.0,
+          "x2": 758.0,
+          "y2": 745.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "loadgenerator",
+        "target": "frontend",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "frontend",
+        "target": "ad",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "frontend",
+        "target": "recommendation",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "frontend",
+        "target": "checkout",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e5",
+        "source": "frontend",
+        "target": "productcatalog",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e6",
+        "source": "frontend",
+        "target": "cart",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e7",
+        "source": "frontend",
+        "target": "shipping",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e8",
+        "source": "frontend",
+        "target": "currency",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e9",
+        "source": "recommendation",
+        "target": "productcatalog",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e10",
+        "source": "checkout",
+        "target": "productcatalog",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e11",
+        "source": "checkout",
+        "target": "cart",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e12",
+        "source": "checkout",
+        "target": "shipping",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e13",
+        "source": "checkout",
+        "target": "currency",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e14",
+        "source": "checkout",
+        "target": "payment",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e15",
+        "source": "checkout",
+        "target": "email",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e16",
+        "source": "cart",
+        "target": "rediscache",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/gcp_microservices_demo.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/GoogleCloudPlatform/microservices-demo",
+        "commit": "c7cb6d5bfd6ea3aed768634ebbcb98cb7a523712",
+        "license": "Apache-2.0",
+        "diagram_provenance": "official"
+      }
+    }
+  },
+  {
+    "id": "gcp_bank_of_anthos",
+    "name": "Bank of Anthos (GoogleCloudPlatform/bank-of-anthos)",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "loadgen",
+        "name": "loadgen",
+        "type": "service",
+        "bbox": {
+          "x1": 610.0,
+          "y1": 55.0,
+          "x2": 765.0,
+          "y2": 125.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "frontend",
+        "name": "frontend",
+        "type": "frontend",
+        "bbox": {
+          "x1": 610.0,
+          "y1": 235.0,
+          "x2": 765.0,
+          "y2": 300.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "userservice",
+        "name": "userservice",
+        "type": "service",
+        "bbox": {
+          "x1": 160.0,
+          "y1": 430.0,
+          "x2": 315.0,
+          "y2": 500.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "contacts",
+        "name": "contacts",
+        "type": "service",
+        "bbox": {
+          "x1": 385.0,
+          "y1": 430.0,
+          "x2": 540.0,
+          "y2": 500.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "ledgerwriter",
+        "name": "ledgerwriter",
+        "type": "service",
+        "bbox": {
+          "x1": 610.0,
+          "y1": 430.0,
+          "x2": 765.0,
+          "y2": 500.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "balancereader",
+        "name": "balancereader",
+        "type": "service",
+        "bbox": {
+          "x1": 835.0,
+          "y1": 430.0,
+          "x2": 990.0,
+          "y2": 500.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "transactionhistory",
+        "name": "transactionhistory",
+        "type": "service",
+        "bbox": {
+          "x1": 1060.0,
+          "y1": 430.0,
+          "x2": 1215.0,
+          "y2": 500.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "accountsdb",
+        "name": "accounts db",
+        "type": "database",
+        "bbox": {
+          "x1": 265.0,
+          "y1": 635.0,
+          "x2": 420.0,
+          "y2": 710.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "ledgerdb",
+        "name": "ledger db",
+        "type": "database",
+        "bbox": {
+          "x1": 838.0,
+          "y1": 635.0,
+          "x2": 993.0,
+          "y2": 710.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "loadgen",
+        "target": "frontend",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "frontend",
+        "target": "userservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "frontend",
+        "target": "contacts",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "frontend",
+        "target": "ledgerwriter",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e5",
+        "source": "frontend",
+        "target": "balancereader",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e6",
+        "source": "frontend",
+        "target": "transactionhistory",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e7",
+        "source": "userservice",
+        "target": "accountsdb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e8",
+        "source": "contacts",
+        "target": "accountsdb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e9",
+        "source": "ledgerwriter",
+        "target": "ledgerdb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e10",
+        "source": "balancereader",
+        "target": "ledgerdb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e11",
+        "source": "transactionhistory",
+        "target": "ledgerdb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/gcp_bank_of_anthos.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/GoogleCloudPlatform/bank-of-anthos",
+        "commit": "db35fea9fd090150e2398106aadb475576f80d94",
+        "license": "Apache-2.0",
+        "diagram_provenance": "official"
+      }
+    }
+  },
+  {
+    "id": "dotnet_eshop",
+    "name": "eShop reference application (dotnet/eShop)",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "mobilebff",
+        "name": "Mobile BFF",
+        "type": "gateway",
+        "bbox": {
+          "x1": 823.0,
+          "y1": 461.0,
+          "x2": 1117.0,
+          "y2": 692.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "webapp",
+        "name": "Web App",
+        "type": "frontend",
+        "bbox": {
+          "x1": 823.0,
+          "y1": 774.0,
+          "x2": 1117.0,
+          "y2": 1022.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "identityservice",
+        "name": "Identity Service",
+        "type": "service",
+        "bbox": {
+          "x1": 1176.0,
+          "y1": 412.0,
+          "x2": 1823.0,
+          "y2": 528.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "catalogservice",
+        "name": "Catalog Service",
+        "type": "service",
+        "bbox": {
+          "x1": 1176.0,
+          "y1": 544.0,
+          "x2": 1823.0,
+          "y2": 659.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "orderservice",
+        "name": "Order Service",
+        "type": "service",
+        "bbox": {
+          "x1": 1176.0,
+          "y1": 692.0,
+          "x2": 1823.0,
+          "y2": 857.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "basketservice",
+        "name": "Basket Service",
+        "type": "service",
+        "bbox": {
+          "x1": 1176.0,
+          "y1": 890.0,
+          "x2": 1823.0,
+          "y2": 1022.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "paymentservice",
+        "name": "Payment Service",
+        "type": "service",
+        "bbox": {
+          "x1": 1176.0,
+          "y1": 1038.0,
+          "x2": 1823.0,
+          "y2": 1154.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "eventbus",
+        "name": "Event Bus",
+        "type": "queue",
+        "bbox": {
+          "x1": 1911.0,
+          "y1": 692.0,
+          "x2": 2234.0,
+          "y2": 955.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "openai",
+        "name": "OpenAI",
+        "type": "external",
+        "bbox": {
+          "x1": 2293.0,
+          "y1": 297.0,
+          "x2": 2646.0,
+          "y2": 461.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "webhooksservice",
+        "name": "Webhooks Service",
+        "type": "service",
+        "bbox": {
+          "x1": 823.0,
+          "y1": 1220.0,
+          "x2": 1823.0,
+          "y2": 1450.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "observability",
+        "name": "Observability",
+        "type": "service",
+        "bbox": {
+          "x1": 1852.0,
+          "y1": 1220.0,
+          "x2": 2205.0,
+          "y2": 1450.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "mobilebff",
+        "target": "identityservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "mobilebff",
+        "target": "catalogservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "mobilebff",
+        "target": "orderservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "mobilebff",
+        "target": "basketservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e5",
+        "source": "webapp",
+        "target": "identityservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e6",
+        "source": "webapp",
+        "target": "catalogservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e7",
+        "source": "webapp",
+        "target": "orderservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e8",
+        "source": "webapp",
+        "target": "basketservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e9",
+        "source": "catalogservice",
+        "target": "openai",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e10",
+        "source": "orderservice",
+        "target": "eventbus",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e11",
+        "source": "basketservice",
+        "target": "eventbus",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e12",
+        "source": "paymentservice",
+        "target": "eventbus",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e13",
+        "source": "eventbus",
+        "target": "openai",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e14",
+        "source": "webhooksservice",
+        "target": "webapp",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/dotnet_eshop.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/dotnet/eShop",
+        "commit": "913acea66708a59595351174cee9b29f37179d29",
+        "license": "MIT",
+        "diagram_provenance": "official"
+      }
+    }
+  },
+  {
+    "id": "spring_petclinic_microservices",
+    "name": "Spring PetClinic Microservices",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "gitrepo",
+        "name": "Git Repo",
+        "type": "external",
+        "bbox": {
+          "x1": 300.0,
+          "y1": 60.0,
+          "x2": 460.0,
+          "y2": 140.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "configserver",
+        "name": "Spring Cloud Config Server",
+        "type": "service",
+        "bbox": {
+          "x1": 35.0,
+          "y1": 195.0,
+          "x2": 280.0,
+          "y2": 330.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "eureka",
+        "name": "Eureka Service Discovery",
+        "type": "service",
+        "bbox": {
+          "x1": 15.0,
+          "y1": 395.0,
+          "x2": 265.0,
+          "y2": 535.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "gateway",
+        "name": "UI + API Gateway",
+        "type": "gateway",
+        "bbox": {
+          "x1": 745.0,
+          "y1": 330.0,
+          "x2": 1005.0,
+          "y2": 460.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "adminserver",
+        "name": "Spring Boot Admin Server",
+        "type": "service",
+        "bbox": {
+          "x1": 1355.0,
+          "y1": 185.0,
+          "x2": 1560.0,
+          "y2": 330.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "zipkin",
+        "name": "OpenZipkin Distributed Logging Server",
+        "type": "service",
+        "bbox": {
+          "x1": 1355.0,
+          "y1": 350.0,
+          "x2": 1560.0,
+          "y2": 540.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "customersservice",
+        "name": "customers-service",
+        "type": "service",
+        "bbox": {
+          "x1": 215.0,
+          "y1": 630.0,
+          "x2": 470.0,
+          "y2": 785.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "genaiservice",
+        "name": "genai-service",
+        "type": "service",
+        "bbox": {
+          "x1": 600.0,
+          "y1": 630.0,
+          "x2": 800.0,
+          "y2": 785.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "vetsservice",
+        "name": "vets-service",
+        "type": "service",
+        "bbox": {
+          "x1": 905.0,
+          "y1": 630.0,
+          "x2": 1105.0,
+          "y2": 785.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "petsservice",
+        "name": "pets-service",
+        "type": "service",
+        "bbox": {
+          "x1": 1195.0,
+          "y1": 630.0,
+          "x2": 1395.0,
+          "y2": 785.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "customersdb",
+        "name": "customers RDBMS",
+        "type": "database",
+        "bbox": {
+          "x1": 300.0,
+          "y1": 805.0,
+          "x2": 420.0,
+          "y2": 930.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "genaivectorstore",
+        "name": "genai Vector Store",
+        "type": "database",
+        "bbox": {
+          "x1": 640.0,
+          "y1": 805.0,
+          "x2": 770.0,
+          "y2": 930.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "vetsdb",
+        "name": "vets RDBMS",
+        "type": "database",
+        "bbox": {
+          "x1": 960.0,
+          "y1": 805.0,
+          "x2": 1080.0,
+          "y2": 930.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "petsdb",
+        "name": "pets RDBMS",
+        "type": "database",
+        "bbox": {
+          "x1": 1250.0,
+          "y1": 805.0,
+          "x2": 1370.0,
+          "y2": 930.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "gateway",
+        "target": "eureka",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "gateway",
+        "target": "customersservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "gateway",
+        "target": "genaiservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "gateway",
+        "target": "vetsservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e5",
+        "source": "gateway",
+        "target": "petsservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e6",
+        "source": "customersservice",
+        "target": "eureka",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e7",
+        "source": "genaiservice",
+        "target": "eureka",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e8",
+        "source": "vetsservice",
+        "target": "eureka",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e9",
+        "source": "petsservice",
+        "target": "eureka",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e10",
+        "source": "customersservice",
+        "target": "configserver",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e11",
+        "source": "genaiservice",
+        "target": "configserver",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e12",
+        "source": "vetsservice",
+        "target": "configserver",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e13",
+        "source": "petsservice",
+        "target": "configserver",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e14",
+        "source": "genaiservice",
+        "target": "vetsservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e15",
+        "source": "customersservice",
+        "target": "genaiservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e16",
+        "source": "petsservice",
+        "target": "adminserver",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e17",
+        "source": "petsservice",
+        "target": "zipkin",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e18",
+        "source": "customersservice",
+        "target": "customersdb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e19",
+        "source": "genaiservice",
+        "target": "genaivectorstore",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e20",
+        "source": "vetsservice",
+        "target": "vetsdb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e21",
+        "source": "petsservice",
+        "target": "petsdb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e22",
+        "source": "configserver",
+        "target": "gitrepo",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/spring_petclinic_microservices.jpg",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/spring-petclinic/spring-petclinic-microservices",
+        "commit": "e8b747ab522721076cacb5cf688eb8a54ba8c5c9",
+        "license": "Apache-2.0",
+        "diagram_provenance": "official"
+      }
+    }
+  },
+  {
+    "id": "flask_microservice_demo",
+    "name": "flask-microservice-demo (mblitherland)",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "backend",
+        "name": "Backend",
+        "type": "gateway",
+        "bbox": {
+          "x1": 68.0,
+          "y1": 75.0,
+          "x2": 470.0,
+          "y2": 240.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "aggregate",
+        "name": "Aggregate",
+        "type": "service",
+        "bbox": {
+          "x1": 345.0,
+          "y1": 360.0,
+          "x2": 750.0,
+          "y2": 495.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "orders",
+        "name": "Orders",
+        "type": "service",
+        "bbox": {
+          "x1": 58.0,
+          "y1": 580.0,
+          "x2": 460.0,
+          "y2": 805.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "items",
+        "name": "Items",
+        "type": "service",
+        "bbox": {
+          "x1": 605.0,
+          "y1": 580.0,
+          "x2": 1008.0,
+          "y2": 805.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "backend",
+        "target": "aggregate",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "backend",
+        "target": "orders",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "aggregate",
+        "target": "orders",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "aggregate",
+        "target": "items",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/flask_microservice_demo.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/mblitherland/flask-microservice-demo",
+        "commit": "d98872fcde8ae00f9df3224c1d5d4f08eb312429",
+        "license": "Apache-2.0",
+        "diagram_provenance": "official"
+      }
+    }
+  },
+  {
+    "id": "sock_shop",
+    "name": "Sock Shop (microservices-demo/microservices-demo)",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "user_actor",
+        "name": "User",
+        "type": "external",
+        "bbox": {
+          "x1": 730.0,
+          "y1": 30.0,
+          "x2": 913.0,
+          "y2": 215.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "frontend",
+        "name": "Front-end",
+        "type": "frontend",
+        "bbox": {
+          "x1": 730.0,
+          "y1": 310.0,
+          "x2": 913.0,
+          "y2": 497.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "order",
+        "name": "Order",
+        "type": "service",
+        "bbox": {
+          "x1": 240.0,
+          "y1": 692.0,
+          "x2": 413.0,
+          "y2": 862.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "payment",
+        "name": "Payment",
+        "type": "service",
+        "bbox": {
+          "x1": 492.0,
+          "y1": 692.0,
+          "x2": 667.0,
+          "y2": 862.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "userservice",
+        "name": "User (service)",
+        "type": "service",
+        "bbox": {
+          "x1": 730.0,
+          "y1": 692.0,
+          "x2": 910.0,
+          "y2": 862.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "catalogue",
+        "name": "Catalogue",
+        "type": "service",
+        "bbox": {
+          "x1": 970.0,
+          "y1": 692.0,
+          "x2": 1163.0,
+          "y2": 862.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "cart",
+        "name": "Cart",
+        "type": "service",
+        "bbox": {
+          "x1": 1225.0,
+          "y1": 692.0,
+          "x2": 1403.0,
+          "y2": 862.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "shipping",
+        "name": "Shipping",
+        "type": "service",
+        "bbox": {
+          "x1": 490.0,
+          "y1": 975.0,
+          "x2": 670.0,
+          "y2": 1145.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "queue",
+        "name": "Queue",
+        "type": "queue",
+        "bbox": {
+          "x1": 730.0,
+          "y1": 975.0,
+          "x2": 913.0,
+          "y2": 1145.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "queuemaster",
+        "name": "Queue-Master",
+        "type": "service",
+        "bbox": {
+          "x1": 970.0,
+          "y1": 975.0,
+          "x2": 1150.0,
+          "y2": 1145.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "user_actor",
+        "target": "frontend",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "frontend",
+        "target": "order",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "frontend",
+        "target": "payment",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "frontend",
+        "target": "userservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e5",
+        "source": "frontend",
+        "target": "catalogue",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e6",
+        "source": "frontend",
+        "target": "cart",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e7",
+        "source": "order",
+        "target": "shipping",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e8",
+        "source": "shipping",
+        "target": "queue",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e9",
+        "source": "queue",
+        "target": "queuemaster",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/sock_shop.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/microservices-demo/microservices-demo",
+        "commit": "1ae9f90384364b961fe6bfb6c796ddba328c6ad8",
+        "license": "Apache-2.0",
+        "diagram_provenance": "official",
+        "note": "Diagram file lives in the project's companion docs-site repo (microservices-demo/microservices-demo.github.io) but depicts this app repo's architecture."
+      }
+    }
+  },
+  {
+    "id": "spring_cloud_brewery_overview",
+    "name": "Spring Cloud Brewery - overview",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "presenting",
+        "name": "Presenting",
+        "type": "frontend",
+        "bbox": {
+          "x1": 460.0,
+          "y1": 30.0,
+          "x2": 610.0,
+          "y2": 220.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "proxy",
+        "name": "Proxy",
+        "type": "gateway",
+        "bbox": {
+          "x1": 65.0,
+          "y1": 265.0,
+          "x2": 200.0,
+          "y2": 420.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "ingredients",
+        "name": "Ingredients",
+        "type": "service",
+        "bbox": {
+          "x1": 55.0,
+          "y1": 530.0,
+          "x2": 195.0,
+          "y2": 685.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "aggregating",
+        "name": "Aggregating (part of Brewing)",
+        "type": "service",
+        "bbox": {
+          "x1": 310.0,
+          "y1": 390.0,
+          "x2": 460.0,
+          "y2": 545.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "maturing",
+        "name": "Maturing (part of Brewing)",
+        "type": "service",
+        "bbox": {
+          "x1": 550.0,
+          "y1": 390.0,
+          "x2": 700.0,
+          "y2": 545.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "bottling",
+        "name": "Bottling (part of Brewing)",
+        "type": "service",
+        "bbox": {
+          "x1": 795.0,
+          "y1": 180.0,
+          "x2": 945.0,
+          "y2": 335.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "rabbitmq",
+        "name": "RabbitMQ",
+        "type": "queue",
+        "bbox": {
+          "x1": 345.0,
+          "y1": 610.0,
+          "x2": 915.0,
+          "y2": 685.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "reporting",
+        "name": "Reporting",
+        "type": "service",
+        "bbox": {
+          "x1": 580.0,
+          "y1": 770.0,
+          "x2": 715.0,
+          "y2": 945.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "presenting",
+        "target": "aggregating",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "aggregating",
+        "target": "presenting",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "proxy",
+        "target": "ingredients",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "aggregating",
+        "target": "maturing",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e5",
+        "source": "maturing",
+        "target": "bottling",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e6",
+        "source": "bottling",
+        "target": "presenting",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e7",
+        "source": "aggregating",
+        "target": "rabbitmq",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e8",
+        "source": "maturing",
+        "target": "rabbitmq",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e9",
+        "source": "rabbitmq",
+        "target": "reporting",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/spring_cloud_brewery_overview.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/spring-cloud-samples/brewery",
+        "commit": "1bfe678944978dd28d620a177222b5faaa0bd278",
+        "license": "Apache-2.0",
+        "diagram_provenance": "official"
+      }
+    }
+  },
+  {
+    "id": "spring_cloud_brewery_dependency_graph",
+    "name": "Spring Cloud Brewery - dependency graph",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "presenting",
+        "name": "presenting",
+        "type": "frontend",
+        "bbox": {
+          "x1": 10.0,
+          "y1": 10.0,
+          "x2": 95.0,
+          "y2": 55.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "brewing",
+        "name": "brewing",
+        "type": "service",
+        "bbox": {
+          "x1": 295.0,
+          "y1": 10.0,
+          "x2": 380.0,
+          "y2": 55.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "reporting",
+        "name": "reporting",
+        "type": "service",
+        "bbox": {
+          "x1": 565.0,
+          "y1": 10.0,
+          "x2": 650.0,
+          "y2": 55.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "zuul",
+        "name": "zuul",
+        "type": "gateway",
+        "bbox": {
+          "x1": 655.0,
+          "y1": 45.0,
+          "x2": 740.0,
+          "y2": 90.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "ingredients",
+        "name": "ingredients",
+        "type": "service",
+        "bbox": {
+          "x1": 845.0,
+          "y1": 45.0,
+          "x2": 920.0,
+          "y2": 90.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "presenting",
+        "target": "brewing",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "brewing",
+        "target": "presenting",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "brewing",
+        "target": "reporting",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "brewing",
+        "target": "zuul",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e5",
+        "source": "zuul",
+        "target": "ingredients",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/spring_cloud_brewery_dependency_graph.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/spring-cloud-samples/brewery",
+        "commit": "1bfe678944978dd28d620a177222b5faaa0bd278",
+        "license": "Apache-2.0",
+        "diagram_provenance": "official",
+        "note": "Same repo as spring_cloud_brewery_overview, but this is the project's own auto-generated service dependency graph image - a distinct view of the same real system."
+      }
+    }
+  },
+  {
+    "id": "roman_bilyak_microservice_architecture",
+    "name": "Microservice.Architecture (roman-bilyak)",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "browser",
+        "name": "browser (https://localhost)",
+        "type": "external",
+        "bbox": {
+          "x1": 15.0,
+          "y1": 275.0,
+          "x2": 135.0,
+          "y2": 390.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "ingress",
+        "name": "Ingress (NGINX)",
+        "type": "gateway",
+        "bbox": {
+          "x1": 210.0,
+          "y1": 35.0,
+          "x2": 295.0,
+          "y2": 655.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "appangular",
+        "name": "App Angular",
+        "type": "frontend",
+        "bbox": {
+          "x1": 370.0,
+          "y1": 50.0,
+          "x2": 520.0,
+          "y2": 115.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "authservice",
+        "name": "Auth Service",
+        "type": "service",
+        "bbox": {
+          "x1": 370.0,
+          "y1": 225.0,
+          "x2": 520.0,
+          "y2": 295.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "apigateway",
+        "name": "API Gateway Service",
+        "type": "gateway",
+        "bbox": {
+          "x1": 370.0,
+          "y1": 400.0,
+          "x2": 520.0,
+          "y2": 465.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "appreact",
+        "name": "App React",
+        "type": "frontend",
+        "bbox": {
+          "x1": 370.0,
+          "y1": 580.0,
+          "x2": 520.0,
+          "y2": 645.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "identityservice",
+        "name": "Identity Service",
+        "type": "service",
+        "bbox": {
+          "x1": 600.0,
+          "y1": 95.0,
+          "x2": 760.0,
+          "y2": 150.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "movieservice",
+        "name": "Movie Service",
+        "type": "service",
+        "bbox": {
+          "x1": 600.0,
+          "y1": 210.0,
+          "x2": 760.0,
+          "y2": 265.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "paymentservice",
+        "name": "Payment Service",
+        "type": "service",
+        "bbox": {
+          "x1": 600.0,
+          "y1": 335.0,
+          "x2": 760.0,
+          "y2": 390.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "reviewservice",
+        "name": "Review Service",
+        "type": "service",
+        "bbox": {
+          "x1": 600.0,
+          "y1": 460.0,
+          "x2": 760.0,
+          "y2": 515.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "testservice",
+        "name": "Test Service",
+        "type": "service",
+        "bbox": {
+          "x1": 600.0,
+          "y1": 580.0,
+          "x2": 760.0,
+          "y2": 635.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "rabbitmq",
+        "name": "RabbitMQ",
+        "type": "queue",
+        "bbox": {
+          "x1": 955.0,
+          "y1": 50.0,
+          "x2": 1020.0,
+          "y2": 650.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "browser",
+        "target": "ingress",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "ingress",
+        "target": "appangular",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "ingress",
+        "target": "authservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "ingress",
+        "target": "apigateway",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e5",
+        "source": "ingress",
+        "target": "appreact",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e6",
+        "source": "appangular",
+        "target": "authservice",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e7",
+        "source": "apigateway",
+        "target": "identityservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e8",
+        "source": "apigateway",
+        "target": "movieservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e9",
+        "source": "apigateway",
+        "target": "paymentservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e10",
+        "source": "apigateway",
+        "target": "reviewservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e11",
+        "source": "apigateway",
+        "target": "testservice",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e12",
+        "source": "authservice",
+        "target": "apigateway",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e13",
+        "source": "identityservice",
+        "target": "rabbitmq",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e14",
+        "source": "movieservice",
+        "target": "rabbitmq",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e15",
+        "source": "paymentservice",
+        "target": "rabbitmq",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e16",
+        "source": "reviewservice",
+        "target": "rabbitmq",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e17",
+        "source": "testservice",
+        "target": "rabbitmq",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/roman_bilyak_microservice_architecture.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/roman-bilyak/Microservice.Architecture",
+        "commit": "3a3413b40114b810def53960aeb92a8026a71dcb",
+        "license": "MIT",
+        "diagram_provenance": "official",
+        "note": "Each service also has its own MS SQL database shown adjacent to it in the diagram; omitted as separate components here to keep this first annotation pass tractable (see docs/cv_failure_cases.md)."
+      }
+    }
+  },
+  {
+    "id": "istio_bookinfo_derived",
+    "name": "Bookinfo sample (istio/istio) - derived from source",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "productpage",
+        "name": "productpage",
+        "type": "service",
+        "bbox": {
+          "x1": 370.0,
+          "y1": 40.0,
+          "x2": 530.0,
+          "y2": 110.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "details",
+        "name": "details",
+        "type": "service",
+        "bbox": {
+          "x1": 120.0,
+          "y1": 220.0,
+          "x2": 280.0,
+          "y2": 290.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "reviews",
+        "name": "reviews",
+        "type": "service",
+        "bbox": {
+          "x1": 620.0,
+          "y1": 220.0,
+          "x2": 780.0,
+          "y2": 290.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "ratings",
+        "name": "ratings",
+        "type": "service",
+        "bbox": {
+          "x1": 620.0,
+          "y1": 380.0,
+          "x2": 780.0,
+          "y2": 450.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "productpage",
+        "target": "details",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "productpage",
+        "target": "reviews",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "reviews",
+        "target": "ratings",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/istio_bookinfo_derived.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/istio/istio",
+        "commit": "399ef1bff5261a01708c13b73a93cdc20189b08a",
+        "license": "Apache-2.0",
+        "diagram_provenance": "derived",
+        "evidence": [
+          "samples/bookinfo/src/productpage/productpage.py:53-54,62-64,267 (details service config + getProductDetails())",
+          "samples/bookinfo/src/productpage/productpage.py:57-58,74-76,272 (reviews service config + getProductReviews())",
+          "samples/bookinfo/src/reviews/reviews-application/src/main/java/application/rest/LibertyRestEndpoint.java:42-44,151,191 (ratings_service URL + getRatings())"
+        ]
+      }
+    }
+  }
+]
