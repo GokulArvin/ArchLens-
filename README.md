@@ -22,6 +22,18 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+If you don't have a CUDA GPU, install torch/torchvision from the CPU wheel
+index first to avoid a multi-GB download (same pinned versions either way):
+
+```bash
+pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+```
+
+YOLOv8n weights (`backend/models/yolov8n.pt`, gitignored) auto-download on
+first run of `backend/scripts/inspect_yolo_classes.py` or
+`run_detection_baseline.py`.
+
 ## Project layout
 
 - `backend/app/modules/cv_pipeline/` — P1's CV pipeline code (preprocessing, edge

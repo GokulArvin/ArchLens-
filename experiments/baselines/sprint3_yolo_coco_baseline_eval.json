@@ -1,0 +1,837 @@
+{
+  "iou_threshold": 0.5,
+  "aggregate": {
+    "tp": 1,
+    "fp": 4,
+    "fn": 88,
+    "precision": 0.2,
+    "recall": 0.0112,
+    "f1": 0.0213
+  },
+  "per_diagram": [
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "num_ground_truth": 12,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 12,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "loadgenerator",
+        "frontend",
+        "ad",
+        "recommendation",
+        "checkout",
+        "payment",
+        "email",
+        "productcatalog",
+        "cart",
+        "shipping",
+        "currency",
+        "rediscache"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "num_ground_truth": 9,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 9,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "loadgen",
+        "frontend",
+        "userservice",
+        "contacts",
+        "ledgerwriter",
+        "balancereader",
+        "transactionhistory",
+        "accountsdb",
+        "ledgerdb"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "num_ground_truth": 11,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 11,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "mobilebff",
+        "webapp",
+        "identityservice",
+        "catalogservice",
+        "orderservice",
+        "basketservice",
+        "paymentservice",
+        "eventbus",
+        "openai",
+        "webhooksservice",
+        "observability"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "num_ground_truth": 14,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 14,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "gitrepo",
+        "configserver",
+        "eureka",
+        "gateway",
+        "adminserver",
+        "zipkin",
+        "customersservice",
+        "genaiservice",
+        "vetsservice",
+        "petsservice",
+        "customersdb",
+        "genaivectorstore",
+        "vetsdb",
+        "petsdb"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "num_ground_truth": 4,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 4,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "backend",
+        "aggregate",
+        "orders",
+        "items"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "sock_shop",
+      "num_ground_truth": 10,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 10,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "user_actor",
+        "frontend",
+        "order",
+        "payment",
+        "userservice",
+        "catalogue",
+        "cart",
+        "shipping",
+        "queue",
+        "queuemaster"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "num_ground_truth": 8,
+      "num_predicted": 5,
+      "true_positives": 1,
+      "false_positives": 4,
+      "false_negatives": 7,
+      "precision": 0.2,
+      "recall": 0.125,
+      "f1": 0.1538,
+      "matched_pairs": [
+        {
+          "ground_truth_component_id": "maturing",
+          "predicted_index": 4
+        }
+      ],
+      "unmatched_ground_truth_ids": [
+        "presenting",
+        "proxy",
+        "ingredients",
+        "aggregating",
+        "bottling",
+        "rabbitmq",
+        "reporting"
+      ],
+      "unmatched_predicted_indices": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "num_ground_truth": 5,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "presenting",
+        "brewing",
+        "reporting",
+        "zuul",
+        "ingredients"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "num_ground_truth": 12,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 12,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "browser",
+        "ingress",
+        "appangular",
+        "authservice",
+        "apigateway",
+        "appreact",
+        "identityservice",
+        "movieservice",
+        "paymentservice",
+        "reviewservice",
+        "testservice",
+        "rabbitmq"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "num_ground_truth": 4,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 4,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "productpage",
+        "details",
+        "reviews",
+        "ratings"
+      ],
+      "unmatched_predicted_indices": []
+    }
+  ],
+  "false_positive_examples": [
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "bbox": [
+        768.7999877929688,
+        251.23095703125,
+        930.39208984375,
+        392.39306640625
+      ],
+      "confidence": 0.5388029217720032,
+      "raw_coco_class": "umbrella"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "bbox": [
+        938.4354858398438,
+        225.96524047851562,
+        987.1902465820312,
+        357.1840515136719
+      ],
+      "confidence": 0.4679534137248993,
+      "raw_coco_class": "bottle"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "bbox": [
+        726.5459594726562,
+        441.6690673828125,
+        833.9425659179688,
+        564.7088623046875
+      ],
+      "confidence": 0.4243355393409729,
+      "raw_coco_class": "cake"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "bbox": [
+        222.15643310546875,
+        747.570068359375,
+        273.0335693359375,
+        796.4456787109375
+      ],
+      "confidence": 0.2862607538700104,
+      "raw_coco_class": "sports ball"
+    }
+  ],
+  "false_negative_examples": [
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "loadgenerator",
+      "name": "loadgenerator",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "frontend",
+      "name": "frontend",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "ad",
+      "name": "ad",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "recommendation",
+      "name": "recommendation",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "checkout",
+      "name": "checkout",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "payment",
+      "name": "payment",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "email",
+      "name": "email",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "productcatalog",
+      "name": "productcatalog",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "cart",
+      "name": "cart",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "shipping",
+      "name": "shipping",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "currency",
+      "name": "currency",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "component_id": "rediscache",
+      "name": "Redis cache",
+      "type": "cache"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "loadgen",
+      "name": "loadgen",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "frontend",
+      "name": "frontend",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "userservice",
+      "name": "userservice",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "contacts",
+      "name": "contacts",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "ledgerwriter",
+      "name": "ledgerwriter",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "balancereader",
+      "name": "balancereader",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "transactionhistory",
+      "name": "transactionhistory",
+      "type": "service"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "accountsdb",
+      "name": "accounts db",
+      "type": "database"
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "component_id": "ledgerdb",
+      "name": "ledger db",
+      "type": "database"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "mobilebff",
+      "name": "Mobile BFF",
+      "type": "gateway"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "webapp",
+      "name": "Web App",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "identityservice",
+      "name": "Identity Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "catalogservice",
+      "name": "Catalog Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "orderservice",
+      "name": "Order Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "basketservice",
+      "name": "Basket Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "paymentservice",
+      "name": "Payment Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "eventbus",
+      "name": "Event Bus",
+      "type": "queue"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "openai",
+      "name": "OpenAI",
+      "type": "external"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "webhooksservice",
+      "name": "Webhooks Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "component_id": "observability",
+      "name": "Observability",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "gitrepo",
+      "name": "Git Repo",
+      "type": "external"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "configserver",
+      "name": "Spring Cloud Config Server",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "eureka",
+      "name": "Eureka Service Discovery",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "gateway",
+      "name": "UI + API Gateway",
+      "type": "gateway"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "adminserver",
+      "name": "Spring Boot Admin Server",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "zipkin",
+      "name": "OpenZipkin Distributed Logging Server",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "customersservice",
+      "name": "customers-service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "genaiservice",
+      "name": "genai-service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "vetsservice",
+      "name": "vets-service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "petsservice",
+      "name": "pets-service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "customersdb",
+      "name": "customers RDBMS",
+      "type": "database"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "genaivectorstore",
+      "name": "genai Vector Store",
+      "type": "database"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "vetsdb",
+      "name": "vets RDBMS",
+      "type": "database"
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "component_id": "petsdb",
+      "name": "pets RDBMS",
+      "type": "database"
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "component_id": "backend",
+      "name": "Backend",
+      "type": "gateway"
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "component_id": "aggregate",
+      "name": "Aggregate",
+      "type": "service"
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "component_id": "orders",
+      "name": "Orders",
+      "type": "service"
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "component_id": "items",
+      "name": "Items",
+      "type": "service"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "user_actor",
+      "name": "User",
+      "type": "external"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "frontend",
+      "name": "Front-end",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "order",
+      "name": "Order",
+      "type": "service"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "payment",
+      "name": "Payment",
+      "type": "service"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "userservice",
+      "name": "User (service)",
+      "type": "service"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "catalogue",
+      "name": "Catalogue",
+      "type": "service"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "cart",
+      "name": "Cart",
+      "type": "service"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "shipping",
+      "name": "Shipping",
+      "type": "service"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "queue",
+      "name": "Queue",
+      "type": "queue"
+    },
+    {
+      "diagram_id": "sock_shop",
+      "component_id": "queuemaster",
+      "name": "Queue-Master",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "component_id": "presenting",
+      "name": "Presenting",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "component_id": "proxy",
+      "name": "Proxy",
+      "type": "gateway"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "component_id": "ingredients",
+      "name": "Ingredients",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "component_id": "aggregating",
+      "name": "Aggregating (part of Brewing)",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "component_id": "bottling",
+      "name": "Bottling (part of Brewing)",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "component_id": "rabbitmq",
+      "name": "RabbitMQ",
+      "type": "queue"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "component_id": "reporting",
+      "name": "Reporting",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "component_id": "presenting",
+      "name": "presenting",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "component_id": "brewing",
+      "name": "brewing",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "component_id": "reporting",
+      "name": "reporting",
+      "type": "service"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "component_id": "zuul",
+      "name": "zuul",
+      "type": "gateway"
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "component_id": "ingredients",
+      "name": "ingredients",
+      "type": "service"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "browser",
+      "name": "browser (https://localhost)",
+      "type": "external"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "ingress",
+      "name": "Ingress (NGINX)",
+      "type": "gateway"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "appangular",
+      "name": "App Angular",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "authservice",
+      "name": "Auth Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "apigateway",
+      "name": "API Gateway Service",
+      "type": "gateway"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "appreact",
+      "name": "App React",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "identityservice",
+      "name": "Identity Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "movieservice",
+      "name": "Movie Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "paymentservice",
+      "name": "Payment Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "reviewservice",
+      "name": "Review Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "testservice",
+      "name": "Test Service",
+      "type": "service"
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "component_id": "rabbitmq",
+      "name": "RabbitMQ",
+      "type": "queue"
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "component_id": "productpage",
+      "name": "productpage",
+      "type": "service"
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "component_id": "details",
+      "name": "details",
+      "type": "service"
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "component_id": "reviews",
+      "name": "reviews",
+      "type": "service"
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "component_id": "ratings",
+      "name": "ratings",
+      "type": "service"
+    }
+  ]
+}

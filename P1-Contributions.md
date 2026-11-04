@@ -62,16 +62,22 @@ in `backend/app/modules/cv_pipeline/pipeline.py`); before/after sample grid
 `data/diagrams/processed/metadata.json` via `backend/scripts/batch_preprocess.py`);
 tests for common input errors (`backend/tests/unit/test_preprocessing.py`, 10 tests).
 
-## Sprint 3 — Days 11-15: Component Detection & First Graphs
+## Sprint 3 — Days 11-15: Component Detection & First Graphs ✅ *done*
 
-- [ ] **D11**: Choose a pretrained YOLO detector; inspect supported classes.
-- [ ] **D12**: Map diagram labels to a generic `architecture_component` class.
-- [ ] **D13**: Run inference on annotated samples; save boxes/confidences.
-- [ ] **D14**: Implement a simple evaluation script for box overlap and class labels.
-- [ ] **D15**: Inspect false positives/negatives; record a baseline.
+- [x] **D11**: Choose a pretrained YOLO detector; inspect supported classes.
+- [x] **D12**: Map diagram labels to a generic `architecture_component` class.
+- [x] **D13**: Run inference on annotated samples; save boxes/confidences.
+- [x] **D14**: Implement a simple evaluation script for box overlap and class labels.
+- [x] **D15**: Inspect false positives/negatives; record a baseline.
 
-**Deliverables**: Detector inference script; bounding-box outputs in common
-JSON; initial precision/recall or mAP-style evaluation.
+**Deliverables**: Detector inference script (`backend/scripts/run_detection_baseline.py`,
+YOLOv8n/COCO via `ComponentDetector`); bounding-box outputs in common JSON
+(`experiments/baselines/sprint3_yolo_coco_baseline.json`); precision/recall/F1
+evaluation (`backend/app/modules/cv_pipeline/detection_eval.py` +
+`backend/scripts/evaluate_detection_baseline.py`, honest result: P=0.20,
+R=0.011, F1=0.021 - a COCO-pretrained detector finds almost nothing in
+architecture diagrams, documented in `docs/sprint3_detection_baseline.md`
+and `docs/yolo_classes.md`, motivating Sprint 4/5's segmentation/CLIP work).
 
 ## Sprint 4 — Days 16-20: Segmentation & Graph Representation
 

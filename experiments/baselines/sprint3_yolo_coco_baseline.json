@@ -1,0 +1,253 @@
+{
+  "model": "yolov8n.pt (COCO-pretrained)",
+  "confidence_threshold": 0.25,
+  "results": [
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "image_shape": [
+        768,
+        1376,
+        3
+      ],
+      "ground_truth_component_count": 12,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "image_shape": [
+        768,
+        1376,
+        3
+      ],
+      "ground_truth_component_count": 9,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "image_shape": [
+        1076,
+        1919,
+        3
+      ],
+      "ground_truth_component_count": 11,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "image_shape": [
+        1000,
+        1600,
+        3
+      ],
+      "ground_truth_component_count": 14,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "image_shape": [
+        816,
+        1056,
+        3
+      ],
+      "ground_truth_component_count": 4,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "sock_shop",
+      "image_shape": [
+        1192,
+        1668,
+        3
+      ],
+      "ground_truth_component_count": 10,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "image_shape": [
+        966,
+        1462,
+        3
+      ],
+      "ground_truth_component_count": 8,
+      "raw_detection_count": 5,
+      "mapped_detection_count": 5,
+      "raw_detections": [
+        {
+          "bbox": [
+            768.7999877929688,
+            251.23095703125,
+            930.39208984375,
+            392.39306640625
+          ],
+          "confidence": 0.5388029217720032,
+          "class_id": 25,
+          "class_name": "umbrella"
+        },
+        {
+          "bbox": [
+            938.4354858398438,
+            225.96524047851562,
+            987.1902465820312,
+            357.1840515136719
+          ],
+          "confidence": 0.4679534137248993,
+          "class_id": 39,
+          "class_name": "bottle"
+        },
+        {
+          "bbox": [
+            726.5459594726562,
+            441.6690673828125,
+            833.9425659179688,
+            564.7088623046875
+          ],
+          "confidence": 0.4243355393409729,
+          "class_id": 55,
+          "class_name": "cake"
+        },
+        {
+          "bbox": [
+            222.15643310546875,
+            747.570068359375,
+            273.0335693359375,
+            796.4456787109375
+          ],
+          "confidence": 0.2862607538700104,
+          "class_id": 32,
+          "class_name": "sports ball"
+        },
+        {
+          "bbox": [
+            536.7687377929688,
+            404.75616455078125,
+            697.0578002929688,
+            546.6199951171875
+          ],
+          "confidence": 0.2505616545677185,
+          "class_id": 25,
+          "class_name": "umbrella"
+        }
+      ],
+      "mapped_detections": [
+        {
+          "bbox": [
+            768.7999877929688,
+            251.23095703125,
+            930.39208984375,
+            392.39306640625
+          ],
+          "confidence": 0.5388029217720032,
+          "mapped_class": "architecture_component",
+          "raw_coco_class": "umbrella",
+          "raw_coco_class_id": 25
+        },
+        {
+          "bbox": [
+            938.4354858398438,
+            225.96524047851562,
+            987.1902465820312,
+            357.1840515136719
+          ],
+          "confidence": 0.4679534137248993,
+          "mapped_class": "architecture_component",
+          "raw_coco_class": "bottle",
+          "raw_coco_class_id": 39
+        },
+        {
+          "bbox": [
+            726.5459594726562,
+            441.6690673828125,
+            833.9425659179688,
+            564.7088623046875
+          ],
+          "confidence": 0.4243355393409729,
+          "mapped_class": "architecture_component",
+          "raw_coco_class": "cake",
+          "raw_coco_class_id": 55
+        },
+        {
+          "bbox": [
+            222.15643310546875,
+            747.570068359375,
+            273.0335693359375,
+            796.4456787109375
+          ],
+          "confidence": 0.2862607538700104,
+          "mapped_class": "architecture_component",
+          "raw_coco_class": "sports ball",
+          "raw_coco_class_id": 32
+        },
+        {
+          "bbox": [
+            536.7687377929688,
+            404.75616455078125,
+            697.0578002929688,
+            546.6199951171875
+          ],
+          "confidence": 0.2505616545677185,
+          "mapped_class": "architecture_component",
+          "raw_coco_class": "umbrella",
+          "raw_coco_class_id": 25
+        }
+      ]
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "image_shape": [
+        154,
+        924,
+        3
+      ],
+      "ground_truth_component_count": 5,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "image_shape": [
+        684,
+        1072,
+        3
+      ],
+      "ground_truth_component_count": 12,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "image_shape": [
+        500,
+        900,
+        3
+      ],
+      "ground_truth_component_count": 4,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    }
+  ]
+}
