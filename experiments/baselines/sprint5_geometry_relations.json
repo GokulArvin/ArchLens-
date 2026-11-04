@@ -1,0 +1,123 @@
+{
+  "matching": "undirected component-pair (direction out of scope - see docstring)",
+  "aggregate": {
+    "tp": 52,
+    "fp": 19,
+    "fn": 56,
+    "precision": 0.7324,
+    "recall": 0.4815,
+    "f1": 0.581
+  },
+  "per_diagram": [
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "num_ground_truth_edges": 16,
+      "num_lines_detected": 661,
+      "num_candidate_edges": 13,
+      "true_positives": 11,
+      "false_positives": 2,
+      "false_negatives": 5,
+      "precision": 0.8462,
+      "recall": 0.6875
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "num_ground_truth_edges": 11,
+      "num_lines_detected": 467,
+      "num_candidate_edges": 4,
+      "true_positives": 2,
+      "false_positives": 2,
+      "false_negatives": 9,
+      "precision": 0.5,
+      "recall": 0.1818
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "num_ground_truth_edges": 14,
+      "num_lines_detected": 1107,
+      "num_candidate_edges": 14,
+      "true_positives": 5,
+      "false_positives": 9,
+      "false_negatives": 9,
+      "precision": 0.3571,
+      "recall": 0.3571
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "num_ground_truth_edges": 22,
+      "num_lines_detected": 1381,
+      "num_candidate_edges": 12,
+      "true_positives": 10,
+      "false_positives": 2,
+      "false_negatives": 12,
+      "precision": 0.8333,
+      "recall": 0.4545
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "num_ground_truth_edges": 4,
+      "num_lines_detected": 620,
+      "num_candidate_edges": 3,
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 1,
+      "precision": 1.0,
+      "recall": 0.75
+    },
+    {
+      "diagram_id": "sock_shop",
+      "num_ground_truth_edges": 9,
+      "num_lines_detected": 727,
+      "num_candidate_edges": 4,
+      "true_positives": 3,
+      "false_positives": 1,
+      "false_negatives": 6,
+      "precision": 0.75,
+      "recall": 0.3333
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_overview",
+      "num_ground_truth_edges": 8,
+      "num_lines_detected": 790,
+      "num_candidate_edges": 2,
+      "true_positives": 2,
+      "false_positives": 0,
+      "false_negatives": 6,
+      "precision": 1.0,
+      "recall": 0.25
+    },
+    {
+      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "num_ground_truth_edges": 4,
+      "num_lines_detected": 73,
+      "num_candidate_edges": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 4,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "num_ground_truth_edges": 17,
+      "num_lines_detected": 699,
+      "num_candidate_edges": 16,
+      "true_positives": 13,
+      "false_positives": 3,
+      "false_negatives": 4,
+      "precision": 0.8125,
+      "recall": 0.7647
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "num_ground_truth_edges": 3,
+      "num_lines_detected": 76,
+      "num_candidate_edges": 3,
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    }
+  ]
+}

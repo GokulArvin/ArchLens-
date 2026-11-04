@@ -94,16 +94,22 @@ proposals, `backend/app/modules/cv_pipeline/segmentation.py`) - real,
 measured F1=0.220 on a 3-diagram subset, ~10x better than the pretrained
 baselines; full decision record in `docs/sprint4_segmentation_baseline.md`.
 
-## Sprint 5 — Days 21-25: VLM/ViT/CLIP Semantics & Relationship Extraction
+## Sprint 5 — Days 21-25: VLM/ViT/CLIP Semantics & Relationship Extraction ✅ *done*
 
-- [ ] **D21**: Establish a ViT/image-embedding baseline using pretrained weights.
-- [ ] **D22**: Crop detected components; associate OCR text/region metadata.
-- [ ] **D23**: Implement geometry-based relation candidates using boxes/edge endpoints.
-- [ ] **D24**: Compare geometric candidates with annotated edges.
-- [ ] **D25**: Report component and relation failure categories.
+- [x] **D21**: Establish a ViT/image-embedding baseline using pretrained weights.
+- [x] **D22**: Crop detected components; associate OCR text/region metadata.
+- [x] **D23**: Implement geometry-based relation candidates using boxes/edge endpoints.
+- [x] **D24**: Compare geometric candidates with annotated edges.
+- [x] **D25**: Report component and relation failure categories.
 
-**Deliverables**: ViT/embedding baseline; geometry-based relation extractor;
-preliminary relation metrics and failure analysis.
+**Deliverables**: CLIP (ViT-B/32) embedding baseline (`backend/app/modules/cv_pipeline/embeddings.py`,
+real same-type vs different-type similarity check: 0.656 vs 0.644); OCR via
+easyocr (`backend/app/modules/cv_pipeline/ocr.py`, 64/89 real components
+correctly recovered); geometry-based relation extractor via Hough line
+detection (`backend/app/modules/cv_pipeline/geometry_relations.py`) scoring
+**P=0.732, R=0.482, F1=0.581** against real annotated edges - the strongest
+baseline in the project so far; full failure-category analysis in
+`docs/sprint5_vit_geometry_report.md`.
 
 ## Sprint 6 — Days 26-30: Graph Alignment & Deterministic Conformance
 
