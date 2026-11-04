@@ -33,8 +33,8 @@ class CVPreprocessor:
     def __init__(self, max_size: int = DEFAULT_MAX_SIZE):
         self.max_size = max_size
 
-    def preprocess(self, image_path: str) -> np.ndarray:
-        """Load and preprocess an architecture diagram image."""
+    def load(self, image_path: str) -> np.ndarray:
+        """Validate format policy and load an image as BGR (OpenCV default)."""
         suffix = Path(image_path).suffix.lower()
         if suffix not in ALLOWED_INPUT_EXTENSIONS:
             raise ValueError(
@@ -45,12 +45,38 @@ class CVPreprocessor:
         img = cv2.imread(image_path)
         if img is None:
             raise ValueError(f"Cannot load image: {image_path}")
+        return img
+
+    def to_rgb(self, img: np.ndarray) -> np.ndarray:
+        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    def to_grayscale(self, img: np.ndarray) -> np.ndarray:
+        return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    def preprocess(self, image_path: str, color_mode: str = "bgr") -> np.ndarray:
+        """Load and preprocess an architecture diagram image.
+
+        color_mode: "bgr" (default, OpenCV's native order), "rgb", or
+        "grayscale". Resize/normalize always run on the BGR representation;
+        color_mode only affects the array returned at the end.
+        """
+        img = self.load(image_path)
 
         # Resize maintaining aspect ratio
         img = self._resize(img)
         # Normalize
         img = self._normalize(img)
-        logger.info(f"Preprocessed image: {image_path} → shape {img.shape}")
+
+        if color_mode == "bgr":
+            pass
+        elif color_mode == "rgb":
+            img = self.to_rgb(img)
+        elif color_mode == "grayscale":
+            img = self.to_grayscale(img)
+        else:
+            raise ValueError(f"Unknown color_mode '{color_mode}'; expected bgr, rgb or grayscale")
+
+        logger.info(f"Preprocessed image: {image_path} → shape {img.shape}, color_mode={color_mode}")
         return img
 
     def _resize(self, img: np.ndarray) -> np.ndarray:

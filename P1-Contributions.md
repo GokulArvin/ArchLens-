@@ -47,16 +47,20 @@ annotation guide (`docs/annotation_guide.md`); preprocessing experiment
 notebook (`notebooks/01_cv_experiment_template.ipynb`). ✅ ≥10 diagrams load
 and preview with overlays (verified via notebook execution).
 
-## Sprint 2 — Days 6-10: Preprocessing
+## Sprint 2 — Days 6-10: Preprocessing ✅ *done*
 
-- [ ] **D6**: Implement image loading, RGB/grayscale conversion, resizing.
-- [ ] **D7**: Add normalization and image-quality metadata.
-- [ ] **D8**: Compare original vs resized/normalized images on sample diagrams.
-- [ ] **D9**: Write a batch preprocessing script; save processed images with stable IDs.
-- [ ] **D10**: Add tests for unreadable files, aspect ratio, output dimensions.
+- [x] **D6**: Implement image loading, RGB/grayscale conversion, resizing.
+- [x] **D7**: Add normalization and image-quality metadata.
+- [x] **D8**: Compare original vs resized/normalized images on sample diagrams.
+- [x] **D9**: Write a batch preprocessing script; save processed images with stable IDs.
+- [x] **D10**: Add tests for unreadable files, aspect ratio, output dimensions.
 
-**Deliverables**: Reusable preprocessing module; before/after sample grid;
-metadata log; tests for common input errors.
+**Deliverables**: Reusable preprocessing module (`CVPreprocessor.load/to_rgb/to_grayscale/preprocess`
+in `backend/app/modules/cv_pipeline/pipeline.py`); before/after sample grid
+(`notebooks/02_preprocessing_comparison.ipynb`, executed); metadata log
+(`backend/app/modules/cv_pipeline/image_metadata.py` +
+`data/diagrams/processed/metadata.json` via `backend/scripts/batch_preprocess.py`);
+tests for common input errors (`backend/tests/unit/test_preprocessing.py`, 10 tests).
 
 ## Sprint 3 — Days 11-15: Component Detection & First Graphs
 
