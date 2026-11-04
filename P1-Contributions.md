@@ -79,16 +79,20 @@ R=0.011, F1=0.021 - a COCO-pretrained detector finds almost nothing in
 architecture diagrams, documented in `docs/sprint3_detection_baseline.md`
 and `docs/yolo_classes.md`, motivating Sprint 4/5's segmentation/CLIP work).
 
-## Sprint 4 — Days 16-20: Segmentation & Graph Representation
+## Sprint 4 — Days 16-20: Segmentation & Graph Representation ✅ *done*
 
-- [ ] **D16**: Determine whether pretrained segmentation is viable for diagram components.
-- [ ] **D17**: Build a simple mask baseline or region-cropping fallback.
-- [ ] **D18**: Compare component boxes with masks on a small labeled subset.
-- [ ] **D19**: Integrate edge maps as an additional input feature (not a final parser).
-- [ ] **D20**: Document which segmentation approach is retained for the MVP.
+- [x] **D16**: Determine whether pretrained segmentation is viable for diagram components.
+- [x] **D17**: Build a simple mask baseline or region-cropping fallback.
+- [x] **D18**: Compare component boxes with masks on a small labeled subset.
+- [x] **D19**: Integrate edge maps as an additional input feature (not a final parser).
+- [x] **D20**: Document which segmentation approach is retained for the MVP.
 
-**Deliverables**: Segmentation/region-cropping baseline; comparison figures;
-justified keep/drop decision.
+**Deliverables**: Pretrained segmentation (Mask R-CNN) tested and found not
+viable (8 detections across 10 diagrams - same COCO-vocabulary mismatch as
+Sprint 3); retained `RegionProposalSegmenter` (edge-assisted contour region
+proposals, `backend/app/modules/cv_pipeline/segmentation.py`) - real,
+measured F1=0.220 on a 3-diagram subset, ~10x better than the pretrained
+baselines; full decision record in `docs/sprint4_segmentation_baseline.md`.
 
 ## Sprint 5 — Days 21-25: VLM/ViT/CLIP Semantics & Relationship Extraction
 
