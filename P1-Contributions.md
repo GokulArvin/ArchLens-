@@ -144,16 +144,23 @@ with a known-commit RCA test case (`backend/tests/unit/test_git_evidence.py`,
 6 tests) correctly identifying the real introducing commit; honest
 diagram-context analysis in `docs/sprint7_git_evidence_report.md`.
 
-## Sprint 8 — Days 36-40: Impact Analysis, Recommendations, Integration
+## Sprint 8 — Days 36-40: Impact Analysis, Recommendations, Integration ✅ *done*
 
-- [ ] **D36**: Connect diagram nodes to graph nodes and offending edges.
-- [ ] **D37**: Implement affected-node highlighting on the architecture graph.
-- [ ] **D38**: Draft architecture-aware recommendation patterns for common violation classes.
-- [ ] **D39**: Check whether recommendations preserve intended diagram paths/layers.
-- [ ] **D40**: Test impact visualization against known controlled violations.
+- [x] **D36**: Connect diagram nodes to graph nodes and offending edges.
+- [x] **D37**: Implement affected-node highlighting on the architecture graph.
+- [x] **D38**: Draft architecture-aware recommendation patterns for common violation classes.
+- [x] **D39**: Check whether recommendations preserve intended diagram paths/layers.
+- [x] **D40**: Test impact visualization against known controlled violations.
 
-**Deliverables**: Diagram-linked impact highlighting; recommendation examples
-checked against architecture rules.
+**Deliverables**: Diagram-linked impact highlighting via real NetworkX graph
+traversal (`backend/app/modules/cv_pipeline/impact_analysis.py`,
+`experiments/results/sprint8_impact_*.png`); recommendation patterns per
+real `ViolationType` (`backend/app/modules/cv_pipeline/recommendations.py`);
+path-validation that rejects invented dependencies
+(`validate_recommended_path`); 2 controlled-violation tests against real
+graph topology (13 tests total) correctly localizing blast radius from
+3 nodes to 10+ nodes depending on topology; full report in
+`docs/sprint8_impact_recommendations_report.md`.
 
 ## Sprint 9 — Days 41-45: Baselines, Ablations, Research Evaluation
 
