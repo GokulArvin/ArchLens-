@@ -1,5 +1,7 @@
 # ArchLens — P1 (CV Pipeline Lead) Track
 
+[![P1 CV Pipeline Tests](https://github.com/GokulArvin/ArchLens-/actions/workflows/p1-cv-pipeline-tests.yml/badge.svg?branch=Gokul)](https://github.com/GokulArvin/ArchLens-/actions/workflows/p1-cv-pipeline-tests.yml)
+
 This branch (`Gokul`) implements the **P1 (Computer Vision Pipeline Lead)** role of the
 ArchLens project, sprint by sprint, inside the real project structure (see
 `backend/app/modules/cv_pipeline/`). ArchLens itself is a 4-member team project —
