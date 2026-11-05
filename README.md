@@ -454,3 +454,80 @@ ArchLens is built by a 4-member research team:
 
 ## 📄 License
 This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 🧪 This branch (`Gokul`): P1 (CV Pipeline Lead)
+
+[![P1 CV Pipeline Tests](https://github.com/GokulArvin/ArchLens-/actions/workflows/p1-cv-pipeline-tests.yml/badge.svg?branch=Gokul)](https://github.com/GokulArvin/ArchLens-/actions/workflows/p1-cv-pipeline-tests.yml)
+
+This branch carries P1's (Computer Vision Pipeline Lead) sprint-by-sprint work on top
+of the shared baseline above - `backend/app/modules/cv_pipeline/`, the real annotated
+10-diagram dataset, every CV baseline/evaluation from Sprints 1-9, and the reports in
+`docs/`. See `P1-Contributions.md` for the consolidated list of everything P1 owns
+across all 10 sprints, and `docs/cv_method_results_report.md` for the final
+method/results/error-analysis writeup.
+
+### P1-specific setup (CV pipeline only, no FastAPI/frontend needed)
+
+```bash
+cd backend
+py -3.11 -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+If you don't have a CUDA GPU, install torch/torchvision from the CPU wheel
+index first to avoid a multi-GB download (same pinned versions either way):
+
+```bash
+pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+```
+
+YOLOv8n weights (`backend/models/yolov8n.pt`, gitignored) auto-download on
+first run of `backend/scripts/inspect_yolo_classes.py` or
+`run_detection_baseline.py`.
+
+### P1 CV pipeline exploration environment (Docker Compose)
+
+In addition to the full-stack `backend`/`frontend`/`db` services above,
+`docker-compose.yml` also defines two P1-specific services
+(`backend/Dockerfile.cv-pipeline`) for exploring the CV pipeline without the
+rest of the stack:
+
+```bash
+# Interactive exploration: Jupyter Lab on http://localhost:8888
+# (backend/, data/, docs/, experiments/, notebooks/ are live-mounted, so
+# edits and script/notebook runs persist on the host)
+docker compose up jupyter
+
+# One-shot: regenerate every real artifact in the project from scratch
+# (runs all 19 Sprint 1-9 scripts in dependency order - the same sequence
+# used for Sprint 10's clean-room reproducibility check)
+docker compose --profile pipeline run --rm pipeline
+```
+
+Model weights (YOLOv8n, CLIP, easyocr) download into the mounted
+`backend/models/` on first use inside the container, same as running
+locally - nothing is baked into the image.
+
+### P1 project layout
+
+- `backend/app/modules/cv_pipeline/` — P1's CV pipeline code (preprocessing, edge
+  detection, component detection, segmentation, CLIP/ViT classification, relationship
+  extraction)
+- `backend/tests/unit/` — P1 unit tests (plus other modules' own unit tests)
+- `data/diagrams/` — real architecture diagram images, each paired with the real
+  repository it describes
+- `data/annotations/` — manifest + hand-annotated component/connector ground truth
+- `docs/` — pipeline notes, annotation guide, dataset rationale, schema review, failure
+  case tracking, sprint reports
+- `notebooks/` — experiment templates (load manifest → preview → run CV steps)
+
+### P1 data policy
+
+No synthetic or fabricated data is used anywhere in P1's work. Every diagram is a
+real architecture diagram of a real, publicly available software repository, so that
+conformance checking can compare the diagram's intended structure against that same
+repository's actual code/Git history.

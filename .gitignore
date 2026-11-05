@@ -15,6 +15,9 @@ env/
 .env
 !.env.example
 
+# Notebooks
+.ipynb_checkpoints/
+
 # Node / Frontend
 node_modules/
 dist/
@@ -31,6 +34,7 @@ data/repositories/
 *.pth
 *.onnx
 *.pkl
+backend/models/
 mlflow/
 mlruns/
 
@@ -47,6 +51,7 @@ Thumbs.db
 .coverage
 htmlcov/
 .pytest_cache/
+.ruff_cache/
 
 # Docker
 *.log

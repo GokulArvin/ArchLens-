@@ -1,0 +1,19 @@
+{
+  "seed": 42,
+  "train": [
+    "aws_retail_store_sample_app",
+    "azure_aks_store_demo",
+    "gcp_bank_of_anthos",
+    "gcp_microservices_demo",
+    "istio_bookinfo_derived",
+    "spring_petclinic_microservices"
+  ],
+  "val": [
+    "dotnet_eshop",
+    "sock_shop"
+  ],
+  "test": [
+    "flask_microservice_demo",
+    "roman_bilyak_microservice_architecture"
+  ]
+}

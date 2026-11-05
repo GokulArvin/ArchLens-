@@ -1,0 +1,145 @@
+{
+  "id": "807c9c09-480a-4857-8754-9dfff87c6fd8",
+  "repository": "https://github.com/mblitherland/flask-microservice-demo",
+  "diagram_path": "data/diagrams/raw/flask_microservice_demo.png",
+  "intended_graph": {
+    "id": "flask_microservice_demo",
+    "name": "flask-microservice-demo (mblitherland)",
+    "graph_type": "intended",
+    "components": [
+      {
+        "id": "backend",
+        "name": "Backend",
+        "type": "gateway",
+        "bbox": {
+          "x1": 68.0,
+          "y1": 75.0,
+          "x2": 470.0,
+          "y2": 240.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "aggregate",
+        "name": "Aggregate",
+        "type": "service",
+        "bbox": {
+          "x1": 345.0,
+          "y1": 360.0,
+          "x2": 750.0,
+          "y2": 495.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "orders",
+        "name": "Orders",
+        "type": "service",
+        "bbox": {
+          "x1": 58.0,
+          "y1": 580.0,
+          "x2": 460.0,
+          "y2": 805.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "items",
+        "name": "Items",
+        "type": "service",
+        "bbox": {
+          "x1": 605.0,
+          "y1": 580.0,
+          "x2": 1008.0,
+          "y2": 805.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "e1",
+        "source": "backend",
+        "target": "aggregate",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "backend",
+        "target": "orders",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "aggregate",
+        "target": "orders",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e4",
+        "source": "aggregate",
+        "target": "items",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      }
+    ],
+    "source": "data/diagrams/raw/flask_microservice_demo.png",
+    "metadata": {
+      "source_repository": {
+        "repo_url": "https://github.com/mblitherland/flask-microservice-demo",
+        "commit": "d98872fcde8ae00f9df3224c1d5d4f08eb312429",
+        "license": "Apache-2.0",
+        "diagram_provenance": "official"
+      }
+    }
+  },
+  "current_graph": null,
+  "violations": [
+    {
+      "id": "v1",
+      "verdict": "VIOLATION",
+      "violation_type": "layer_violation",
+      "source_component": "backend",
+      "target_component": "orders",
+      "expected": "backend -> aggregate -> orders",
+      "actual": "backend -> orders (direct, via /custSearch/<name>)",
+      "severity": "medium",
+      "description": "Under a hypothetical stricter rule (backend may only reach orders through aggregate), backend's customer-search route would violate it by calling orders directly. Per our own diagram annotation this edge is actually intended/conformant - see script docstring."
+    }
+  ],
+  "git_evidence": [
+    {
+      "violation_id": "v1",
+      "file": "backend/src/run.py",
+      "lines": null,
+      "dependency_path": [
+        "backend",
+        "orders"
+      ],
+      "introducing_commit": {
+        "hash": "d98872fcde8ae00f9df3224c1d5d4f08eb312429",
+        "message": "Added a new customer search endpoint",
+        "author": "Michael Litherland",
+        "date": "2017-09-19T22:32:55-04:00",
+        "diff": "commit d98872fcde8ae00f9df3224c1d5d4f08eb312429\nAuthor: Michael Litherland <mlitherland@onshift.com>\nDate:   Tue Sep 19 22:32:55 2017 -0400\n\n    Added a new customer search endpoint\n\ndiff --git a/README.md b/README.md\nindex bed05e5..f4bebd2 100644\n--- a/README.md\n+++ b/README.md\n@@ -6,6 +6,8 @@ This project is an example of using nothing but python3, flask, requests, and do\n \n Here's the architecture diagram:\n \n+_Edit: I added another GET to the backend to test the custSearch functionality and demo a JSON payload in client. Details below._\n+\n ![Architecture Diagram](https://i.imgur.com/IUAfN8O.png)\n \n For testing fun all of the microservices are exposed, but in a real application only the backend (or API) would be.\n@@ -99,10 +101,17 @@ Notice how the \"items\" element has been replaced with a list of item details.\n }\n ```\n \n-### Test the search\n+### Customer name search\n+\n+http://localhost:5000/custSearch/Dan\n+\n+You can now hit this URL directly with a GET to perform a search by partial customer name. A space is just '%20'. This calls the underlying custSearch endpoint for the orders microservice, but takes the name and forms a JSON payload which is possibly a more familiar way to send data to a microservice for it to operate on rather than doing it through parameters.  Again Flask makes this absurdly simple.\n+\n+\n+### Test the search in the data microservice\n \n-http://localhost:5001/custSearch\n+POST http://localhost:5001/custSearch\n \n *Note the port of the orders microservice here! This isn't the backend!*\n \n-Make sure to set \"Content-Type: application/json\" in the \"headers\" and to put something like `{\"name\": \"Daniel\"}` in the \"body\".  You'll get a list of order where the \"cust\" field contains the search parameter. The customer names are randomly generated, so you might want to try something simple.\n+Make sure to use a POST and to set \"Content-Type: application/json\" in the \"headers\" and to put something like `{\"name\": \"Daniel\"}` in the \"body\".  You'll get a list of order where the \"cust\" field contains the search parameter. The customer names are randomly generated, so you might want to try something simple.\ndiff --git a/backend/src/run.py b/backend/src/run.py\nindex aad41a9..ec87596 100644\n--- a/backend/src/run.py\n+++ b/backend/src/run.py\n@@ -1,4 +1,4 @@\n-from flask import Flask, jsonify, request\n+from flask import Flask, json, jsonify, request\n import logging\n import requests\n \n@@ -22,6 +22,13 @@ def detail(order_id):\n     return jsonify(data), 200\n \n \n+@app.route('/custSearch/<string:name>', methods=['GET'])\n+def cust_search(name):\n+    payload = {'name': name}\n+    data = requests.post('http://demo_orders:5000/custSearch', json=payload).json()\n+    return jsonify(data), 200\n+\n+\n if __name__ == '__main__':\n     app.logger.setLevel(logging.INFO)\n     app.run(debug=True, host='0.0.0.0')"
+      },
+      "related_commits": []
+    }
+  ],
+  "rca_outputs": [],
+  "summary": {
+    "violation_count": 1,
+    "affected_code_lines": "backend/src/run.py:25-29"
+  }
+}

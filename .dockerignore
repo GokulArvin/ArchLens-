@@ -1,0 +1,24 @@
+# Without this, `docker compose build` hashes/transfers these as part of
+# the build context on every build, even though nothing in the Dockerfiles
+# ever COPY's them - venv/ and backend/models/ alone are multiple GB.
+
+.git/
+venv/
+.venv/
+backend/venv/
+backend/models/
+data/repositories/
+data/uploads/
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+.vscode/
+.idea/

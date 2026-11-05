@@ -1,0 +1,110 @@
+{
+  "model": "maskrcnn_resnet50_fpn (COCO-pretrained, torchvision)",
+  "confidence_threshold": 0.25,
+  "results": [
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "ground_truth_component_count": 12,
+      "maskrcnn_detection_count": 0,
+      "detections": []
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "ground_truth_component_count": 9,
+      "maskrcnn_detection_count": 0,
+      "detections": []
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "ground_truth_component_count": 11,
+      "maskrcnn_detection_count": 1,
+      "detections": [
+        {
+          "class_name": "cell phone",
+          "confidence": 0.5029181241989136,
+          "bbox": [
+            236.3116455078125,
+            264.6917724609375,
+            459.3699951171875,
+            732.6774291992188
+          ]
+        }
+      ]
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "ground_truth_component_count": 14,
+      "maskrcnn_detection_count": 1,
+      "detections": [
+        {
+          "class_name": "laptop",
+          "confidence": 0.9221760630607605,
+          "bbox": [
+            771.2246704101562,
+            73.97728729248047,
+            962.2555541992188,
+            235.21133422851562
+          ]
+        }
+      ]
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "ground_truth_component_count": 4,
+      "maskrcnn_detection_count": 0,
+      "detections": []
+    },
+    {
+      "diagram_id": "sock_shop",
+      "ground_truth_component_count": 10,
+      "maskrcnn_detection_count": 1,
+      "detections": [
+        {
+          "class_name": "tv",
+          "confidence": 0.2899512052536011,
+          "bbox": [
+            212.93414306640625,
+            0.0,
+            1554.6878662109375,
+            1113.5640869140625
+          ]
+        }
+      ]
+    },
+    {
+      "diagram_id": "aws_retail_store_sample_app",
+      "ground_truth_component_count": 10,
+      "maskrcnn_detection_count": 0,
+      "detections": []
+    },
+    {
+      "diagram_id": "azure_aks_store_demo",
+      "ground_truth_component_count": 9,
+      "maskrcnn_detection_count": 1,
+      "detections": [
+        {
+          "class_name": "cup",
+          "confidence": 0.9304558038711548,
+          "bbox": [
+            1573.7923583984375,
+            818.8610229492188,
+            1865.7149658203125,
+            1054.671875
+          ]
+        }
+      ]
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "ground_truth_component_count": 12,
+      "maskrcnn_detection_count": 0,
+      "detections": []
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "ground_truth_component_count": 4,
+      "maskrcnn_detection_count": 0,
+      "detections": []
+    }
+  ]
+}

@@ -25,6 +25,27 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Sprint 1 / D2 resolution policy (see docs/cv_pipeline_note.md). Centralized
+# here so it's enforced, not just described.
+ALLOWED_INPUT_EXTENSIONS = {".png", ".jpg", ".jpeg"}
+DEFAULT_MAX_SIZE = 1920  # longest side, in pixels; aspect ratio preserved
+DEFAULT_CLAHE_CLIP_LIMIT = 2.0
+DEFAULT_CLAHE_TILE_GRID_SIZE = (8, 8)
+
+
+def select_component_type(clip_scores: Dict[str, float]) -> str:
+    """Pick the winning CLIP type, or "unknown" if CLIP produced no real signal.
+
+    Audit-pass fix: CLIPClassifier.classify() returns all-zero scores when
+    no CLIP model is loaded. A bare max(scores, key=scores.get) tie-breaks
+    to the first entry in COMPONENT_TYPE_MAP ("database"), which silently
+    mistyped every single component as a database whenever CLIP wasn't
+    available - this guards that case explicitly instead.
+    """
+    if not clip_scores or not any(clip_scores.values()):
+        return "unknown"
+    return max(clip_scores, key=clip_scores.get)
+
 
 class BaseComponentDetector(ABC):
     """Abstract base class for all component-detection backends.
@@ -44,20 +65,60 @@ class BaseComponentDetector(ABC):
 class CVPreprocessor:
     """Stage 1: Image preprocessing pipeline."""
 
-    def __init__(self, max_size: int = 1920):
+    def __init__(
+        self,
+        max_size: int = DEFAULT_MAX_SIZE,
+        clahe_clip_limit: float = DEFAULT_CLAHE_CLIP_LIMIT,
+        clahe_tile_grid_size: tuple = DEFAULT_CLAHE_TILE_GRID_SIZE,
+    ):
         self.max_size = max_size
+        self.clahe_clip_limit = clahe_clip_limit
+        self.clahe_tile_grid_size = clahe_tile_grid_size
 
-    def preprocess(self, image_path: str) -> np.ndarray:
-        """Load and preprocess an architecture diagram image."""
+    def load(self, image_path: str) -> np.ndarray:
+        """Validate format policy and load an image as BGR (OpenCV default)."""
+        suffix = Path(image_path).suffix.lower()
+        if suffix not in ALLOWED_INPUT_EXTENSIONS:
+            raise ValueError(
+                f"Unsupported input format '{suffix}' for {image_path}; "
+                f"allowed: {sorted(ALLOWED_INPUT_EXTENSIONS)}"
+            )
+
         img = cv2.imread(image_path)
         if img is None:
             raise ValueError(f"Cannot load image: {image_path}")
+        return img
+
+    def to_rgb(self, img: np.ndarray) -> np.ndarray:
+        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    def to_grayscale(self, img: np.ndarray) -> np.ndarray:
+        return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    def preprocess(self, image_path: str, color_mode: str = "bgr") -> np.ndarray:
+        """Load and preprocess an architecture diagram image.
+
+        color_mode: "bgr" (default, OpenCV's native order), "rgb", or
+        "grayscale". Resize/normalize always run on the BGR representation;
+        color_mode only affects the array returned at the end.
+        """
+        img = self.load(image_path)
 
         # Resize maintaining aspect ratio
         img = self._resize(img)
         # Normalize
         img = self._normalize(img)
-        logger.info(f"Preprocessed image: {image_path} → shape {img.shape}")
+
+        if color_mode == "bgr":
+            pass
+        elif color_mode == "rgb":
+            img = self.to_rgb(img)
+        elif color_mode == "grayscale":
+            img = self.to_grayscale(img)
+        else:
+            raise ValueError(f"Unknown color_mode '{color_mode}'; expected bgr, rgb or grayscale")
+
+        logger.info(f"Preprocessed image: {image_path} → shape {img.shape}, color_mode={color_mode}")
         return img
 
     def _resize(self, img: np.ndarray) -> np.ndarray:
@@ -70,12 +131,19 @@ class CVPreprocessor:
     def _normalize(self, img: np.ndarray) -> np.ndarray:
         # CLAHE for contrast enhancement
         lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        clahe = cv2.createCLAHE(clipLimit=self.clahe_clip_limit, tileGridSize=self.clahe_tile_grid_size)
         lab[:, :, 0] = clahe.apply(lab[:, :, 0])
         return cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
 
-    def denoise(self, img: np.ndarray) -> np.ndarray:
-        return cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
+    def denoise(
+        self,
+        img: np.ndarray,
+        h: float = 10,
+        h_color: float = 10,
+        template_window_size: int = 7,
+        search_window_size: int = 21,
+    ) -> np.ndarray:
+        return cv2.fastNlMeansDenoisingColored(img, None, h, h_color, template_window_size, search_window_size)
 
 
 class EdgeDetector:
@@ -264,8 +332,13 @@ class CLIPClassifier:
         try:
             import clip
             import torch
+
+            from app.modules.cv_pipeline.embeddings import DEFAULT_DOWNLOAD_ROOT
+
             device = "cuda" if torch.cuda.is_available() else "cpu"
-            self.model, self.preprocess_fn = clip.load("ViT-B/32", device=device)
+            # Shares the cache dir with ComponentEmbedder (embeddings.py) so
+            # the ~338MB ViT-B/32 weights are only ever downloaded once.
+            self.model, self.preprocess_fn = clip.load("ViT-B/32", device=device, download_root=str(DEFAULT_DOWNLOAD_ROOT))
             self.device = device
             logger.info("CLIP model loaded successfully")
         except Exception as e:
@@ -320,21 +393,26 @@ class CVPipeline:
         # Stage 1: Preprocess
         img = self.preprocessor.preprocess(image_path)
 
-        # Stage 2: Edge detection
+        # Stage 2: Edge detection (diagnostic signal; Stage 8 computes its
+        # own Canny internally via geometry_relations.detect_lines, tuned
+        # specifically for line/connector detection rather than this
+        # stage's general-purpose edge map)
         edges = self.edge_detector.canny(img)
+        edge_pixel_count = int((edges > 0).sum())
 
         # Stage 3: Component detection
         raw_detections = self.component_detector.detect(img)
 
         # Stage 6: CLIP classification on each detected region
         components = []
-        for det in raw_detections:
+        for i, det in enumerate(raw_detections):
             x1, y1, x2, y2 = [int(v) for v in det["bbox"]]
             region = img[y1:y2, x1:x2]
             clip_scores = self.clip_classifier.classify(region)
-            comp_type = max(clip_scores, key=clip_scores.get)
+            comp_type = select_component_type(clip_scores)
 
             components.append({
+                "id": str(i),
                 "name": det.get("class_name", "unknown"),
                 "type": comp_type,
                 "bbox": {"x1": x1, "y1": y1, "x2": x2, "y2": y2},
@@ -342,14 +420,15 @@ class CVPipeline:
                 "clip_scores": clip_scores,
             })
 
-        # Stage 8: Relationship extraction (geometry-based placeholder)
-        relationships = self._extract_relationships(components, edges)
+        # Stage 8: Geometry-based relationship extraction (Sprint 5)
+        relationships = self._extract_relationships(components, img)
 
         result = {
             "graph_type": "intended",
             "source": image_path,
             "components": components,
             "relationships": relationships,
+            "edge_pixel_count": edge_pixel_count,
         }
         logger.info(
             f"CV pipeline complete: {len(components)} components, "
@@ -360,11 +439,25 @@ class CVPipeline:
     def _extract_relationships(
         self,
         components: List[Dict],
-        edges: np.ndarray,
+        img: np.ndarray,
     ) -> List[Dict[str, Any]]:
         """
-        Placeholder: geometry-based relationship extraction.
-        Full implementation in Sprint 5.
+        Stage 8: geometry-based relationship extraction (Sprint 5).
+
+        Wires in the real Hough-line extractor from geometry_relations.py -
+        the project's strongest CV baseline (F1=0.581 on the full dataset,
+        see docs/sprint5_vit_geometry_report.md) - rather than a placeholder.
         """
-        # TODO: use Hough lines + component proximity + VLM to extract arrows
-        return []
+        if not components:
+            return []
+
+        from app.modules.cv_pipeline.geometry_relations import detect_lines, propose_relations
+        from app.schemas.models import ArchComponent, BoundingBox
+
+        arch_components = [
+            ArchComponent(id=c["id"], name=c["name"], type=c["type"], bbox=BoundingBox(**c["bbox"]), confidence=c["confidence"])
+            for c in components
+        ]
+        lines = detect_lines(img)
+        candidates = propose_relations(lines, arch_components)
+        return [c.to_dict() for c in candidates]

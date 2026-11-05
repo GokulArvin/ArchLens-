@@ -1,6 +1,5 @@
-version: '3.9'
-
 services:
+  # ─── Full application stack (team baseline, from main) ─────────────────────
   backend:
     build:
       context: ./backend
@@ -35,6 +34,36 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+  # ─── P1 CV pipeline exploration environment (this branch) ──────────────────
+  jupyter:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.cv-pipeline
+    ports:
+      - "8888:8888"
+    working_dir: /workspace
+    volumes:
+      - ./backend:/workspace/backend
+      - ./data:/workspace/data
+      - ./docs:/workspace/docs
+      - ./experiments:/workspace/experiments
+      - ./notebooks:/workspace/notebooks
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.cv-pipeline
+    working_dir: /workspace/backend
+    volumes:
+      - ./backend:/workspace/backend
+      - ./data:/workspace/data
+      - ./docs:/workspace/docs
+      - ./experiments:/workspace/experiments
+      - ./notebooks:/workspace/notebooks
+    command: ["python", "scripts/run_full_pipeline.py"]
+    profiles:
+      - pipeline
 
 volumes:
   pgdata:

@@ -1,0 +1,252 @@
+[
+  {
+    "diagram_id": "gcp_microservices_demo",
+    "raw_path": "data\\diagrams\\raw\\gcp_microservices_demo.png",
+    "processed_path": "data\\diagrams\\processed\\gcp_microservices_demo.png",
+    "original": {
+      "width": 1376,
+      "height": 768,
+      "channels": 3,
+      "aspect_ratio": 1.7917,
+      "mean_brightness": 239.93,
+      "blur_score": 703.64,
+      "file_size_bytes": 1072986,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 1376,
+      "height": 768,
+      "channels": 3,
+      "aspect_ratio": 1.7917,
+      "mean_brightness": 228.54,
+      "blur_score": 1083.53,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "gcp_bank_of_anthos",
+    "raw_path": "data\\diagrams\\raw\\gcp_bank_of_anthos.png",
+    "processed_path": "data\\diagrams\\processed\\gcp_bank_of_anthos.png",
+    "original": {
+      "width": 1376,
+      "height": 768,
+      "channels": 3,
+      "aspect_ratio": 1.7917,
+      "mean_brightness": 241.88,
+      "blur_score": 534.56,
+      "file_size_bytes": 1043452,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 1376,
+      "height": 768,
+      "channels": 3,
+      "aspect_ratio": 1.7917,
+      "mean_brightness": 231.79,
+      "blur_score": 666.52,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "dotnet_eshop",
+    "raw_path": "data\\diagrams\\raw\\dotnet_eshop.png",
+    "processed_path": "data\\diagrams\\processed\\dotnet_eshop.png",
+    "original": {
+      "width": 2940,
+      "height": 1648,
+      "channels": 3,
+      "aspect_ratio": 1.784,
+      "mean_brightness": 39.62,
+      "blur_score": 842.28,
+      "file_size_bytes": 492924,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 1919,
+      "height": 1076,
+      "channels": 3,
+      "aspect_ratio": 1.7835,
+      "mean_brightness": 44.6,
+      "blur_score": 1112.19,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "spring_petclinic_microservices",
+    "raw_path": "data\\diagrams\\raw\\spring_petclinic_microservices.jpg",
+    "processed_path": "data\\diagrams\\processed\\spring_petclinic_microservices.png",
+    "original": {
+      "width": 1600,
+      "height": 1000,
+      "channels": 3,
+      "aspect_ratio": 1.6,
+      "mean_brightness": 227.61,
+      "blur_score": 532.78,
+      "file_size_bytes": 261966,
+      "file_format": "JPG"
+    },
+    "processed": {
+      "width": 1600,
+      "height": 1000,
+      "channels": 3,
+      "aspect_ratio": 1.6,
+      "mean_brightness": 223.01,
+      "blur_score": 622.28,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "flask_microservice_demo",
+    "raw_path": "data\\diagrams\\raw\\flask_microservice_demo.png",
+    "processed_path": "data\\diagrams\\processed\\flask_microservice_demo.png",
+    "original": {
+      "width": 1056,
+      "height": 816,
+      "channels": 3,
+      "aspect_ratio": 1.2941,
+      "mean_brightness": 212.73,
+      "blur_score": 1558.99,
+      "file_size_bytes": 161688,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 1056,
+      "height": 816,
+      "channels": 3,
+      "aspect_ratio": 1.2941,
+      "mean_brightness": 215.8,
+      "blur_score": 1576.67,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "sock_shop",
+    "raw_path": "data\\diagrams\\raw\\sock_shop.png",
+    "processed_path": "data\\diagrams\\processed\\sock_shop.png",
+    "original": {
+      "width": 1668,
+      "height": 1192,
+      "channels": 3,
+      "aspect_ratio": 1.3993,
+      "mean_brightness": 250.85,
+      "blur_score": 480.18,
+      "file_size_bytes": 258735,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 1668,
+      "height": 1192,
+      "channels": 3,
+      "aspect_ratio": 1.3993,
+      "mean_brightness": 250.63,
+      "blur_score": 494.46,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "aws_retail_store_sample_app",
+    "raw_path": "data\\diagrams\\raw\\aws_retail_store_sample_app.png",
+    "processed_path": "data\\diagrams\\processed\\aws_retail_store_sample_app.png",
+    "original": {
+      "width": 524,
+      "height": 543,
+      "channels": 3,
+      "aspect_ratio": 0.965,
+      "mean_brightness": 25.05,
+      "blur_score": 2445.84,
+      "file_size_bytes": 39349,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 524,
+      "height": 543,
+      "channels": 3,
+      "aspect_ratio": 0.965,
+      "mean_brightness": 27.62,
+      "blur_score": 2458.23,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "azure_aks_store_demo",
+    "raw_path": "data\\diagrams\\raw\\azure_aks_store_demo.png",
+    "processed_path": "data\\diagrams\\processed\\azure_aks_store_demo.png",
+    "original": {
+      "width": 3128,
+      "height": 1777,
+      "channels": 3,
+      "aspect_ratio": 1.7603,
+      "mean_brightness": 250.74,
+      "blur_score": 574.06,
+      "file_size_bytes": 226791,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 1920,
+      "height": 1090,
+      "channels": 3,
+      "aspect_ratio": 1.7615,
+      "mean_brightness": 250.7,
+      "blur_score": 953.1,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "roman_bilyak_microservice_architecture",
+    "raw_path": "data\\diagrams\\raw\\roman_bilyak_microservice_architecture.png",
+    "processed_path": "data\\diagrams\\processed\\roman_bilyak_microservice_architecture.png",
+    "original": {
+      "width": 1072,
+      "height": 684,
+      "channels": 3,
+      "aspect_ratio": 1.5673,
+      "mean_brightness": 235.06,
+      "blur_score": 3904.71,
+      "file_size_bytes": 270615,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 1072,
+      "height": 684,
+      "channels": 3,
+      "aspect_ratio": 1.5673,
+      "mean_brightness": 234.32,
+      "blur_score": 4042.08,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  },
+  {
+    "diagram_id": "istio_bookinfo_derived",
+    "raw_path": "data\\diagrams\\raw\\istio_bookinfo_derived.png",
+    "processed_path": "data\\diagrams\\processed\\istio_bookinfo_derived.png",
+    "original": {
+      "width": 900,
+      "height": 500,
+      "channels": 3,
+      "aspect_ratio": 1.8,
+      "mean_brightness": 245.6,
+      "blur_score": 1847.77,
+      "file_size_bytes": 14551,
+      "file_format": "PNG"
+    },
+    "processed": {
+      "width": 900,
+      "height": 500,
+      "channels": 3,
+      "aspect_ratio": 1.8,
+      "mean_brightness": 245.71,
+      "blur_score": 1811.31,
+      "file_size_bytes": null,
+      "file_format": null
+    }
+  }
+]

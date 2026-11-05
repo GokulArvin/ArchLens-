@@ -1,0 +1,136 @@
+{
+  "model": "yolov8n.pt (COCO-pretrained)",
+  "confidence_threshold": 0.25,
+  "results": [
+    {
+      "diagram_id": "gcp_microservices_demo",
+      "image_shape": [
+        768,
+        1376,
+        3
+      ],
+      "ground_truth_component_count": 12,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "gcp_bank_of_anthos",
+      "image_shape": [
+        768,
+        1376,
+        3
+      ],
+      "ground_truth_component_count": 9,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "dotnet_eshop",
+      "image_shape": [
+        1076,
+        1919,
+        3
+      ],
+      "ground_truth_component_count": 11,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "spring_petclinic_microservices",
+      "image_shape": [
+        1000,
+        1600,
+        3
+      ],
+      "ground_truth_component_count": 14,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "flask_microservice_demo",
+      "image_shape": [
+        816,
+        1056,
+        3
+      ],
+      "ground_truth_component_count": 4,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "sock_shop",
+      "image_shape": [
+        1192,
+        1668,
+        3
+      ],
+      "ground_truth_component_count": 10,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "aws_retail_store_sample_app",
+      "image_shape": [
+        543,
+        524,
+        3
+      ],
+      "ground_truth_component_count": 10,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "azure_aks_store_demo",
+      "image_shape": [
+        1090,
+        1920,
+        3
+      ],
+      "ground_truth_component_count": 9,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "roman_bilyak_microservice_architecture",
+      "image_shape": [
+        684,
+        1072,
+        3
+      ],
+      "ground_truth_component_count": 12,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    },
+    {
+      "diagram_id": "istio_bookinfo_derived",
+      "image_shape": [
+        500,
+        900,
+        3
+      ],
+      "ground_truth_component_count": 4,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
+    }
+  ]
+}
