@@ -499,16 +499,22 @@ class DependencyGraphBuilder:
         """Convert a repository-relative Python path to a module name."""
 
         try:
-
             relative_path = (
                 Path(file_path)
                 .resolve()
                 .relative_to(repo_root)
             )
 
-            parts = list(
-                relative_path.with_suffix("").parts
-            )
+            parts = list(relative_path.with_suffix("").parts)
+
+            # Treat backend/ as the Python source root when
+            # the repository uses the backend/app structure.
+            if (
+            len(parts) > 1
+            and parts[0] == "backend"
+            and (repo_root / "backend" / "app").is_dir()
+            ):
+                parts = parts[1:]
 
             # package/__init__.py represents the package itself.
             if parts and parts[-1] == "__init__":
@@ -517,13 +523,12 @@ class DependencyGraphBuilder:
             return ".".join(parts)
 
         except ValueError:
-
             logger.warning(
                 "File is outside repository root: %s",
                 file_path,
             )
+        return ""
 
-            return ""
 
     def _map_component_type(self, layer: str) -> str:
         """

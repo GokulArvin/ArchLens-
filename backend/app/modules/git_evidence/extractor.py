@@ -1,168 +1,514 @@
-"""
-Git Evidence Extraction
-Determines which commits introduced architecture violations.
-Uses GitPython for programmatic git access.
-"""
+
+from pathlib import Path
+from typing import Any, Optional
 
 from git import Repo, GitCommandError
-from pathlib import Path
-from typing import List, Dict, Any, Optional
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class GitEvidenceExtractor:
     """
-    Extracts git evidence for architecture violations.
-    Uses git log, blame, and diff to identify introducing commits.
+    Collects traceable Git and source-code evidence for an
+    architecture conformance violation.
     """
 
     def __init__(self, repo_path: str):
-        try:
-            self.repo = Repo(repo_path)
-            self.repo_path = Path(repo_path)
-            logger.info(f"Git repo initialized: {repo_path}")
-        except Exception as e:
-            logger.error(f"Failed to initialize git repo at {repo_path}: {e}")
-            self.repo = None
+        self.repo_path = Path(repo_path).resolve()
+        self.repo: Optional[Repo] = None
 
-    def get_blame(self, file_path: str, line_numbers: Optional[List[int]] = None) -> List[Dict]:
-        """Run git blame on a file to identify introducing commits per line."""
-        if not self.repo:
+        try:
+            self.repo = Repo(self.repo_path, search_parent_directories=True)
+            self.repo_path = Path(self.repo.working_tree_dir).resolve()
+        except Exception as exc:
+            print(f"Git repository initialization failed: {exc}")
+
+    # ---------------------------------------------------------
+    # PATH VALIDATION
+    # ---------------------------------------------------------
+
+    def _resolve_file_path(self, file_path: str) -> Optional[str]:
+        """
+        Resolve a file path relative to the repository root.
+        Reject paths outside the repository.
+        """
+
+        if not file_path:
+            return None
+
+        try:
+            supplied_path = Path(file_path)
+
+            if supplied_path.is_absolute():
+                resolved_path = supplied_path.resolve()
+            else:
+                resolved_path = (self.repo_path / supplied_path).resolve()
+
+            resolved_path.relative_to(self.repo_path)
+
+            if not resolved_path.is_file():
+                return None
+
+            return resolved_path.relative_to(self.repo_path).as_posix()
+
+        except (ValueError, OSError):
+            return None
+
+    # ---------------------------------------------------------
+    # EVIDENCE CREATION
+    # ---------------------------------------------------------
+
+    @staticmethod
+    def _make_evidence(
+        evidence_id: str,
+        evidence_type: str,
+        description: str,
+        content: Any,
+        source: Optional[str] = None
+    ) -> dict:
+
+        return {
+            "evidence_id": evidence_id,
+            "type": evidence_type,
+            "description": description,
+            "source": source,
+            "content": content
+        }
+
+    # ---------------------------------------------------------
+    # GIT BLAME
+    # ---------------------------------------------------------
+
+    def get_blame(
+        self,
+        file_path: str,
+        line_numbers: Optional[list[int]] = None
+    ) -> list[dict]:
+
+        if self.repo is None:
+            return []
+
+        relative_path = self._resolve_file_path(file_path)
+
+        if not relative_path:
             return []
 
         try:
-            blame = self.repo.blame("HEAD", file_path)
+            blame_data = self.repo.blame("HEAD", relative_path)
             results = []
-            for commit, lines in blame:
-                results.append({
-                    "commit_hash": commit.hexsha,
-                    "commit_message": commit.message.strip(),
-                    "author": str(commit.author),
-                    "date": commit.committed_datetime.isoformat(),
-                    "lines": [l.decode("utf-8", errors="ignore") if isinstance(l, bytes) else l
-                              for l in lines],
-                })
+
+            for commit, lines in blame_data:
+                for line in lines:
+                    if isinstance(line, bytes):
+                        line = line.decode("utf-8", errors="replace")
+
+                    results.append({
+                        "commit_hash": commit.hexsha,
+                        "author": str(commit.author),
+                        "date": commit.committed_datetime.isoformat(),
+                        "message": commit.message.strip(),
+                        "line": line.strip()
+                    })
+
+            if line_numbers is not None:
+                selected_lines = set(line_numbers)
+                results = [
+                    item
+                    for index, item in enumerate(results, start=1)
+                    if index in selected_lines
+                ]
+
             return results
-        except Exception as e:
-            logger.warning(f"git blame failed for {file_path}: {e}")
+
+        except Exception as exc:
+            print(f"Git blame failed: {exc}")
             return []
+
+    # ---------------------------------------------------------
+    # FILE COMMIT HISTORY
+    # ---------------------------------------------------------
 
     def get_commits_for_file(
-        self, file_path: str, max_commits: int = 50
-    ) -> List[Dict]:
-        """Get commit history for a specific file."""
-        if not self.repo:
+        self,
+        file_path: str,
+        max_commits: int = 10
+    ) -> list[dict]:
+
+        if self.repo is None:
+            return []
+
+        relative_path = self._resolve_file_path(file_path)
+
+        if not relative_path:
             return []
 
         try:
-            commits = list(self.repo.iter_commits(paths=file_path, max_count=max_commits))
+            commits = self.repo.iter_commits(
+                paths=relative_path,
+                max_count=max_commits
+            )
+
             return [
                 {
-                    "hash": c.hexsha,
-                    "short_hash": c.hexsha[:8],
-                    "message": c.message.strip(),
-                    "author": str(c.author),
-                    "date": c.committed_datetime.isoformat(),
+                    "commit_hash": commit.hexsha,
+                    "message": commit.message.strip(),
+                    "author": str(commit.author),
+                    "date": commit.committed_datetime.isoformat()
                 }
-                for c in commits
+                for commit in commits
             ]
-        except Exception as e:
-            logger.warning(f"git log failed for {file_path}: {e}")
+
+        except Exception as exc:
+            print(f"Commit history retrieval failed: {exc}")
             return []
 
-    def get_diff(self, commit_hash: str, file_path: Optional[str] = None) -> str:
-        """Get the diff for a specific commit."""
-        if not self.repo:
+    # ---------------------------------------------------------
+    # COMMIT DIFF
+    # ---------------------------------------------------------
+
+    def get_diff(
+        self,
+        commit_hash: str,
+        file_path: str
+    ) -> str:
+
+        if self.repo is None:
+            return ""
+
+        relative_path = self._resolve_file_path(file_path)
+
+        if not relative_path:
             return ""
 
         try:
             commit = self.repo.commit(commit_hash)
+
             if commit.parents:
                 parent = commit.parents[0]
-                diffs = parent.diff(commit, paths=file_path)
-                result = []
-                for diff in diffs:
-                    result.append(f"--- {diff.a_path}\n+++ {diff.b_path}\n")
-                    if diff.diff:
-                        result.append(
-                            diff.diff.decode("utf-8", errors="ignore")
-                        )
-                return "\n".join(result)
+                diff_index = parent.diff(
+                    commit,
+                    paths=relative_path,
+                    create_patch=True
+                )
+            else:
+                diff_index = commit.diff(
+                    None,
+                    paths=relative_path,
+                    create_patch=True
+                )
+
+            diff_text = []
+
+            for diff_item in diff_index:
+                patch = diff_item.diff
+
+                if isinstance(patch, bytes):
+                    patch = patch.decode("utf-8", errors="replace")
+
+                diff_text.append(patch)
+
+            return "\n".join(diff_text)
+
+        except Exception as exc:
+            print(f"Git diff retrieval failed: {exc}")
             return ""
-        except Exception as e:
-            logger.warning(f"git diff failed for commit {commit_hash}: {e}")
-            return ""
+
+    # ---------------------------------------------------------
+    # INTRODUCING COMMIT SEARCH
+    # ---------------------------------------------------------
 
     def find_introducing_commit(
         self,
-        source_file: str,
+        file_path: str,
         target_import: str,
-        max_commits: int = 100,
-    ) -> Optional[Dict]:
+        max_commits: int = 100
+    ) -> Optional[dict]:
+
         """
-        Find the commit that introduced a specific import/dependency.
-        Uses git log -S (pickaxe) to find the introducing commit.
+        Uses git log -S to locate commits that changed the
+        occurrence count of the requested text.
+
+        This deliberately uses git log rather than
+        repo.iter_commits because -S is a git log option.
         """
-        if not self.repo:
+
+        if self.repo is None:
+            return None
+
+        relative_path = self._resolve_file_path(file_path)
+
+        if not relative_path or not target_import:
             return None
 
         try:
-            commits = list(
-                self.repo.iter_commits(
-                    paths=source_file,
-                    max_count=max_commits,
-                    S=target_import,
-                )
+            commit_hashes = self.repo.git.log(
+                f"-S{target_import}",
+                "--format=%H",
+                f"--max-count={max_commits}",
+                "--",
+                relative_path
             )
-            if commits:
-                c = commits[-1]  # oldest commit that added this string
-                return {
-                    "hash": c.hexsha,
-                    "short_hash": c.hexsha[:8],
-                    "message": c.message.strip(),
-                    "author": str(c.author),
-                    "date": c.committed_datetime.isoformat(),
-                    "diff": self.get_diff(c.hexsha, source_file),
-                }
-        except Exception as e:
-            logger.warning(f"git pickaxe failed: {e}")
 
-        return None
+            if not commit_hashes.strip():
+                return None
+
+            for commit_hash in commit_hashes.splitlines():
+                diff = self.get_diff(
+                    commit_hash.strip(),
+                    relative_path
+                )
+
+                if not diff:
+                    continue
+
+                # Look for the target text in added lines.
+                added_lines = [
+                    line[1:]
+                    for line in diff.splitlines()
+                    if line.startswith("+") and not line.startswith("+++")
+                ]
+
+                if any(target_import in line for line in added_lines):
+                    commit = self.repo.commit(commit_hash.strip())
+
+                    return {
+                        "commit_hash": commit.hexsha,
+                        "message": commit.message.strip(),
+                        "author": str(commit.author),
+                        "date": commit.committed_datetime.isoformat(),
+                        "diff": diff[:10000]
+                    }
+
+            return None
+
+        except GitCommandError as exc:
+            print(f"Introducing commit search failed: {exc}")
+            return None
+
+        except Exception as exc:
+            print(f"Introducing commit search failed: {exc}")
+            return None
+
+    # ---------------------------------------------------------
+    # SOURCE CODE CONTEXT
+    # ---------------------------------------------------------
+
+    def get_code_context(
+        self,
+        file_path: str,
+        target_symbol: Optional[str] = None,
+        context_lines: int = 5
+    ) -> dict:
+
+        relative_path = self._resolve_file_path(file_path)
+
+        if not relative_path:
+            return {
+                "file": file_path,
+                "found": False,
+                "content": "",
+                "line_numbers": []
+            }
+
+        absolute_path = self.repo_path / relative_path
+
+        try:
+            content = absolute_path.read_text(
+                encoding="utf-8",
+                errors="replace"
+            )
+
+            lines = content.splitlines()
+
+            if not target_symbol:
+                return {
+                    "file": relative_path,
+                    "found": True,
+                    "content": content[:12000],
+                    "line_numbers": list(
+                        range(1, min(len(lines), 200) + 1)
+                    )
+                }
+
+            matching_lines = [
+                index
+                for index, line in enumerate(lines)
+                if target_symbol in line
+            ]
+
+            if not matching_lines:
+                return {
+                    "file": relative_path,
+                    "found": False,
+                    "content": "",
+                    "line_numbers": []
+                }
+
+            selected_lines = set()
+
+            for index in matching_lines:
+                start = max(0, index - context_lines)
+                end = min(len(lines), index + context_lines + 1)
+
+                selected_lines.update(range(start, end))
+
+            ordered_lines = sorted(selected_lines)
+
+            context = "\n".join(
+                f"{index + 1}: {lines[index]}"
+                for index in ordered_lines
+            )
+
+            return {
+                "file": relative_path,
+                "found": True,
+                "content": context[:12000],
+                "line_numbers": [
+                    index + 1 for index in ordered_lines
+                ]
+            }
+
+        except Exception as exc:
+            print(f"Source context retrieval failed: {exc}")
+
+            return {
+                "file": relative_path,
+                "found": False,
+                "content": "",
+                "line_numbers": []
+            }
+
+    # ---------------------------------------------------------
+    # COMPLETE EVIDENCE PACKAGE
+    # ---------------------------------------------------------
 
     def build_evidence_package(
         self,
-        violation: Dict[str, Any],
+        violation: dict,
         source_file: str,
-        target_symbol: str,
-        architecture_rule: Optional[Dict] = None,
-    ) -> Dict[str, Any]:
-        """
-        Build the structured evidence package that will be sent to the LLM.
-        """
-        introducing_commit = self.find_introducing_commit(source_file, target_symbol)
-        file_commits = self.get_commits_for_file(source_file, max_commits=10)
+        target_symbol: Optional[str] = None,
+        line_numbers: Optional[list[int]] = None,
+        max_commits: int = 10
+    ) -> dict:
 
-        diff = ""
-        if introducing_commit:
-            diff = introducing_commit.get("diff", "")
+        evidence_items = []
+        evidence_counter = 1
 
-        evidence = {
-            "violation": violation,
-            "architecture_rule": architecture_rule or {},
-            "code": {
-                "file": source_file,
-                "target_symbol": target_symbol,
-            },
-            "dependency_path": [violation.get("source", ""), violation.get("target", "")],
-            "commit": introducing_commit,
-            "diff": diff[:2000] if diff else "",  # truncate for LLM context
-            "recent_commits": file_commits[:5],
-        }
+        def add_evidence(
+            evidence_type: str,
+            description: str,
+            content: Any,
+            source: Optional[str] = None
+        ):
+            nonlocal evidence_counter
 
-        logger.info(
-            f"Evidence package built for violation: "
-            f"{violation.get('source')} → {violation.get('target')}"
+            evidence_id = f"E{evidence_counter:03d}"
+            evidence_counter += 1
+
+            evidence_items.append(
+                self._make_evidence(
+                    evidence_id,
+                    evidence_type,
+                    description,
+                    content,
+                    source
+                )
+            )
+
+        # 1. Conformance finding
+        add_evidence(
+            "conformance_finding",
+            "Architecture conformance violation identified by the engine",
+            violation
         )
-        return evidence
+
+        # 2. Source-code context
+        code_context = self.get_code_context(
+            source_file,
+            target_symbol
+        )
+
+        if code_context["found"]:
+            add_evidence(
+                "source_code",
+                "Source code context related to the violation",
+                code_context,
+                code_context["file"]
+            )
+
+        # 3. Git blame
+        blame_data = self.get_blame(
+            source_file,
+            line_numbers
+        )
+
+        if blame_data:
+            add_evidence(
+                "git_blame",
+                "Git blame information for the source file",
+                blame_data,
+                source_file
+            )
+
+        # 4. Introducing commit
+        introducing_commit = None
+
+        if target_symbol:
+            introducing_commit = self.find_introducing_commit(
+                source_file,
+                target_symbol
+            )
+
+        if introducing_commit:
+            add_evidence(
+                "introducing_commit",
+                "Candidate commit that introduced the target symbol",
+                introducing_commit,
+                source_file
+            )
+
+        # 5. Recent file history
+        commit_history = self.get_commits_for_file(
+            source_file,
+            max_commits=max_commits
+        )
+
+        if commit_history:
+            add_evidence(
+                "git_history",
+                "Recent Git commit history for the source file",
+                commit_history,
+                source_file
+            )
+
+        # 6. Dependency path
+        dependency_path = [
+            violation.get("source", ""),
+            violation.get("target", "")
+        ]
+
+        dependency_path = [
+            item for item in dependency_path if item
+        ]
+
+        return {
+            "violation": violation,
+            "architecture_rule": violation.get(
+                "rule",
+                violation.get("violation_type", "")
+            ),
+            "code_context": code_context,
+            "dependency_path": dependency_path,
+            "commit": introducing_commit,
+            "diff": (
+                introducing_commit.get("diff", "")[:10000]
+                if introducing_commit else ""
+            ),
+            "recent_commits": commit_history,
+            "evidence_items": evidence_items,
+            "evidence_metadata": {
+                "total_items": len(evidence_items),
+                "git_available": self.repo is not None,
+                "repository_path": str(self.repo_path),
+                "source_file": source_file,
+                "target_symbol": target_symbol
+            }
+        }
