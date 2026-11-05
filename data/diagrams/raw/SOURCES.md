@@ -52,21 +52,21 @@ from the real repository that owns it.
 - license: Apache-2.0
 - description: Sock Shop (Weaveworks) - polyglot microservices demo; diagram hosted in the project's companion docs-site repo, describes the app repo's architecture.
 
-## spring_cloud_brewery_overview.png
-- diagram_id: `spring_cloud_brewery_overview`
-- source: https://raw.githubusercontent.com/spring-cloud-samples/brewery/main/img/Brewery.png
-- repository: https://github.com/spring-cloud-samples/brewery
-- commit: `1bfe678944978dd28d620a177222b5faaa0bd278`
-- license: Apache-2.0
-- description: Spring Cloud Brewery sample - gateway -> brewing/ingredients/presenting/reporting services + Eureka + config-server. High-level overview diagram.
+## aws_retail_store_sample_app.png
+- diagram_id: `aws_retail_store_sample_app`
+- source: https://raw.githubusercontent.com/aws-containers/retail-store-sample-app/main/docs/images/architecture.png
+- repository: https://github.com/aws-containers/retail-store-sample-app
+- commit: `d7a380b843e0759e58754f74188ea18252a51415`
+- license: MIT-0
+- description: AWS retail-store-sample-app - UI service calling Orders/Checkout/Cart/Catalog microservices, each with its own persistence (PostgreSQL/Redis/DynamoDB/MySQL) plus an SQS/RabbitMQ queue.
 
-## spring_cloud_brewery_dependency_graph.png
-- diagram_id: `spring_cloud_brewery_dependency_graph`
-- source: https://raw.githubusercontent.com/spring-cloud-samples/brewery/main/img/Dependency_graph.png
-- repository: https://github.com/spring-cloud-samples/brewery
-- commit: `1bfe678944978dd28d620a177222b5faaa0bd278`
-- license: Apache-2.0
-- description: Same Brewery repo as above, but the project's own generated service-dependency-graph diagram (a distinct view of the same real system).
+## azure_aks_store_demo.png
+- diagram_id: `azure_aks_store_demo`
+- source: https://raw.githubusercontent.com/Azure-Samples/aks-store-demo/main/assets/demo-arch.png
+- repository: https://github.com/Azure-Samples/aks-store-demo
+- commit: `1d61b202d1e6dc9a78389c15e4bb9d529e5499d3`
+- license: MIT
+- description: Azure Kubernetes Store demo - polyglot microservices (Vue store-front/store-admin, Node order-service, Rust product-service, Go makeline-service) around a RabbitMQ order queue and MongoDB order database.
 
 ## roman_bilyak_microservice_architecture.png
 - diagram_id: `roman_bilyak_microservice_architecture`

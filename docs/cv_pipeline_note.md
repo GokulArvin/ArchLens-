@@ -65,7 +65,7 @@ placeholder even after Sprint 5 built the real implementation separately).
    on all-zero scores.
 6. **Relationship extraction** (`CVPipeline._extract_relationships`) - wired
    to the real Sprint 5 geometry extractor (`geometry_relations.py`, the
-   project's strongest CV baseline, F1=0.581) as of this audit pass. Returns
+   project's strongest CV baseline, F1=0.591) as of this audit pass. Returns
    `[]` only when there are zero detected components to relate (there is
    nothing to wire into when detection finds nothing, which - per Stage 3 -
    is most diagrams in this dataset).

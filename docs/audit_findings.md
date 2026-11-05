@@ -1,5 +1,25 @@
 # Final Audit: Logic Issues, Dead Code, Errors (Post-Sprint-10)
 
+> **Third pass (post-dataset-correction, post-Docker containerization)**:
+> `backend/scripts/derive_bookinfo_diagram.py` loaded `ImageFont.truetype("arial.ttf", 18)`
+> with a bare `except OSError: font = ImageFont.load_default()` fallback.
+> `arial.ttf` resolves on Windows but not inside the Linux Docker container
+> built for this project, so the container silently rendered the
+> `istio_bookinfo_derived` diagram with PIL's tiny bitmap default font
+> instead - a visibly different image that produced different
+> Canny/contour-based segmentation proposal counts (15 proposals locally vs.
+> 7 in the container) and a few OCR mismatches (79/95 vs. 77/95), discovered
+> by actually running the full pipeline inside the built Docker image and
+> diffing the results against the local run, not assumed. Fixed by pointing
+> at a fixed, bundled TrueType font instead of an OS-provided one:
+> `matplotlib.get_data_path()/fonts/ttf/DejaVuSans.ttf` (matplotlib is
+> already a pinned dependency, so this needs no new font file or license in
+> the repo). Verified: the regenerated diagram now produces byte-identical
+> re-renders across repeated local runs, and every downstream baseline
+> (segmentation, embeddings/OCR, geometry relations) now produces
+> value-identical results whether run on the Windows host or inside the
+> Linux container - confirmed by actually re-running both and diffing.
+>
 > Two passes: an initial targeted review (below), then a full line-by-line
 > re-read of every module in `backend/app/modules/cv_pipeline/` and every
 > script in `backend/scripts/` specifically hunting for hardcoded values,
@@ -56,7 +76,7 @@ code), then manual review of integration points between modules.
    always returned `[]`**, despite its own docstring saying "Full
    implementation in Sprint 5" - and Sprint 5 *did* build a real, tested,
    working geometry-based relation extractor (`geometry_relations.py`,
-   the project's strongest CV baseline at F1=0.581). It was simply never
+   the project's strongest CV baseline at F1=0.591). It was simply never
    wired into the orchestrator class. Fixed: `_extract_relationships` now
    calls the real `detect_lines`/`propose_relations` functions. Verified
    end-to-end against a real diagram with real YOLO detections (no crash,

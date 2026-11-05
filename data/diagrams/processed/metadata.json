@@ -150,51 +150,51 @@
     }
   },
   {
-    "diagram_id": "spring_cloud_brewery_overview",
-    "raw_path": "data\\diagrams\\raw\\spring_cloud_brewery_overview.png",
-    "processed_path": "data\\diagrams\\processed\\spring_cloud_brewery_overview.png",
+    "diagram_id": "aws_retail_store_sample_app",
+    "raw_path": "data\\diagrams\\raw\\aws_retail_store_sample_app.png",
+    "processed_path": "data\\diagrams\\processed\\aws_retail_store_sample_app.png",
     "original": {
-      "width": 1462,
-      "height": 966,
+      "width": 524,
+      "height": 543,
       "channels": 3,
-      "aspect_ratio": 1.5135,
-      "mean_brightness": 69.62,
-      "blur_score": 1041.58,
-      "file_size_bytes": 311891,
+      "aspect_ratio": 0.965,
+      "mean_brightness": 25.05,
+      "blur_score": 2445.84,
+      "file_size_bytes": 39349,
       "file_format": "PNG"
     },
     "processed": {
-      "width": 1462,
-      "height": 966,
+      "width": 524,
+      "height": 543,
       "channels": 3,
-      "aspect_ratio": 1.5135,
-      "mean_brightness": 72.32,
-      "blur_score": 1015.53,
+      "aspect_ratio": 0.965,
+      "mean_brightness": 27.62,
+      "blur_score": 2458.23,
       "file_size_bytes": null,
       "file_format": null
     }
   },
   {
-    "diagram_id": "spring_cloud_brewery_dependency_graph",
-    "raw_path": "data\\diagrams\\raw\\spring_cloud_brewery_dependency_graph.png",
-    "processed_path": "data\\diagrams\\processed\\spring_cloud_brewery_dependency_graph.png",
+    "diagram_id": "azure_aks_store_demo",
+    "raw_path": "data\\diagrams\\raw\\azure_aks_store_demo.png",
+    "processed_path": "data\\diagrams\\processed\\azure_aks_store_demo.png",
     "original": {
-      "width": 924,
-      "height": 154,
+      "width": 3128,
+      "height": 1777,
       "channels": 3,
-      "aspect_ratio": 6.0,
-      "mean_brightness": 249.76,
-      "blur_score": 2156.79,
-      "file_size_bytes": 11687,
+      "aspect_ratio": 1.7603,
+      "mean_brightness": 250.74,
+      "blur_score": 574.06,
+      "file_size_bytes": 226791,
       "file_format": "PNG"
     },
     "processed": {
-      "width": 924,
-      "height": 154,
+      "width": 1920,
+      "height": 1090,
       "channels": 3,
-      "aspect_ratio": 6.0,
-      "mean_brightness": 249.69,
-      "blur_score": 2154.95,
+      "aspect_ratio": 1.7615,
+      "mean_brightness": 250.7,
+      "blur_score": 953.1,
       "file_size_bytes": null,
       "file_format": null
     }
@@ -233,9 +233,9 @@
       "height": 500,
       "channels": 3,
       "aspect_ratio": 1.8,
-      "mean_brightness": 245.79,
-      "blur_score": 1864.7,
-      "file_size_bytes": 14654,
+      "mean_brightness": 245.6,
+      "blur_score": 1847.77,
+      "file_size_bytes": 14551,
       "file_format": "PNG"
     },
     "processed": {
@@ -243,8 +243,8 @@
       "height": 500,
       "channels": 3,
       "aspect_ratio": 1.8,
-      "mean_brightness": 245.94,
-      "blur_score": 1835.21,
+      "mean_brightness": 245.71,
+      "blur_score": 1811.31,
       "file_size_bytes": null,
       "file_format": null
     }

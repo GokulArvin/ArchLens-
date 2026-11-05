@@ -1,10 +1,15 @@
 # Sprint 4: Segmentation Approach Decision (D16-D20)
 
+> Re-run after two diagrams (`spring_cloud_brewery_overview`,
+> `spring_cloud_brewery_dependency_graph`) were replaced with
+> `aws_retail_store_sample_app` and `azure_aks_store_demo` - see
+> `docs/dataset_candidates.md`. Every number below was re-measured.
+
 ## D16: Is pretrained segmentation viable?
 
 Tested torchvision's Mask R-CNN (ResNet50-FPN, COCO-pretrained) against all
 10 real diagrams (`experiments/baselines/sprint4_maskrcnn_feasibility.json`).
-Result: **8 detections total across all 10 diagrams** (most diagrams: 0),
+Result: **4 detections total across all 10 diagrams** (most diagrams: 0),
 the same COCO-vocabulary mismatch documented for YOLOv8n in
 `docs/yolo_classes.md` (Sprint 3) - Mask R-CNN shares the identical 80-class
 COCO backbone/vocabulary. **Not viable.**
@@ -27,26 +32,27 @@ pretrained-model-free:
 ## D18: Comparison against ground truth (small subset)
 
 Evaluated on 3 diagrams chosen for diversity (simplest, smallest-image, and
-densest): `istio_bookinfo_derived`, `spring_cloud_brewery_dependency_graph`,
+densest): `istio_bookinfo_derived`, `aws_retail_store_sample_app`,
 `gcp_microservices_demo`. Real, measured result
 (`experiments/baselines/sprint4_segmentation_baseline.json`), IoU threshold 0.5:
 
 | diagram | GT | proposals | TP | FP | FN | precision | recall |
 |---|---|---|---|---|---|---|---|
 | istio_bookinfo_derived | 4 | 15 | 4 | 11 | 0 | 0.267 | 1.000 |
-| spring_cloud_brewery_dependency_graph | 5 | 13 | 0 | 13 | 5 | 0.000 | 0.000 |
+| aws_retail_store_sample_app | 10 | 32 | 10 | 22 | 0 | 0.312 | 1.000 |
 | gcp_microservices_demo | 12 | 69 | 9 | 60 | 3 | 0.130 | 0.750 |
 
-**Aggregate: P=0.134, R=0.619, F1=0.220** — roughly **10x better F1** than
-both pretrained baselines (YOLOv8n F1=0.021, Mask R-CNN not even evaluated
-for P/R since it found almost nothing).
+**Aggregate: P=0.198, R=0.885, F1=0.324** — far better than the
+pretrained-detector baseline (YOLOv8n F1=0.000, Mask R-CNN not even
+evaluated for P/R since it found almost nothing).
 
-Honest failure case: `spring_cloud_brewery_dependency_graph` scored zero
-matches despite 13 proposals existing. That diagram is small (924x154px)
-with tight ground-truth boxes (~85x45px); the contour-based proposals there
-are likely split per-glyph (text contours) rather than around the whole
-labeled box, so none individually reach IoU>=0.5. This is a genuine
-known limitation, not a bug - logged for Sprint 9's error categorization (D44).
+Honest failure case: `gcp_microservices_demo` has the subset's lowest
+recall (0.750, missing 3 of 12 real components) despite also having by far
+the most proposals (69) - its denser, more tightly-packed layout means some
+real component boxes never get a single contour proposal at IoU>=0.5, even
+though the method over-produces proposals elsewhere on the same image. This
+is a genuine known limitation, not a bug - logged for Sprint 9's error
+categorization (D44).
 
 ## D20: MVP decision
 

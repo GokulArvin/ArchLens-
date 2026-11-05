@@ -19,19 +19,25 @@ extraction in Sprint 5) know what to expect rather than being surprised.
    known annotation-convention gap (documented in `docs/annotation_guide.md`)
    that should be resolved with a firmer rule before Sprint 3 evaluation.
 
-3. **Stylized/illustrated icons instead of plain boxes**
-   (`spring_cloud_brewery_overview.png`). Components are drawn as 3D server
-   icons and literal beer-brewing illustrations (boxes, barrels, bottles)
-   rather than clean rectangles. This is a much harder detection case than
-   the clean box-and-arrow diagrams and is a good "hard example" for Sprint 3.
+3. **Stylized/illustrated icons instead of plain boxes (resolved by dataset
+   correction)**. The original Sprint 1 pick, `spring_cloud_brewery_overview.png`,
+   drew components as 3D server icons and literal beer-brewing illustrations
+   (boxes, barrels, bottles) rather than clean rectangles - confirmed in
+   Sprint 3 to be the actual cause of the YOLO/COCO baseline's only
+   coincidental "true positives" (the illustrated icons happened to resemble
+   real COCO objects). Dropped post-Sprint-10 and replaced with
+   `aws_retail_store_sample_app.png`/`azure_aks_store_demo.png`, both clean
+   boxes-and-arrows diagrams - see `docs/dataset_candidates.md`.
 
-4. **Numbered arrows with ambiguous semantics** (same Brewery diagram). Arrows
-   are numbered 1-12 corresponding to a request sequence, not simple static
-   dependencies; some numbers denote the same logical edge traversed twice
-   (e.g. request out, response back). We annotated the underlying structural
-   edges only, not the full numbered sequence - sequence-diagram-style
-   numbering is a known class of diagram the relationship extractor won't
-   handle without special-casing.
+4. **Curved (non-straight) connector lines** (`azure_aks_store_demo.png`).
+   Several edges - `store-front` fanning out to `order-service`/
+   `product-service`, and `order-service`/`makeline-service` both converging
+   on the shared `Order Queue` - are drawn as smooth bezier curves rather
+   than straight segments. Confirmed in Sprint 5 to defeat Hough-line-based
+   relation extraction (recall dropped to 0.111 on this diagram, the
+   dataset's worst): a curve only contributes short, fragmented Hough
+   segments that rarely land near the correct component boxes. A real,
+   non-straight-line failure mode the geometry baseline doesn't handle.
 
 5. **Diagram hosted outside the application's own repository**
    (`sock_shop.png` - image lives in a companion `.github.io` docs-site repo,

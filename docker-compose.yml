@@ -1,0 +1,29 @@
+services:
+  jupyter:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8888:8888"
+    working_dir: /workspace
+    volumes:
+      - ./backend:/workspace/backend
+      - ./data:/workspace/data
+      - ./docs:/workspace/docs
+      - ./experiments:/workspace/experiments
+      - ./notebooks:/workspace/notebooks
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    working_dir: /workspace/backend
+    volumes:
+      - ./backend:/workspace/backend
+      - ./data:/workspace/data
+      - ./docs:/workspace/docs
+      - ./experiments:/workspace/experiments
+      - ./notebooks:/workspace/notebooks
+    command: ["python", "scripts/run_full_pipeline.py"]
+    profiles:
+      - pipeline

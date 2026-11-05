@@ -74,8 +74,8 @@ tests for common input errors (`backend/tests/unit/test_preprocessing.py`, 10 te
 YOLOv8n/COCO via `ComponentDetector`); bounding-box outputs in common JSON
 (`experiments/baselines/sprint3_yolo_coco_baseline.json`); precision/recall/F1
 evaluation (`backend/app/modules/cv_pipeline/detection_eval.py` +
-`backend/scripts/evaluate_detection_baseline.py`, honest result: P=0.20,
-R=0.011, F1=0.021 - a COCO-pretrained detector finds almost nothing in
+`backend/scripts/evaluate_detection_baseline.py`, honest result: P=0.00,
+R=0.00, F1=0.000 - a COCO-pretrained detector finds nothing real in
 architecture diagrams, documented in `docs/sprint3_detection_baseline.md`
 and `docs/yolo_classes.md`, motivating Sprint 4/5's segmentation/CLIP work).
 
@@ -88,11 +88,12 @@ and `docs/yolo_classes.md`, motivating Sprint 4/5's segmentation/CLIP work).
 - [x] **D20**: Document which segmentation approach is retained for the MVP.
 
 **Deliverables**: Pretrained segmentation (Mask R-CNN) tested and found not
-viable (8 detections across 10 diagrams - same COCO-vocabulary mismatch as
+viable (4 detections across 10 diagrams - same COCO-vocabulary mismatch as
 Sprint 3); retained `RegionProposalSegmenter` (edge-assisted contour region
 proposals, `backend/app/modules/cv_pipeline/segmentation.py`) - real,
-measured F1=0.220 on a 3-diagram subset, ~10x better than the pretrained
-baselines; full decision record in `docs/sprint4_segmentation_baseline.md`.
+measured F1=0.324 on a 3-diagram subset, far better than the pretrained
+baselines (which scored F1=0.000); full decision record in
+`docs/sprint4_segmentation_baseline.md`.
 
 ## Sprint 5 — Days 21-25: VLM/ViT/CLIP Semantics & Relationship Extraction ✅ *done*
 
@@ -103,11 +104,11 @@ baselines; full decision record in `docs/sprint4_segmentation_baseline.md`.
 - [x] **D25**: Report component and relation failure categories.
 
 **Deliverables**: CLIP (ViT-B/32) embedding baseline (`backend/app/modules/cv_pipeline/embeddings.py`,
-real same-type vs different-type similarity check: 0.656 vs 0.644); OCR via
-easyocr (`backend/app/modules/cv_pipeline/ocr.py`, 64/89 real components
+real same-type vs different-type similarity check: 0.647 vs 0.612); OCR via
+easyocr (`backend/app/modules/cv_pipeline/ocr.py`, 79/95 real components
 correctly recovered); geometry-based relation extractor via Hough line
 detection (`backend/app/modules/cv_pipeline/geometry_relations.py`) scoring
-**P=0.732, R=0.482, F1=0.581** against real annotated edges - the strongest
+**P=0.731, R=0.496, F1=0.591** against real annotated edges - the strongest
 baseline in the project so far; full failure-category analysis in
 `docs/sprint5_vit_geometry_report.md`.
 
@@ -174,7 +175,7 @@ graph topology (13 tests total) correctly localizing blast radius from
 6/2/2, idempotent `backend/scripts/freeze_splits.py`); all 3 baselines
 re-evaluated on the held-out test split alone
 (`backend/scripts/evaluate_on_frozen_test_split.py`) - **geometry relations
-F1=0.667 confirmed as the strongest baseline on genuinely held-out data**;
+F1=0.800 confirmed as the strongest baseline on genuinely held-out data**;
 error taxonomy cross-referencing Sprints 3-5's per-diagram findings
 (`docs/sprint9_evaluation_report.md`); final comparison figure
 (`experiments/results/sprint9_baseline_comparison.png`).
@@ -217,6 +218,30 @@ and a direct `scipy` import never declared in `requirements.txt`. All
 fixed, all verified byte-identical/pixel-identical output where applicable.
 Full record: `docs/audit_findings.md`. 6 new regression tests added
 (89 total); full suite passes, lint clean.
+
+## Dataset correction and containerization (post-Sprint-10)
+
+Two diagrams (`spring_cloud_brewery_overview`, `spring_cloud_brewery_dependency_graph`)
+were found not to look like genuine software architecture diagrams
+(stylized beer-brewing illustration) and replaced with
+`aws_retail_store_sample_app` and `azure_aks_store_demo` - two real,
+actively-maintained, MIT/MIT-0-licensed microservices reference apps.
+Every downstream script, baseline, split, notebook, and doc was re-run and
+re-verified against the corrected 10-diagram dataset (`docs/dataset_candidates.md`).
+
+Containerized the whole P1 environment: `backend/Dockerfile` (CPU-only
+torch, matching `README.md`'s documented approach) + `docker-compose.yml`
+with two services - `jupyter` (interactive exploration) and `pipeline`
+(one-shot regeneration of every artifact via the new
+`backend/scripts/run_full_pipeline.py` orchestrator, 19 scripts in
+dependency order). Running the full pipeline inside the built container and
+diffing against the local run surfaced one real, previously-invisible bug:
+`derive_bookinfo_diagram.py` depended on `arial.ttf`, a Windows-only font,
+silently falling back to a different-looking rendering on Linux and
+breaking downstream reproducibility. Fixed by switching to a bundled
+cross-platform font (`matplotlib`'s packaged DejaVu Sans) - full details in
+`docs/audit_findings.md`. Re-verified byte-for-byte/value-for-value
+identical results on both Windows and inside the container afterward.
 
 ---
 

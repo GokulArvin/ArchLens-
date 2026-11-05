@@ -1,12 +1,12 @@
 {
   "iou_threshold": 0.5,
   "aggregate": {
-    "tp": 1,
-    "fp": 4,
-    "fn": 88,
-    "precision": 0.2,
-    "recall": 0.0112,
-    "f1": 0.0213
+    "tp": 0,
+    "fp": 0,
+    "fn": 95,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0
   },
   "per_diagram": [
     {
@@ -160,54 +160,51 @@
       "unmatched_predicted_indices": []
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "num_ground_truth": 8,
-      "num_predicted": 5,
-      "true_positives": 1,
-      "false_positives": 4,
-      "false_negatives": 7,
-      "precision": 0.2,
-      "recall": 0.125,
-      "f1": 0.1538,
-      "matched_pairs": [
-        {
-          "ground_truth_component_id": "maturing",
-          "predicted_index": 4
-        }
-      ],
-      "unmatched_ground_truth_ids": [
-        "presenting",
-        "proxy",
-        "ingredients",
-        "aggregating",
-        "bottling",
-        "rabbitmq",
-        "reporting"
-      ],
-      "unmatched_predicted_indices": [
-        0,
-        1,
-        2,
-        3
-      ]
-    },
-    {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
-      "num_ground_truth": 5,
+      "diagram_id": "aws_retail_store_sample_app",
+      "num_ground_truth": 10,
       "num_predicted": 0,
       "true_positives": 0,
       "false_positives": 0,
-      "false_negatives": 5,
+      "false_negatives": 10,
       "precision": 0.0,
       "recall": 0.0,
       "f1": 0.0,
       "matched_pairs": [],
       "unmatched_ground_truth_ids": [
-        "presenting",
-        "brewing",
-        "reporting",
-        "zuul",
-        "ingredients"
+        "ui",
+        "orders",
+        "checkout",
+        "cart",
+        "catalog",
+        "postgresql",
+        "redis",
+        "dynamodb",
+        "mysql_mariadb",
+        "sqs_rabbitmq"
+      ],
+      "unmatched_predicted_indices": []
+    },
+    {
+      "diagram_id": "azure_aks_store_demo",
+      "num_ground_truth": 9,
+      "num_predicted": 0,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 9,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "matched_pairs": [],
+      "unmatched_ground_truth_ids": [
+        "customers",
+        "employees",
+        "store_front",
+        "store_admin",
+        "order_service",
+        "product_service",
+        "makeline_service",
+        "order_queue",
+        "order_database"
       ],
       "unmatched_predicted_indices": []
     },
@@ -258,52 +255,7 @@
       "unmatched_predicted_indices": []
     }
   ],
-  "false_positive_examples": [
-    {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "bbox": [
-        768.7999877929688,
-        251.23095703125,
-        930.39208984375,
-        392.39306640625
-      ],
-      "confidence": 0.5388029217720032,
-      "raw_coco_class": "umbrella"
-    },
-    {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "bbox": [
-        938.4354858398438,
-        225.96524047851562,
-        987.1902465820312,
-        357.1840515136719
-      ],
-      "confidence": 0.4679534137248993,
-      "raw_coco_class": "bottle"
-    },
-    {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "bbox": [
-        726.5459594726562,
-        441.6690673828125,
-        833.9425659179688,
-        564.7088623046875
-      ],
-      "confidence": 0.4243355393409729,
-      "raw_coco_class": "cake"
-    },
-    {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "bbox": [
-        222.15643310546875,
-        747.570068359375,
-        273.0335693359375,
-        796.4456787109375
-      ],
-      "confidence": 0.2862607538700104,
-      "raw_coco_class": "sports ball"
-    }
-  ],
+  "false_positive_examples": [],
   "false_negative_examples": [
     {
       "diagram_id": "gcp_microservices_demo",
@@ -666,76 +618,118 @@
       "type": "service"
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "component_id": "presenting",
-      "name": "Presenting",
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "ui",
+      "name": "UI",
       "type": "frontend"
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "component_id": "proxy",
-      "name": "Proxy",
-      "type": "gateway"
-    },
-    {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "component_id": "ingredients",
-      "name": "Ingredients",
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "orders",
+      "name": "Orders",
       "type": "service"
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "component_id": "aggregating",
-      "name": "Aggregating (part of Brewing)",
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "checkout",
+      "name": "Checkout",
       "type": "service"
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "component_id": "bottling",
-      "name": "Bottling (part of Brewing)",
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "cart",
+      "name": "Cart",
       "type": "service"
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "component_id": "rabbitmq",
-      "name": "RabbitMQ",
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "catalog",
+      "name": "Catalog",
+      "type": "service"
+    },
+    {
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "postgresql",
+      "name": "PostgreSQL",
+      "type": "database"
+    },
+    {
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "redis",
+      "name": "Redis",
+      "type": "cache"
+    },
+    {
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "dynamodb",
+      "name": "DynamoDB",
+      "type": "database"
+    },
+    {
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "mysql_mariadb",
+      "name": "MySQL / MariaDB",
+      "type": "database"
+    },
+    {
+      "diagram_id": "aws_retail_store_sample_app",
+      "component_id": "sqs_rabbitmq",
+      "name": "SQS / RabbitMQ",
       "type": "queue"
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "component_id": "reporting",
-      "name": "Reporting",
-      "type": "service"
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "customers",
+      "name": "Customers",
+      "type": "external"
     },
     {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
-      "component_id": "presenting",
-      "name": "presenting",
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "employees",
+      "name": "Employees",
+      "type": "external"
+    },
+    {
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "store_front",
+      "name": "store-front",
       "type": "frontend"
     },
     {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
-      "component_id": "brewing",
-      "name": "brewing",
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "store_admin",
+      "name": "store-admin",
+      "type": "frontend"
+    },
+    {
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "order_service",
+      "name": "order-service",
       "type": "service"
     },
     {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
-      "component_id": "reporting",
-      "name": "reporting",
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "product_service",
+      "name": "product-service",
       "type": "service"
     },
     {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
-      "component_id": "zuul",
-      "name": "zuul",
-      "type": "gateway"
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "makeline_service",
+      "name": "makeline-service",
+      "type": "service"
     },
     {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
-      "component_id": "ingredients",
-      "name": "ingredients",
-      "type": "service"
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "order_queue",
+      "name": "Order Queue (RabbitMQ)",
+      "type": "queue"
+    },
+    {
+      "diagram_id": "azure_aks_store_demo",
+      "component_id": "order_database",
+      "name": "Order Database (MongoDB)",
+      "type": "database"
     },
     {
       "diagram_id": "roman_bilyak_microservice_architecture",

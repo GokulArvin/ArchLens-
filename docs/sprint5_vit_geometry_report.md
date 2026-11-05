@@ -1,15 +1,20 @@
 # Sprint 5: ViT/Embedding Baseline & Geometric Relations (D21-D25)
 
+> Re-run after two diagrams (`spring_cloud_brewery_overview`,
+> `spring_cloud_brewery_dependency_graph`) were replaced with
+> `aws_retail_store_sample_app` and `azure_aks_store_demo` - see
+> `docs/dataset_candidates.md`. Every number below was re-measured.
+
 ## D21: CLIP (ViT-B/32) embedding baseline
 
-`backend/app/modules/cv_pipeline/embeddings.py`, run over all 89 real
+`backend/app/modules/cv_pipeline/embeddings.py`, run over all 95 real
 ground-truth component crops (`experiments/baselines/sprint5_embeddings_ocr.json`).
 
 Real validation: average cosine similarity between same-`type` component
-pairs (1,787 pairs) vs different-`type` pairs (2,129 pairs):
+pairs (1,770 pairs) vs different-`type` pairs (2,695 pairs):
 
-- Same-type: **0.6563**
-- Different-type: **0.6444**
+- Same-type: **0.6469**
+- Different-type: **0.6122**
 
 A small but real positive gap - CLIP (zero-shot, not fine-tuned on
 architecture diagrams) carries *some* usable signal for distinguishing
@@ -24,32 +29,35 @@ than raw embedding similarity alone.
 
 `backend/app/modules/cv_pipeline/ocr.py` (easyocr - no system Tesseract
 binary available on this machine). Real result: OCR text matched the real
-component label for **64/89 (71.9%)** of ground-truth crops - a genuinely
+component label for **79/95 (83.2%)** of ground-truth crops - a genuinely
 useful signal for future component naming/classification.
 
-### Real failure categories (the 25 non-matches, inspected individually)
+### Real failure categories (the 16 non-matches, inspected individually)
 
-1. **Label text sits outside the annotated box, not inside it** (8 of 25 -
-   `spring_cloud_brewery_overview`, `spring_cloud_brewery_dependency_graph`).
-   These diagrams draw an icon with its label as separate text below/beside
-   it; our bbox convention (drawn tightly around the icon) crops out the
-   label entirely, so OCR correctly finds nothing. This is an annotation-
-   convention mismatch, not an OCR failure - worth revisiting the bbox
-   convention in a later annotation pass.
-2. **OCR reads a real but different label inside the same box** (6 of 25 -
+1. **OCR reads a real but different label inside the same box** (8 of 16 -
    `roman_bilyak_microservice_architecture`'s five services each have "API"
-   printed as a sub-label alongside the real service name; one "pets-service"
-   box's `<random port>` placeholder text beat out the component name).
-   Not wrong, just a granularity mismatch between what's visually printed
-   and what our manifest calls the component.
-3. **OCR picks up a neighboring/overlapping label** (2 of 25 -
+   printed as a sub-label alongside the real service name; `spring_petclinic`'s
+   gateway/pets-service boxes show a live `<port 8080>`/`<random port>`
+   placeholder instead of the service name; `dotnet_eshop`'s "Webhooks
+   Service" box returned "Webhook Client", a related but distinct label
+   drawn nearby in the same diagram). Not wrong, just a granularity mismatch
+   between what's visually printed and what our manifest calls the component.
+2. **No text present in the crop at all** (2 of 16 - `dotnet_eshop`'s OpenAI
+   logo icon, Sock Shop's stick-figure "User" icon) - genuinely nothing to
+   read; expected.
+3. **Short label text too small to read reliably** (1 of 16 -
+   `aws_retail_store_sample_app`'s "UI" node - a 2-character label inside a
+   76px circle on a 524x543 image falls below easyocr's reliable detection
+   size, even though the text is genuinely present).
+4. **OCR picks up a neighboring/overlapping label** (1 of 16 -
    `dotnet_eshop`'s "Order Service" box returned "PostareSQL", actually a
    nearby PostgreSQL icon's label bleeding into the crop).
-4. **No text present in the crop at all** (OpenAI logo icon, Sock Shop's
-   stick-figure "User" icon) - genuinely nothing to read; expected.
-5. **Garbled low-confidence text on small/stylized crops** (`roman_bilyak`'s
-   browser icon label, RabbitMQ icon) - real OCR limitation on small, busy,
-   non-planar text regions.
+5. **Garbled low-confidence text on small/stylized crops** (4 of 16 -
+   `azure_aks_store_demo`'s "Customers" actor read as "Cuctome" and
+   "makeline-service" read as a stray "0" from its Go-gopher icon;
+   `roman_bilyak`'s browser icon label read as "nips Mlocalnost", RabbitMQ
+   icon read as "]") - real OCR limitation on small, busy, non-planar text
+   or icon regions.
 
 ## D23 + D24: Geometry-based relation candidates
 
@@ -70,14 +78,14 @@ Real result (`experiments/baselines/sprint5_geometry_relations.json`):
 | spring_petclinic_microservices | 22 | 12 | 10 | 2 | 12 | 0.833 | 0.455 |
 | flask_microservice_demo | 4 | 3 | 3 | 0 | 1 | 1.000 | 0.750 |
 | sock_shop | 9 | 4 | 3 | 1 | 6 | 0.750 | 0.333 |
-| spring_cloud_brewery_overview | 8 | 2 | 2 | 0 | 6 | 1.000 | 0.250 |
-| spring_cloud_brewery_dependency_graph | 4 | 0 | 0 | 0 | 4 | 0.000 | 0.000 |
+| aws_retail_store_sample_app | 10 | 8 | 6 | 2 | 4 | 0.750 | 0.600 |
+| azure_aks_store_demo | 9 | 1 | 1 | 0 | 8 | 1.000 | 0.111 |
 | roman_bilyak_microservice_architecture | 17 | 16 | 13 | 3 | 4 | 0.812 | 0.765 |
 | istio_bookinfo_derived | 3 | 3 | 3 | 0 | 0 | 1.000 | 1.000 |
 
-**Aggregate: P=0.732, R=0.482, F1=0.581** - by far the strongest baseline in
-the project so far (Sprint 3 detection F1=0.021, Sprint 4 segmentation
-F1=0.220). This makes sense: connectors genuinely *are* straight/near-
+**Aggregate: P=0.731, R=0.496, F1=0.591** - by far the strongest baseline in
+the project so far (Sprint 3 detection F1=0.000, Sprint 4 segmentation
+F1=0.324). This makes sense: connectors genuinely *are* straight/near-
 straight lines, so a geometry-first approach is naturally well-matched to
 this sub-problem in a way generic pretrained object detectors are not.
 
@@ -94,11 +102,16 @@ this sub-problem in a way generic pretrained object detectors are not.
    partially fall outside the 40px endpoint-matching tolerance at the
    frontend end (a wide box, so the geometric line terminus can land far
    from the box's matched point).
-3. **No lines detected that survive filtering** (`spring_cloud_brewery_dependency_graph`,
-   0 candidates despite 73 raw Hough lines) - this is the same small
-   (924x154px) diagram flagged in Sprint 4's segmentation report; its tight
-   ground-truth boxes and small connector arrows fall below reliable Hough
-   detection at this scale.
+3. **Curved connectors defeat straight-line Hough detection**
+   (`azure_aks_store_demo`, recall 0.111 - only 1 of 9 real edges recovered).
+   This diagram's connectors are drawn as smooth bezier curves rather than
+   straight segments (e.g. the curved lines from `store-front` fanning out
+   to `order-service`/`product-service`, and from `order-service`/
+   `makeline-service` into the shared `Order Queue`); `cv2.HoughLinesP`
+   is built to find straight lines, so a curve only contributes short,
+   fragmented segments that rarely both land within 40px of the correct
+   component boxes. This is a genuine, honest limitation of a Hough-line-
+   based approach, not a tuning issue.
 4. **Clean, simple, self-derived diagrams score artificially well**
    (`istio_bookinfo_derived`, P=R=1.0) - this diagram was *rendered by us*
    (Sprint 1 D1, since Bookinfo ships no official diagram) with perfectly

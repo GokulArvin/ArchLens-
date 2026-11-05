@@ -1497,110 +1497,136 @@
     }
   },
   {
-    "id": "spring_cloud_brewery_overview",
-    "name": "Spring Cloud Brewery - overview",
+    "id": "aws_retail_store_sample_app",
+    "name": "retail-store-sample-app (aws-containers)",
     "graph_type": "intended",
     "components": [
       {
-        "id": "presenting",
-        "name": "Presenting",
+        "id": "ui",
+        "name": "UI",
         "type": "frontend",
         "bbox": {
-          "x1": 460.0,
-          "y1": 30.0,
-          "x2": 610.0,
-          "y2": 220.0
+          "x1": 233.0,
+          "y1": 19.0,
+          "x2": 309.0,
+          "y2": 95.0
         },
         "confidence": 1.0,
         "metadata": {}
       },
       {
-        "id": "proxy",
-        "name": "Proxy",
-        "type": "gateway",
-        "bbox": {
-          "x1": 65.0,
-          "y1": 265.0,
-          "x2": 200.0,
-          "y2": 420.0
-        },
-        "confidence": 1.0,
-        "metadata": {}
-      },
-      {
-        "id": "ingredients",
-        "name": "Ingredients",
+        "id": "orders",
+        "name": "Orders",
         "type": "service",
         "bbox": {
-          "x1": 55.0,
-          "y1": 530.0,
-          "x2": 195.0,
-          "y2": 685.0
+          "x1": 43.0,
+          "y1": 153.0,
+          "x2": 119.0,
+          "y2": 229.0
         },
         "confidence": 1.0,
         "metadata": {}
       },
       {
-        "id": "aggregating",
-        "name": "Aggregating (part of Brewing)",
+        "id": "checkout",
+        "name": "Checkout",
         "type": "service",
         "bbox": {
-          "x1": 310.0,
-          "y1": 390.0,
-          "x2": 460.0,
-          "y2": 545.0
+          "x1": 173.0,
+          "y1": 153.0,
+          "x2": 249.0,
+          "y2": 229.0
         },
         "confidence": 1.0,
         "metadata": {}
       },
       {
-        "id": "maturing",
-        "name": "Maturing (part of Brewing)",
+        "id": "cart",
+        "name": "Cart",
         "type": "service",
         "bbox": {
-          "x1": 550.0,
-          "y1": 390.0,
-          "x2": 700.0,
-          "y2": 545.0
+          "x1": 303.0,
+          "y1": 153.0,
+          "x2": 379.0,
+          "y2": 229.0
         },
         "confidence": 1.0,
         "metadata": {}
       },
       {
-        "id": "bottling",
-        "name": "Bottling (part of Brewing)",
+        "id": "catalog",
+        "name": "Catalog",
         "type": "service",
         "bbox": {
-          "x1": 795.0,
-          "y1": 180.0,
-          "x2": 945.0,
-          "y2": 335.0
+          "x1": 433.0,
+          "y1": 153.0,
+          "x2": 509.0,
+          "y2": 229.0
         },
         "confidence": 1.0,
         "metadata": {}
       },
       {
-        "id": "rabbitmq",
-        "name": "RabbitMQ",
+        "id": "postgresql",
+        "name": "PostgreSQL",
+        "type": "database",
+        "bbox": {
+          "x1": 43.0,
+          "y1": 273.0,
+          "x2": 119.0,
+          "y2": 349.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "redis",
+        "name": "Redis",
+        "type": "cache",
+        "bbox": {
+          "x1": 173.0,
+          "y1": 273.0,
+          "x2": 249.0,
+          "y2": 349.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "dynamodb",
+        "name": "DynamoDB",
+        "type": "database",
+        "bbox": {
+          "x1": 303.0,
+          "y1": 273.0,
+          "x2": 379.0,
+          "y2": 349.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "mysql_mariadb",
+        "name": "MySQL / MariaDB",
+        "type": "database",
+        "bbox": {
+          "x1": 433.0,
+          "y1": 273.0,
+          "x2": 509.0,
+          "y2": 349.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "sqs_rabbitmq",
+        "name": "SQS / RabbitMQ",
         "type": "queue",
         "bbox": {
-          "x1": 345.0,
-          "y1": 610.0,
-          "x2": 915.0,
-          "y2": 685.0
-        },
-        "confidence": 1.0,
-        "metadata": {}
-      },
-      {
-        "id": "reporting",
-        "name": "Reporting",
-        "type": "service",
-        "bbox": {
-          "x1": 580.0,
-          "y1": 770.0,
-          "x2": 715.0,
-          "y2": 945.0
+          "x1": 233.0,
+          "y1": 393.0,
+          "x2": 309.0,
+          "y2": 469.0
         },
         "confidence": 1.0,
         "metadata": {}
@@ -1609,153 +1635,213 @@
     "relationships": [
       {
         "id": "e1",
-        "source": "presenting",
-        "target": "aggregating",
+        "source": "ui",
+        "target": "orders",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e2",
-        "source": "aggregating",
-        "target": "presenting",
+        "source": "ui",
+        "target": "checkout",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e3",
-        "source": "proxy",
-        "target": "ingredients",
+        "source": "ui",
+        "target": "cart",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e4",
-        "source": "aggregating",
-        "target": "maturing",
+        "source": "ui",
+        "target": "catalog",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e5",
-        "source": "maturing",
-        "target": "bottling",
+        "source": "checkout",
+        "target": "orders",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e6",
-        "source": "bottling",
-        "target": "presenting",
-        "type": "calls",
+        "source": "orders",
+        "target": "postgresql",
+        "type": "uses",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e7",
-        "source": "aggregating",
-        "target": "rabbitmq",
+        "source": "checkout",
+        "target": "redis",
         "type": "uses",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e8",
-        "source": "maturing",
-        "target": "rabbitmq",
+        "source": "cart",
+        "target": "dynamodb",
         "type": "uses",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e9",
-        "source": "rabbitmq",
-        "target": "reporting",
+        "source": "catalog",
+        "target": "mysql_mariadb",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e10",
+        "source": "sqs_rabbitmq",
+        "target": "orders",
         "type": "uses",
         "confidence": 1.0,
         "metadata": {}
       }
     ],
-    "source": "data/diagrams/raw/spring_cloud_brewery_overview.png",
+    "source": "data/diagrams/raw/aws_retail_store_sample_app.png",
     "metadata": {
       "source_repository": {
-        "repo_url": "https://github.com/spring-cloud-samples/brewery",
-        "commit": "1bfe678944978dd28d620a177222b5faaa0bd278",
-        "license": "Apache-2.0",
+        "repo_url": "https://github.com/aws-containers/retail-store-sample-app",
+        "commit": "d7a380b843e0759e58754f74188ea18252a51415",
+        "license": "MIT-0",
         "diagram_provenance": "official"
       }
     }
   },
   {
-    "id": "spring_cloud_brewery_dependency_graph",
-    "name": "Spring Cloud Brewery - dependency graph",
+    "id": "azure_aks_store_demo",
+    "name": "aks-store-demo (Azure-Samples)",
     "graph_type": "intended",
     "components": [
       {
-        "id": "presenting",
-        "name": "presenting",
+        "id": "customers",
+        "name": "Customers",
+        "type": "external",
+        "bbox": {
+          "x1": 110.0,
+          "y1": 400.0,
+          "x2": 328.0,
+          "y2": 710.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "employees",
+        "name": "Employees",
+        "type": "external",
+        "bbox": {
+          "x1": 110.0,
+          "y1": 1048.0,
+          "x2": 328.0,
+          "y2": 1332.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "store_front",
+        "name": "store-front",
         "type": "frontend",
         "bbox": {
-          "x1": 10.0,
-          "y1": 10.0,
-          "x2": 95.0,
-          "y2": 55.0
+          "x1": 610.0,
+          "y1": 355.0,
+          "x2": 1132.0,
+          "y2": 728.0
         },
         "confidence": 1.0,
         "metadata": {}
       },
       {
-        "id": "brewing",
-        "name": "brewing",
+        "id": "store_admin",
+        "name": "store-admin",
+        "type": "frontend",
+        "bbox": {
+          "x1": 610.0,
+          "y1": 986.0,
+          "x2": 1132.0,
+          "y2": 1359.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "order_service",
+        "name": "order-service",
         "type": "service",
         "bbox": {
-          "x1": 295.0,
-          "y1": 10.0,
-          "x2": 380.0,
-          "y2": 55.0
+          "x1": 1595.0,
+          "y1": 79.0,
+          "x2": 2112.0,
+          "y2": 436.0
         },
         "confidence": 1.0,
         "metadata": {}
       },
       {
-        "id": "reporting",
-        "name": "reporting",
+        "id": "product_service",
+        "name": "product-service",
         "type": "service",
         "bbox": {
-          "x1": 565.0,
-          "y1": 10.0,
-          "x2": 650.0,
-          "y2": 55.0
+          "x1": 1595.0,
+          "y1": 683.0,
+          "x2": 2112.0,
+          "y2": 1048.0
         },
         "confidence": 1.0,
         "metadata": {}
       },
       {
-        "id": "zuul",
-        "name": "zuul",
-        "type": "gateway",
-        "bbox": {
-          "x1": 655.0,
-          "y1": 45.0,
-          "x2": 740.0,
-          "y2": 90.0
-        },
-        "confidence": 1.0,
-        "metadata": {}
-      },
-      {
-        "id": "ingredients",
-        "name": "ingredients",
+        "id": "makeline_service",
+        "name": "makeline-service",
         "type": "service",
         "bbox": {
-          "x1": 845.0,
-          "y1": 45.0,
-          "x2": 920.0,
-          "y2": 90.0
+          "x1": 1595.0,
+          "y1": 1287.0,
+          "x2": 2112.0,
+          "y2": 1652.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "order_queue",
+        "name": "Order Queue (RabbitMQ)",
+        "type": "queue",
+        "bbox": {
+          "x1": 2596.0,
+          "y1": 89.0,
+          "x2": 3050.0,
+          "y2": 436.0
+        },
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "order_database",
+        "name": "Order Database (MongoDB)",
+        "type": "database",
+        "bbox": {
+          "x1": 2596.0,
+          "y1": 1324.0,
+          "x2": 3050.0,
+          "y2": 1687.0
         },
         "confidence": 1.0,
         "metadata": {}
@@ -1764,53 +1850,84 @@
     "relationships": [
       {
         "id": "e1",
-        "source": "presenting",
-        "target": "brewing",
+        "source": "customers",
+        "target": "store_front",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e2",
-        "source": "brewing",
-        "target": "presenting",
+        "source": "employees",
+        "target": "store_admin",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e3",
-        "source": "brewing",
-        "target": "reporting",
+        "source": "store_front",
+        "target": "order_service",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e4",
-        "source": "brewing",
-        "target": "zuul",
+        "source": "store_front",
+        "target": "product_service",
         "type": "calls",
         "confidence": 1.0,
         "metadata": {}
       },
       {
         "id": "e5",
-        "source": "zuul",
-        "target": "ingredients",
+        "source": "store_admin",
+        "target": "product_service",
         "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e6",
+        "source": "store_admin",
+        "target": "makeline_service",
+        "type": "calls",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e7",
+        "source": "order_service",
+        "target": "order_queue",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e8",
+        "source": "makeline_service",
+        "target": "order_queue",
+        "type": "uses",
+        "confidence": 1.0,
+        "metadata": {}
+      },
+      {
+        "id": "e9",
+        "source": "makeline_service",
+        "target": "order_database",
+        "type": "uses",
         "confidence": 1.0,
         "metadata": {}
       }
     ],
-    "source": "data/diagrams/raw/spring_cloud_brewery_dependency_graph.png",
+    "source": "data/diagrams/raw/azure_aks_store_demo.png",
     "metadata": {
       "source_repository": {
-        "repo_url": "https://github.com/spring-cloud-samples/brewery",
-        "commit": "1bfe678944978dd28d620a177222b5faaa0bd278",
-        "license": "Apache-2.0",
-        "diagram_provenance": "official",
-        "note": "Same repo as spring_cloud_brewery_overview, but this is the project's own auto-generated service dependency graph image - a distinct view of the same real system."
+        "repo_url": "https://github.com/Azure-Samples/aks-store-demo",
+        "commit": "1d61b202d1e6dc9a78389c15e4bb9d529e5499d3",
+        "license": "MIT",
+        "diagram_provenance": "official"
       }
     }
   },

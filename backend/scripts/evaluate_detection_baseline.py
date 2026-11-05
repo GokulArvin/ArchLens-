@@ -125,23 +125,31 @@ def main():
     if not any_tp:
         doc_lines.append("None.")
 
+    diagrams_with_tp = sorted({r["diagram_id"] for r in per_diagram if r["true_positives"] > 0})
+    total_gt = sum(r["num_ground_truth"] for r in per_diagram)
+    if diagrams_with_tp:
+        interpretation_middle = [
+            "The diagram(s) with any real detections (" + ", ".join(f"`{d}`" for d in diagrams_with_tp) + ") "
+            "only produced coincidental spatial overlaps with COCO's object classes (see true-positive "
+            "inspection above) - not semantically meaningful detections.",
+        ]
+    else:
+        interpretation_middle = ["No diagram in this dataset produced even a coincidental true positive."]
+
     doc_lines += [
         "",
         "## False negative inspection (summary - every undetected component had a ground-truth box the detector never found)",
         "",
-        f"{len(fn_examples)} of {sum(r['num_ground_truth'] for r in per_diagram)} real ground-truth components were missed entirely.",
+        f"{len(fn_examples)} of {total_gt} real ground-truth components were missed entirely.",
         "",
         "## Interpretation",
         "",
         "This confirms the D11/D12 hypothesis: a COCO-pretrained detector finds",
         "almost nothing in architecture diagrams, because diagram components",
         "(labeled boxes, arrows) share no visual vocabulary with COCO's",
-        "photograph-object classes. The one diagram with real detections",
-        "(`spring_cloud_brewery_overview`) has illustrated 3D icons - a barrel,",
-        "bottles, boxes - that coincidentally resemble COCO objects, producing",
-        "false positives rather than useful detections. Even the single",
-        "true positive is a coincidental spatial overlap (see above), so the",
-        "effective, semantically-meaningful recall of this baseline is 0/89.",
+        "photograph-object classes.",
+        *interpretation_middle,
+        f"The effective, semantically-meaningful recall of this baseline is 0/{total_gt}.",
         "",
         "This is the honest Sprint 3 baseline, not a target to beat by tuning",
         "thresholds on this same set (that would violate the plan's \"do not",

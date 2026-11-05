@@ -81,143 +81,26 @@
       "mapped_detections": []
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
+      "diagram_id": "aws_retail_store_sample_app",
       "image_shape": [
-        966,
-        1462,
+        543,
+        524,
         3
       ],
-      "ground_truth_component_count": 8,
-      "raw_detection_count": 5,
-      "mapped_detection_count": 5,
-      "raw_detections": [
-        {
-          "bbox": [
-            768.7999877929688,
-            251.23095703125,
-            930.39208984375,
-            392.39306640625
-          ],
-          "confidence": 0.5388029217720032,
-          "class_id": 25,
-          "class_name": "umbrella"
-        },
-        {
-          "bbox": [
-            938.4354858398438,
-            225.96524047851562,
-            987.1902465820312,
-            357.1840515136719
-          ],
-          "confidence": 0.4679534137248993,
-          "class_id": 39,
-          "class_name": "bottle"
-        },
-        {
-          "bbox": [
-            726.5459594726562,
-            441.6690673828125,
-            833.9425659179688,
-            564.7088623046875
-          ],
-          "confidence": 0.4243355393409729,
-          "class_id": 55,
-          "class_name": "cake"
-        },
-        {
-          "bbox": [
-            222.15643310546875,
-            747.570068359375,
-            273.0335693359375,
-            796.4456787109375
-          ],
-          "confidence": 0.2862607538700104,
-          "class_id": 32,
-          "class_name": "sports ball"
-        },
-        {
-          "bbox": [
-            536.7687377929688,
-            404.75616455078125,
-            697.0578002929688,
-            546.6199951171875
-          ],
-          "confidence": 0.2505616545677185,
-          "class_id": 25,
-          "class_name": "umbrella"
-        }
-      ],
-      "mapped_detections": [
-        {
-          "bbox": [
-            768.7999877929688,
-            251.23095703125,
-            930.39208984375,
-            392.39306640625
-          ],
-          "confidence": 0.5388029217720032,
-          "mapped_class": "architecture_component",
-          "raw_coco_class": "umbrella",
-          "raw_coco_class_id": 25
-        },
-        {
-          "bbox": [
-            938.4354858398438,
-            225.96524047851562,
-            987.1902465820312,
-            357.1840515136719
-          ],
-          "confidence": 0.4679534137248993,
-          "mapped_class": "architecture_component",
-          "raw_coco_class": "bottle",
-          "raw_coco_class_id": 39
-        },
-        {
-          "bbox": [
-            726.5459594726562,
-            441.6690673828125,
-            833.9425659179688,
-            564.7088623046875
-          ],
-          "confidence": 0.4243355393409729,
-          "mapped_class": "architecture_component",
-          "raw_coco_class": "cake",
-          "raw_coco_class_id": 55
-        },
-        {
-          "bbox": [
-            222.15643310546875,
-            747.570068359375,
-            273.0335693359375,
-            796.4456787109375
-          ],
-          "confidence": 0.2862607538700104,
-          "mapped_class": "architecture_component",
-          "raw_coco_class": "sports ball",
-          "raw_coco_class_id": 32
-        },
-        {
-          "bbox": [
-            536.7687377929688,
-            404.75616455078125,
-            697.0578002929688,
-            546.6199951171875
-          ],
-          "confidence": 0.2505616545677185,
-          "mapped_class": "architecture_component",
-          "raw_coco_class": "umbrella",
-          "raw_coco_class_id": 25
-        }
-      ]
+      "ground_truth_component_count": 10,
+      "raw_detection_count": 0,
+      "mapped_detection_count": 0,
+      "raw_detections": [],
+      "mapped_detections": []
     },
     {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
+      "diagram_id": "azure_aks_store_demo",
       "image_shape": [
-        154,
-        924,
+        1090,
+        1920,
         3
       ],
-      "ground_truth_component_count": 5,
+      "ground_truth_component_count": 9,
       "raw_detection_count": 0,
       "mapped_detection_count": 0,
       "raw_detections": [],

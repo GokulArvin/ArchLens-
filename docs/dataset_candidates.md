@@ -39,8 +39,10 @@ These were evaluated first, since they're the plan's own suggested sources:
 | spring-petclinic/spring-petclinic-microservices | Yes, `docs/microservices-architecture-diagram.jpg` | Apache-2.0 | **Yes** | Official Spring Cloud reference app. |
 | mblitherland/flask-microservice-demo | Yes, `arch_diagram.png` | Apache-2.0 | **Yes** | Small, simple 4-box case. |
 | microservices-demo/microservices-demo (Sock Shop) | Yes, but hosted in the companion `microservices-demo.github.io` docs-site repo (`assets/Architecture.png`) | Apache-2.0 (both repos) | **Yes** | Diagram repo and app-code repo are two real repos from the same project; we pair the diagram with the app-code repo. |
-| spring-cloud-samples/brewery | Yes, `img/Brewery.png` **and** `img/Dependency_graph.png` (a second, distinct auto-generated view) | Apache-2.0 | **Yes (both images, 2 manifest entries)** | gateway -> brewing/ingredients/presenting/reporting + Eureka + config-server. |
+| spring-cloud-samples/brewery | Yes, `img/Brewery.png` **and** `img/Dependency_graph.png` (a second, distinct auto-generated view) | Apache-2.0 | **Dropped (see below)** | gateway -> brewing/ingredients/presenting/reporting + Eureka + config-server. |
 | roman-bilyak/Microservice.Architecture | Yes, `images/diagram.png` | MIT | **Yes** | ASP.NET Core + Ocelot/NGINX Ingress + RabbitMQ, 5 backend services. |
+| aws-containers/retail-store-sample-app | Yes, `docs/images/architecture.png` | MIT-0 | **Yes** | UI -> Orders/Checkout/Cart/Catalog, each with its own persistence (PostgreSQL/Redis/DynamoDB/MySQL) + SQS/RabbitMQ queue. Replaces `spring_cloud_brewery_overview`. |
+| Azure-Samples/aks-store-demo | Yes, `assets/demo-arch.png` | MIT | **Yes** | Polyglot (Vue/Node/Rust/Go) store-front/store-admin -> order/product/makeline services around a RabbitMQ queue + MongoDB database. Replaces `spring_cloud_brewery_dependency_graph`. |
 | istio/istio (Bookinfo sample) | No diagram in-repo | Apache-2.0 | **Yes, derived** | Diagram rendered by us from reading `samples/bookinfo/src/productpage/productpage.py` and `.../reviews/.../LibertyRestEndpoint.java` - see evidence citations in `data/annotations/manifest.json`. |
 | dotnet-architecture/eShopOnContainers | — | MIT | No | Archived; GitHub default branch now only contains a redirect README, no real code left to pair with. |
 | Istio Bookinfo via istio.io docs page | diagram exists on the docs *website*, not in the repo | — | No (used code-derivation instead) | Avoids depending on an external website for the image; deriving from source code is more rigorous anyway. |
@@ -51,7 +53,23 @@ These were evaluated first, since they're the plan's own suggested sources:
 | piomin/sample-spring-microservices-new | No diagram | None found | No | Same reason, despite being a good real example otherwise. |
 | TeaStore (DescartesResearch/TeaStore) | Diagram only appears in the academic paper figure, not the repo | Apache-2.0 | No (for Sprint 1) | Candidate for a later sprint if we want an academic-benchmark example. |
 
-## Final Sprint 1 set (10 diagrams, all real, all paired with a real repository)
+## Post-Sprint-10 correction: brewery diagrams dropped
+
+After Sprint 10, a closer re-inspection found that `spring_cloud_brewery_overview.png`
+is a stylized beer-brewing illustration (barrels, bottles, boxes drawn as 3D
+icons) rather than a genuine boxes-and-arrows software architecture diagram -
+and it was the one diagram that produced spurious COCO true-positive
+"detections" in Sprint 3 precisely because its illustrated icons happened to
+resemble real-world COCO objects (see `docs/sprint3_detection_baseline.md`'s
+original finding, now superseded). Both diagrams from that repo (`overview`
+and the companion `dependency_graph`) were dropped and replaced with
+`aws-containers/retail-store-sample-app` and `Azure-Samples/aks-store-demo` -
+both clean, official, actively-maintained microservices architecture
+diagrams with permissive licenses (MIT-0 and MIT respectively). Every
+downstream experiment, baseline, split, and report was re-run from scratch
+against the corrected 10-diagram set rather than patched in place.
+
+## Final set (10 diagrams, all real, all paired with a real repository)
 
 See `data/annotations/manifest.json` for the full annotated list and
 `data/diagrams/raw/SOURCES.md` for per-file provenance (URL, commit, license).

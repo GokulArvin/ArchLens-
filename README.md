@@ -34,6 +34,28 @@ YOLOv8n weights (`backend/models/yolov8n.pt`, gitignored) auto-download on
 first run of `backend/scripts/inspect_yolo_classes.py` or
 `run_detection_baseline.py`.
 
+## Running with Docker Compose
+
+A containerized environment is available as an alternative to the manual
+venv setup above - useful for exploring the project without installing
+Python 3.11 or any of the CV/ML dependencies locally.
+
+```bash
+# Interactive exploration: Jupyter Lab on http://localhost:8888
+# (backend/, data/, docs/, experiments/, notebooks/ are live-mounted, so
+# edits and script/notebook runs persist on the host)
+docker compose up jupyter
+
+# One-shot: regenerate every real artifact in the project from scratch
+# (runs all 19 Sprint 1-9 scripts in dependency order - the same sequence
+# used for Sprint 10's clean-room reproducibility check)
+docker compose --profile pipeline run --rm pipeline
+```
+
+Model weights (YOLOv8n, CLIP, easyocr) download into the mounted
+`backend/models/` on first use inside the container, same as running
+locally - nothing is baked into the image.
+
 ## Project layout
 
 - `backend/app/modules/cv_pipeline/` — P1's CV pipeline code (preprocessing, edge

@@ -23,7 +23,16 @@ Commit read: 399ef1bff5261a01708c13b73a93cdc20189b08a
 import math
 from pathlib import Path
 
+import matplotlib
 from PIL import Image, ImageDraw, ImageFont
+
+# A fixed, bundled TrueType font (DejaVu Sans, shipped as matplotlib package
+# data) rather than the OS-provided "arial.ttf" - that path only resolves on
+# Windows, so on Linux (e.g. inside the Docker image) it silently fell back
+# to PIL's tiny bitmap default font, producing a visibly different image and
+# non-reproducible downstream Canny/contour results. matplotlib is already a
+# pinned dependency, so this needs no extra font file in the repo.
+FONT_PATH = Path(matplotlib.get_data_path()) / "fonts" / "ttf" / "DejaVuSans.ttf"
 
 OUT_PATH = Path(__file__).resolve().parents[2] / "data" / "diagrams" / "raw" / "istio_bookinfo_derived.png"
 SOURCES_PATH = OUT_PATH.parent / "SOURCES.md"
@@ -62,10 +71,7 @@ def _box_center(box):
 def render():
     img = Image.new("RGB", (WIDTH, HEIGHT), "white")
     draw = ImageDraw.Draw(img)
-    try:
-        font = ImageFont.truetype("arial.ttf", 18)
-    except OSError:
-        font = ImageFont.load_default()
+    font = ImageFont.truetype(str(FONT_PATH), 18)
 
     for src, dst in EDGES:
         x1, y1 = _box_center(BOXES[src])

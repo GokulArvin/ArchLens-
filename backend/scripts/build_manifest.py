@@ -250,62 +250,77 @@ GRAPHS.append(ArchGraph(
     }},
 ))
 
-# ───────────────────────── 7. Spring Cloud Brewery - overview ──────────────
+# ───────────────────────── 7. AWS retail-store-sample-app ──────────────────
+# Replaces the earlier spring-cloud-samples/brewery "overview" diagram, which
+# was a stylized beer-brewing illustration (barrels/bottles) rather than a
+# genuine boxes-and-arrows software architecture diagram. This is a clean
+# official diagram of a real, actively-maintained polyglot microservices app.
 GRAPHS.append(ArchGraph(
-    id="spring_cloud_brewery_overview",
-    name="Spring Cloud Brewery - overview",
+    id="aws_retail_store_sample_app",
+    name="retail-store-sample-app (aws-containers)",
     graph_type="intended",
-    source="data/diagrams/raw/spring_cloud_brewery_overview.png",
+    source="data/diagrams/raw/aws_retail_store_sample_app.png",
     components=[
-        comp("presenting", "Presenting", "frontend", (460, 30, 610, 220)),
-        comp("proxy", "Proxy", "gateway", (65, 265, 200, 420)),
-        comp("ingredients", "Ingredients", "service", (55, 530, 195, 685)),
-        comp("aggregating", "Aggregating (part of Brewing)", "service", (310, 390, 460, 545)),
-        comp("maturing", "Maturing (part of Brewing)", "service", (550, 390, 700, 545)),
-        comp("bottling", "Bottling (part of Brewing)", "service", (795, 180, 945, 335)),
-        comp("rabbitmq", "RabbitMQ", "queue", (345, 610, 915, 685)),
-        comp("reporting", "Reporting", "service", (580, 770, 715, 945)),
+        comp("ui", "UI", "frontend", (233, 19, 309, 95)),
+        comp("orders", "Orders", "service", (43, 153, 119, 229)),
+        comp("checkout", "Checkout", "service", (173, 153, 249, 229)),
+        comp("cart", "Cart", "service", (303, 153, 379, 229)),
+        comp("catalog", "Catalog", "service", (433, 153, 509, 229)),
+        comp("postgresql", "PostgreSQL", "database", (43, 273, 119, 349)),
+        comp("redis", "Redis", "cache", (173, 273, 249, 349)),
+        comp("dynamodb", "DynamoDB", "database", (303, 273, 379, 349)),
+        comp("mysql_mariadb", "MySQL / MariaDB", "database", (433, 273, 509, 349)),
+        comp("sqs_rabbitmq", "SQS / RabbitMQ", "queue", (233, 393, 309, 469)),
     ],
     relationships=[
-        rel("e1", "presenting", "aggregating"), rel("e2", "aggregating", "presenting"),
-        rel("e3", "proxy", "ingredients"),
-        rel("e4", "aggregating", "maturing"), rel("e5", "maturing", "bottling"),
-        rel("e6", "bottling", "presenting"),
-        rel("e7", "aggregating", "rabbitmq", "uses"), rel("e8", "maturing", "rabbitmq", "uses"),
-        rel("e9", "rabbitmq", "reporting", "uses"),
+        rel("e1", "ui", "orders"), rel("e2", "ui", "checkout"),
+        rel("e3", "ui", "cart"), rel("e4", "ui", "catalog"),
+        rel("e5", "checkout", "orders"),
+        rel("e6", "orders", "postgresql", "uses"), rel("e7", "checkout", "redis", "uses"),
+        rel("e8", "cart", "dynamodb", "uses"), rel("e9", "catalog", "mysql_mariadb", "uses"),
+        rel("e10", "sqs_rabbitmq", "orders", "uses"),
     ],
     metadata={"source_repository": {
-        "repo_url": "https://github.com/spring-cloud-samples/brewery",
-        "commit": "1bfe678944978dd28d620a177222b5faaa0bd278",
-        "license": "Apache-2.0",
+        "repo_url": "https://github.com/aws-containers/retail-store-sample-app",
+        "commit": "d7a380b843e0759e58754f74188ea18252a51415",
+        "license": "MIT-0",
         "diagram_provenance": "official",
     }},
 ))
 
-# ───────────────────────── 8. Spring Cloud Brewery - dependency graph ──────
+# ───────────────────────── 8. Azure aks-store-demo ──────────────────────────
+# Replaces the earlier spring-cloud-samples/brewery "dependency graph" diagram
+# (same flagged repo). This is a clean official diagram of a real polyglot
+# microservices app (Vue/Node/Rust/Go) maintained by Microsoft.
 GRAPHS.append(ArchGraph(
-    id="spring_cloud_brewery_dependency_graph",
-    name="Spring Cloud Brewery - dependency graph",
+    id="azure_aks_store_demo",
+    name="aks-store-demo (Azure-Samples)",
     graph_type="intended",
-    source="data/diagrams/raw/spring_cloud_brewery_dependency_graph.png",
+    source="data/diagrams/raw/azure_aks_store_demo.png",
     components=[
-        comp("presenting", "presenting", "frontend", (10, 10, 95, 55)),
-        comp("brewing", "brewing", "service", (295, 10, 380, 55)),
-        comp("reporting", "reporting", "service", (565, 10, 650, 55)),
-        comp("zuul", "zuul", "gateway", (655, 45, 740, 90)),
-        comp("ingredients", "ingredients", "service", (845, 45, 920, 90)),
+        comp("customers", "Customers", "external", (110, 400, 328, 710)),
+        comp("employees", "Employees", "external", (110, 1048, 328, 1332)),
+        comp("store_front", "store-front", "frontend", (610, 355, 1132, 728)),
+        comp("store_admin", "store-admin", "frontend", (610, 986, 1132, 1359)),
+        comp("order_service", "order-service", "service", (1595, 79, 2112, 436)),
+        comp("product_service", "product-service", "service", (1595, 683, 2112, 1048)),
+        comp("makeline_service", "makeline-service", "service", (1595, 1287, 2112, 1652)),
+        comp("order_queue", "Order Queue (RabbitMQ)", "queue", (2596, 89, 3050, 436)),
+        comp("order_database", "Order Database (MongoDB)", "database", (2596, 1324, 3050, 1687)),
     ],
     relationships=[
-        rel("e1", "presenting", "brewing"), rel("e2", "brewing", "presenting"),
-        rel("e3", "brewing", "reporting"), rel("e4", "brewing", "zuul"),
-        rel("e5", "zuul", "ingredients"),
+        rel("e1", "customers", "store_front"), rel("e2", "employees", "store_admin"),
+        rel("e3", "store_front", "order_service"), rel("e4", "store_front", "product_service"),
+        rel("e5", "store_admin", "product_service"), rel("e6", "store_admin", "makeline_service"),
+        rel("e7", "order_service", "order_queue", "uses"),
+        rel("e8", "makeline_service", "order_queue", "uses"),
+        rel("e9", "makeline_service", "order_database", "uses"),
     ],
     metadata={"source_repository": {
-        "repo_url": "https://github.com/spring-cloud-samples/brewery",
-        "commit": "1bfe678944978dd28d620a177222b5faaa0bd278",
-        "license": "Apache-2.0",
+        "repo_url": "https://github.com/Azure-Samples/aks-store-demo",
+        "commit": "1d61b202d1e6dc9a78389c15e4bb9d529e5499d3",
+        "license": "MIT",
         "diagram_provenance": "official",
-        "note": "Same repo as spring_cloud_brewery_overview, but this is the project's own auto-generated service dependency graph image - a distinct view of the same real system.",
     }},
 ))
 

@@ -72,67 +72,27 @@
       ]
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "ground_truth_component_count": 8,
-      "maskrcnn_detection_count": 5,
+      "diagram_id": "aws_retail_store_sample_app",
+      "ground_truth_component_count": 10,
+      "maskrcnn_detection_count": 0,
+      "detections": []
+    },
+    {
+      "diagram_id": "azure_aks_store_demo",
+      "ground_truth_component_count": 9,
+      "maskrcnn_detection_count": 1,
       "detections": [
         {
-          "class_name": "bottle",
-          "confidence": 0.9975097179412842,
-          "bbox": [
-            940.3726806640625,
-            220.3214569091797,
-            985.9811401367188,
-            357.5099182128906
-          ]
-        },
-        {
           "class_name": "cup",
-          "confidence": 0.968538761138916,
+          "confidence": 0.9304558038711548,
           "bbox": [
-            726.183837890625,
-            444.9395751953125,
-            832.078369140625,
-            562.3195190429688
-          ]
-        },
-        {
-          "class_name": "sports ball",
-          "confidence": 0.7104489207267761,
-          "bbox": [
-            41.29469299316406,
-            795.3117065429688,
-            90.23080444335938,
-            843.9461669921875
-          ]
-        },
-        {
-          "class_name": "sports ball",
-          "confidence": 0.46335500478744507,
-          "bbox": [
-            106.62513732910156,
-            808.8213500976562,
-            156.3123016357422,
-            857.1344604492188
-          ]
-        },
-        {
-          "class_name": "kite",
-          "confidence": 0.3647224009037018,
-          "bbox": [
-            1225.9830322265625,
-            355.8158874511719,
-            1281.6024169921875,
-            406.4960021972656
+            1573.7923583984375,
+            818.8610229492188,
+            1865.7149658203125,
+            1054.671875
           ]
         }
       ]
-    },
-    {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
-      "ground_truth_component_count": 5,
-      "maskrcnn_detection_count": 0,
-      "detections": []
     },
     {
       "diagram_id": "roman_bilyak_microservice_architecture",

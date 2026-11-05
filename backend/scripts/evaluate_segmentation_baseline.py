@@ -3,7 +3,7 @@ Sprint 4 / D18: compare the region-cropping segmentation baseline's proposed
 boxes against real hand-annotated ground truth, on a small subset.
 
 Subset chosen for diversity: istio_bookinfo_derived (simplest, 4 components),
-spring_cloud_brewery_dependency_graph (simple, small image), and
+aws_retail_store_sample_app (simple, small image), and
 gcp_microservices_demo (densest, 12 components) - covers the easy and hard
 ends of the dataset.
 
@@ -24,7 +24,7 @@ from app.modules.cv_pipeline.segmentation import RegionProposalSegmenter  # noqa
 
 REPO_ROOT = BACKEND_DIR.parent
 OUT_PATH = REPO_ROOT / "experiments" / "baselines" / "sprint4_segmentation_baseline.json"
-SUBSET = ["istio_bookinfo_derived", "spring_cloud_brewery_dependency_graph", "gcp_microservices_demo"]
+SUBSET = ["istio_bookinfo_derived", "aws_retail_store_sample_app", "gcp_microservices_demo"]
 
 
 def main():

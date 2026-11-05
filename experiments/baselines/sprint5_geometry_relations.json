@@ -1,12 +1,12 @@
 {
   "matching": "undirected component-pair (direction out of scope - see docstring)",
   "aggregate": {
-    "tp": 52,
-    "fp": 19,
-    "fn": 56,
-    "precision": 0.7324,
-    "recall": 0.4815,
-    "f1": 0.581
+    "tp": 57,
+    "fp": 21,
+    "fn": 58,
+    "precision": 0.7308,
+    "recall": 0.4957,
+    "f1": 0.5907
   },
   "per_diagram": [
     {
@@ -76,26 +76,26 @@
       "recall": 0.3333
     },
     {
-      "diagram_id": "spring_cloud_brewery_overview",
-      "num_ground_truth_edges": 8,
-      "num_lines_detected": 790,
-      "num_candidate_edges": 2,
-      "true_positives": 2,
-      "false_positives": 0,
-      "false_negatives": 6,
-      "precision": 1.0,
-      "recall": 0.25
+      "diagram_id": "aws_retail_store_sample_app",
+      "num_ground_truth_edges": 10,
+      "num_lines_detected": 264,
+      "num_candidate_edges": 8,
+      "true_positives": 6,
+      "false_positives": 2,
+      "false_negatives": 4,
+      "precision": 0.75,
+      "recall": 0.6
     },
     {
-      "diagram_id": "spring_cloud_brewery_dependency_graph",
-      "num_ground_truth_edges": 4,
-      "num_lines_detected": 73,
-      "num_candidate_edges": 0,
-      "true_positives": 0,
+      "diagram_id": "azure_aks_store_demo",
+      "num_ground_truth_edges": 9,
+      "num_lines_detected": 1025,
+      "num_candidate_edges": 1,
+      "true_positives": 1,
       "false_positives": 0,
-      "false_negatives": 4,
-      "precision": 0.0,
-      "recall": 0.0
+      "false_negatives": 8,
+      "precision": 1.0,
+      "recall": 0.1111
     },
     {
       "diagram_id": "roman_bilyak_microservice_architecture",
@@ -111,7 +111,7 @@
     {
       "diagram_id": "istio_bookinfo_derived",
       "num_ground_truth_edges": 3,
-      "num_lines_detected": 76,
+      "num_lines_detected": 66,
       "num_candidate_edges": 3,
       "true_positives": 3,
       "false_positives": 0,
