@@ -1,0 +1,177 @@
+{
+ "violation_id": "S02_layered-V1",
+ "violation": {
+  "type": "layer_violation",
+  "source": "Order Controller",
+  "target": "Order Repository",
+  "verdict": "VIOLATION"
+ },
+ "architecture_rule": {
+  "allowed": [
+   "Actor->UI",
+   "UI->Controller",
+   "Controller->Service",
+   "Service->Repository",
+   "Repository->Data"
+  ],
+  "forbidden": [
+   "Controller->Repository",
+   "Repository->Controller",
+   "Controller->Data",
+   "UI->Repository"
+  ]
+ },
+ "code": {
+  "file": "app/controller/OrderController.java",
+  "lines": "45-52",
+  "snippet": "private final OrderRepository orderRepository;\n...\nreturn orderRepository.findById(id);"
+ },
+ "dependency_path": [
+  "Order Controller",
+  "Order Repository"
+ ],
+ "commit": {
+  "hash": "abc12345",
+  "message": "Refactor order processing",
+  "files": [
+   "app/controller/OrderController.java"
+  ],
+  "diff": "+private final OrderRepository orderRepository;\n+return orderRepository.findById(id);"
+ },
+ "candidate_commits": [
+  {
+   "hash": "abc12345",
+   "message": "Refactor order processing",
+   "files": [
+    "app/controller/OrderController.java"
+   ],
+   "diff": "+private final OrderRepository orderRepository;\n+return orderRepository.findById(id);"
+  },
+  {
+   "hash": "def67890",
+   "message": "Add request logging",
+   "files": [
+    "app/config/Logging.java"
+   ],
+   "diff": "+log.info(req)"
+  },
+  {
+   "hash": "0badc0de",
+   "message": "Update README",
+   "files": [
+    "README.md"
+   ],
+   "diff": "+## Setup"
+  }
+ ],
+ "intended_edges": [
+  [
+   "Customer",
+   "Web UI"
+  ],
+  [
+   "Web UI",
+   "Order Controller"
+  ],
+  [
+   "Order Controller",
+   "Order Service"
+  ],
+  [
+   "Order Service",
+   "Order Repository"
+  ],
+  [
+   "Order Repository",
+   "Database"
+  ]
+ ],
+ "current_edges": [
+  [
+   "Customer",
+   "Web UI"
+  ],
+  [
+   "Web UI",
+   "Order Controller"
+  ],
+  [
+   "Order Controller",
+   "Order Service"
+  ],
+  [
+   "Order Service",
+   "Order Repository"
+  ],
+  [
+   "Order Repository",
+   "Database"
+  ],
+  [
+   "Order Controller",
+   "Order Repository"
+  ]
+ ],
+ "layer_of": {
+  "Customer": "Actor",
+  "Web UI": "UI",
+  "Order Controller": "Controller",
+  "Order Service": "Service",
+  "Order Repository": "Repository",
+  "Database": "Data"
+ },
+ "affected_components": [
+  {
+   "component": "Order Controller",
+   "distance": 0,
+   "direction": "source"
+  },
+  {
+   "component": "Web UI",
+   "distance": 1,
+   "direction": "upstream"
+  },
+  {
+   "component": "Order Repository",
+   "distance": 1,
+   "direction": "downstream"
+  },
+  {
+   "component": "Customer",
+   "distance": 2,
+   "direction": "upstream"
+  },
+  {
+   "component": "Database",
+   "distance": 2,
+   "direction": "downstream"
+  }
+ ],
+ "allowed_intermediary": "Order Service",
+ "ground_truth": {
+  "introducing_commit": "abc12345",
+  "expected_status": "SUPPORTED",
+  "root_cause_keywords": [
+   "refactor",
+   "order processing",
+   "repository",
+   "controller"
+  ],
+  "affected": [
+   "Customer",
+   "Database",
+   "Order Controller",
+   "Order Repository",
+   "Web UI"
+  ],
+  "expected_fix": {
+   "remove": [
+    [
+     "Order Controller",
+     "Order Repository"
+    ]
+   ],
+   "add": []
+  }
+ }
+}

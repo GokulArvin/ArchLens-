@@ -1,0 +1,56 @@
+[
+ {
+  "id": "web-frontend/src/WebFrontend",
+  "name": "WebFrontend",
+  "kind": "module",
+  "path": "web-frontend/src"
+ },
+ {
+  "id": "gateway/src/ApiGateway",
+  "name": "ApiGateway",
+  "kind": "module",
+  "path": "gateway/src"
+ },
+ {
+  "id": "order-service/src/OrderService",
+  "name": "OrderService",
+  "kind": "module",
+  "path": "order-service/src"
+ },
+ {
+  "id": "payment-service/src/PaymentService",
+  "name": "PaymentService",
+  "kind": "module",
+  "path": "payment-service/src"
+ },
+ {
+  "id": "database/orders/OrdersDatabase",
+  "name": "OrdersDatabase",
+  "kind": "module",
+  "path": "database/orders"
+ },
+ {
+  "id": "messaging/kafka/EventBusProducer",
+  "name": "EventBusProducer",
+  "kind": "module",
+  "path": "messaging/kafka"
+ },
+ {
+  "id": "notification-service/src/NotificationService",
+  "name": "NotificationService",
+  "kind": "module",
+  "path": "notification-service/src"
+ },
+ {
+  "id": "order-service/test/OrderServiceTest",
+  "name": "OrderServiceTest",
+  "kind": "class",
+  "path": "order-service/test"
+ },
+ {
+  "id": "common/utils/SharedUtils",
+  "name": "SharedUtils",
+  "kind": "class",
+  "path": "common/utils"
+ }
+]

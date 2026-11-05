@@ -1,0 +1,84 @@
+{
+ "diagram_id": "S04_modular",
+ "image": "diagram.png",
+ "annotator": "synthetic",
+ "components": [
+  {
+   "id": "c1",
+   "name": "Search Module",
+   "type": "module",
+   "bbox": [
+    40,
+    40,
+    230,
+    110
+   ]
+  },
+  {
+   "id": "c2",
+   "name": "Catalog API",
+   "type": "interface",
+   "bbox": [
+    300,
+    40,
+    490,
+    110
+   ]
+  },
+  {
+   "id": "c3",
+   "name": "Catalog Module",
+   "type": "module",
+   "bbox": [
+    560,
+    40,
+    750,
+    110
+   ]
+  },
+  {
+   "id": "c4",
+   "name": "Search Index",
+   "type": "database",
+   "bbox": [
+    40,
+    190,
+    230,
+    260
+   ]
+  },
+  {
+   "id": "c5",
+   "name": "Catalog DB",
+   "type": "database",
+   "bbox": [
+    560,
+    190,
+    750,
+    260
+   ]
+  }
+ ],
+ "relationships": [
+  {
+   "source": "c1",
+   "target": "c2",
+   "type": "depends_on"
+  },
+  {
+   "source": "c2",
+   "target": "c3",
+   "type": "depends_on"
+  },
+  {
+   "source": "c1",
+   "target": "c4",
+   "type": "depends_on"
+  },
+  {
+   "source": "c3",
+   "target": "c5",
+   "type": "depends_on"
+  }
+ ]
+}

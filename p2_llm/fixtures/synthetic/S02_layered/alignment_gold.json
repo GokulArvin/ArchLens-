@@ -1,0 +1,8 @@
+{
+ "c2": "ui/web/WebUi",
+ "c3": "app/controller/OrderController",
+ "c4": "app/service/OrderService",
+ "c5": "app/repository/OrderRepository",
+ "c6": "app/persistence/DataSourceConfig",
+ "c1": null
+}

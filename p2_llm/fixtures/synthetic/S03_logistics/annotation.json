@@ -1,0 +1,95 @@
+{
+ "diagram_id": "S03_logistics",
+ "image": "diagram.png",
+ "annotator": "synthetic",
+ "components": [
+  {
+   "id": "c1",
+   "name": "Shipping Svc",
+   "type": "service",
+   "bbox": [
+    40,
+    40,
+    230,
+    110
+   ]
+  },
+  {
+   "id": "c2",
+   "name": "Inventory Svc",
+   "type": "service",
+   "bbox": [
+    300,
+    40,
+    490,
+    110
+   ]
+  },
+  {
+   "id": "c3",
+   "name": "Inv DB",
+   "type": "database",
+   "bbox": [
+    560,
+    40,
+    750,
+    110
+   ]
+  },
+  {
+   "id": "c4",
+   "name": "Ship Queue",
+   "type": "queue",
+   "bbox": [
+    40,
+    190,
+    230,
+    260
+   ]
+  },
+  {
+   "id": "c5",
+   "name": "Billing Svc",
+   "type": "service",
+   "bbox": [
+    300,
+    190,
+    490,
+    260
+   ]
+  },
+  {
+   "id": "c6",
+   "name": "Pmt Svc",
+   "type": "service",
+   "bbox": [
+    560,
+    190,
+    750,
+    260
+   ]
+  }
+ ],
+ "relationships": [
+  {
+   "source": "c1",
+   "target": "c2",
+   "type": "depends_on"
+  },
+  {
+   "source": "c2",
+   "target": "c3",
+   "type": "depends_on"
+  },
+  {
+   "source": "c1",
+   "target": "c4",
+   "type": "depends_on"
+  },
+  {
+   "source": "c5",
+   "target": "c6",
+   "type": "depends_on"
+  }
+ ]
+}

@@ -1,0 +1,18 @@
+# name: dependency_role
+# version: 1.0.0
+=== SYSTEM ===
+You are an architecture analysis assistant. Static analysis has already established that the dependency exists; that fact is not up for debate.
+Your only job is to interpret the architectural role of each side. Return ONLY one JSON object.
+=== USER ===
+TASK: dependency_role
+
+Given a dependency found by static analysis, answer: what architectural role does each side play and what does the dependency represent?
+Roles should be short layer names such as Controller, Service, Repository, Domain, Infrastructure, UI, Gateway, Messaging, External.
+
+Output format:
+{"source_role":"Controller","target_role":"Repository","architectural_meaning":"...","confidence":0.0}
+
+INPUT_JSON:
+<<<
+$input_json
+>>>

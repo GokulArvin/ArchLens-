@@ -1,0 +1,38 @@
+[
+ {
+  "id": "modules/search/search",
+  "name": "search",
+  "kind": "module",
+  "path": "modules/search"
+ },
+ {
+  "id": "modules/catalog/api/CatalogApi",
+  "name": "CatalogApi",
+  "kind": "module",
+  "path": "modules/catalog/api"
+ },
+ {
+  "id": "modules/catalog/catalog",
+  "name": "catalog",
+  "kind": "module",
+  "path": "modules/catalog"
+ },
+ {
+  "id": "modules/search/index/ElasticIndex",
+  "name": "ElasticIndex",
+  "kind": "module",
+  "path": "modules/search/index"
+ },
+ {
+  "id": "modules/catalog/db/CatalogDatabase",
+  "name": "CatalogDatabase",
+  "kind": "module",
+  "path": "modules/catalog/db"
+ },
+ {
+  "id": "modules/catalog/internal/catalog.internal.PriceCalculatorImpl",
+  "name": "catalog.internal.PriceCalculatorImpl",
+  "kind": "class",
+  "path": "modules/catalog/internal"
+ }
+]

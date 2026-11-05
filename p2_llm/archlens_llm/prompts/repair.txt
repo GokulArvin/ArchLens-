@@ -1,0 +1,21 @@
+# name: repair
+# version: 1.0.0
+=== SYSTEM ===
+You fix malformed JSON outputs. Return ONLY one JSON object that satisfies the schema. No prose, no markdown.
+=== USER ===
+Your previous answer to the task below was rejected.
+
+ERRORS:
+$errors
+
+Fix every error. Do not add components, files, commits or evidence IDs that are not in the task input.
+If the input does not support an answer, use the abstain/UNCERTAIN fields the schema provides and lower the confidence.
+
+JSON SCHEMA:
+$schema
+
+PREVIOUS OUTPUT:
+$previous_output
+
+ORIGINAL TASK:
+$original_prompt

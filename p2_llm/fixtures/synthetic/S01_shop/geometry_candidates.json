@@ -1,0 +1,56 @@
+[
+ {
+  "id": "g1",
+  "source": "c1",
+  "target": "c2",
+  "confidence": 0.89
+ },
+ {
+  "id": "g2",
+  "source": "c2",
+  "target": "c3",
+  "confidence": 0.42
+ },
+ {
+  "id": "g3",
+  "source": "c3",
+  "target": "c4",
+  "confidence": 0.87
+ },
+ {
+  "id": "g4",
+  "source": "c4",
+  "target": "c7",
+  "confidence": 0.81
+ },
+ {
+  "id": "g5",
+  "source": "c4",
+  "target": "c5",
+  "confidence": 0.94
+ },
+ {
+  "id": "g6",
+  "source": "c5",
+  "target": "c6",
+  "confidence": 0.76
+ },
+ {
+  "id": "g7",
+  "source": "c4",
+  "target": "c8",
+  "confidence": 0.82
+ },
+ {
+  "id": "g8",
+  "source": "c8",
+  "target": "c9",
+  "confidence": 0.9
+ },
+ {
+  "id": "g9",
+  "source": "c9",
+  "target": "c1",
+  "confidence": 0.3
+ }
+]

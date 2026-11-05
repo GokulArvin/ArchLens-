@@ -1,0 +1,11 @@
+{
+ "c2": "web-frontend/src/WebFrontend",
+ "c3": "gateway/src/ApiGateway",
+ "c4": "order-service/src/OrderService",
+ "c5": "payment-service/src/PaymentService",
+ "c7": "database/orders/OrdersDatabase",
+ "c8": "messaging/kafka/EventBusProducer",
+ "c9": "notification-service/src/NotificationService",
+ "c1": null,
+ "c6": null
+}

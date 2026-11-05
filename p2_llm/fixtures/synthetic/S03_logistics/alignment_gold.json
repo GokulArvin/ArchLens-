@@ -1,0 +1,8 @@
+{
+ "c1": "shipping/src/ShippingService",
+ "c2": "inventory/src/InventoryService",
+ "c3": "inventory/db/InventoryDatabase",
+ "c4": "shipping/events/ShipmentEventsTopic",
+ "c5": "billing/src/BillingService",
+ "c6": "payment/src/PaymentService"
+}

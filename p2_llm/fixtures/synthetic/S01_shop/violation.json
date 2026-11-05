@@ -1,0 +1,195 @@
+{
+ "violation_id": "S01_shop-V1",
+ "violation": {
+  "type": "forbidden_dependency",
+  "source": "Web Frontend",
+  "target": "Orders DB",
+  "verdict": "VIOLATION"
+ },
+ "architecture_rule": {
+  "allowed": [
+   "Actor->UI",
+   "UI->Gateway",
+   "Gateway->Service",
+   "Service->Service",
+   "Service->Data",
+   "Service->Messaging",
+   "Messaging->Service",
+   "Service->External"
+  ],
+  "forbidden": [
+   "UI->Data",
+   "UI->Service",
+   "Gateway->Data",
+   "UI->Messaging"
+  ]
+ },
+ "code": {
+  "file": "web-frontend/src/OrderHistoryPage.java",
+  "lines": "12-31",
+  "snippet": "import database.orders.OrdersRepository;\n...\nList<Order> rows = OrdersRepository.findByUser(userId);"
+ },
+ "dependency_path": [
+  "Web Frontend",
+  "Orders DB"
+ ],
+ "commit": {
+  "hash": "a1b2c3d4",
+  "message": "Add order history page",
+  "files": [
+   "web-frontend/src/OrderHistoryPage.java"
+  ],
+  "diff": "+import database.orders.OrdersRepository;\n+List<Order> rows = OrdersRepository.findByUser(userId);"
+ },
+ "candidate_commits": [
+  {
+   "hash": "a1b2c3d4",
+   "message": "Add order history page",
+   "files": [
+    "web-frontend/src/OrderHistoryPage.java"
+   ],
+   "diff": "+import database.orders.OrdersRepository;\n+List<Order> rows = OrdersRepository.findByUser(userId);"
+  },
+  {
+   "hash": "9f8e7d6c",
+   "message": "Bump dependency versions",
+   "files": [
+    "pom.xml"
+   ],
+   "diff": "-<version>2.1</version>\n+<version>2.2</version>"
+  },
+  {
+   "hash": "5a4b3c2d",
+   "message": "Fix gateway timeout",
+   "files": [
+    "gateway/src/Routes.java"
+   ],
+   "diff": "-timeout=5\n+timeout=30"
+  }
+ ],
+ "intended_edges": [
+  [
+   "User",
+   "Web Frontend"
+  ],
+  [
+   "Web Frontend",
+   "API Gateway"
+  ],
+  [
+   "API Gateway",
+   "Order Service"
+  ],
+  [
+   "Order Service",
+   "Orders DB"
+  ],
+  [
+   "Order Service",
+   "Payment Service"
+  ],
+  [
+   "Payment Service",
+   "Stripe"
+  ],
+  [
+   "Order Service",
+   "Kafka"
+  ],
+  [
+   "Kafka",
+   "Notification Service"
+  ]
+ ],
+ "current_edges": [
+  [
+   "User",
+   "Web Frontend"
+  ],
+  [
+   "Web Frontend",
+   "API Gateway"
+  ],
+  [
+   "API Gateway",
+   "Order Service"
+  ],
+  [
+   "Order Service",
+   "Orders DB"
+  ],
+  [
+   "Order Service",
+   "Payment Service"
+  ],
+  [
+   "Payment Service",
+   "Stripe"
+  ],
+  [
+   "Order Service",
+   "Kafka"
+  ],
+  [
+   "Kafka",
+   "Notification Service"
+  ],
+  [
+   "Web Frontend",
+   "Orders DB"
+  ]
+ ],
+ "layer_of": {
+  "User": "Actor",
+  "Web Frontend": "UI",
+  "API Gateway": "Gateway",
+  "Order Service": "Service",
+  "Payment Service": "Service",
+  "Notification Service": "Service",
+  "Orders DB": "Data",
+  "Kafka": "Messaging",
+  "Stripe": "External"
+ },
+ "affected_components": [
+  {
+   "component": "Web Frontend",
+   "distance": 0,
+   "direction": "source"
+  },
+  {
+   "component": "User",
+   "distance": 1,
+   "direction": "upstream"
+  },
+  {
+   "component": "Orders DB",
+   "distance": 1,
+   "direction": "downstream"
+  }
+ ],
+ "allowed_intermediary": "API Gateway",
+ "ground_truth": {
+  "introducing_commit": "a1b2c3d4",
+  "expected_status": "SUPPORTED",
+  "root_cause_keywords": [
+   "order history",
+   "direct",
+   "repository",
+   "frontend"
+  ],
+  "affected": [
+   "Orders DB",
+   "User",
+   "Web Frontend"
+  ],
+  "expected_fix": {
+   "remove": [
+    [
+     "Web Frontend",
+     "Orders DB"
+    ]
+   ],
+   "add": []
+  }
+ }
+}

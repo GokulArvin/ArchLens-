@@ -1,0 +1,120 @@
+{
+ "violation_id": "S06_missing-V1",
+ "violation": {
+  "type": "missing_dependency",
+  "source": "Checkout Service",
+  "target": "Fraud Service",
+  "verdict": "MISSING"
+ },
+ "architecture_rule": {
+  "allowed": [
+   "Checkout Service->Fraud Service",
+   "Checkout Service->Payment Gateway",
+   "Checkout Service->Orders DB"
+  ],
+  "forbidden": [],
+  "required": [
+   "Checkout Service->Fraud Service"
+  ]
+ },
+ "code": {
+  "file": "checkout/src/CheckoutFlow.java",
+  "lines": "60-64",
+  "snippet": "// fraudClient.score(order);  // disabled for launch\npaymentGateway.charge(order);"
+ },
+ "dependency_path": [
+  "Checkout Service",
+  "Fraud Service"
+ ],
+ "commit": {
+  "hash": "fa11fa11",
+  "message": "Temporarily disable fraud check for launch",
+  "files": [
+   "checkout/src/CheckoutFlow.java"
+  ],
+  "diff": "-FraudScore s = fraudClient.score(order);\n+// fraudClient.score(order);  // disabled for launch"
+ },
+ "candidate_commits": [
+  {
+   "hash": "fa11fa11",
+   "message": "Temporarily disable fraud check for launch",
+   "files": [
+    "checkout/src/CheckoutFlow.java"
+   ],
+   "diff": "-FraudScore s = fraudClient.score(order);\n+// fraudClient.score(order);  // disabled for launch"
+  },
+  {
+   "hash": "ab12cd34",
+   "message": "Add launch banner",
+   "files": [
+    "web/banner.html"
+   ],
+   "diff": "+<div>Launch!</div>"
+  }
+ ],
+ "intended_edges": [
+  [
+   "Checkout Service",
+   "Fraud Service"
+  ],
+  [
+   "Checkout Service",
+   "Payment Gateway"
+  ],
+  [
+   "Checkout Service",
+   "Orders DB"
+  ]
+ ],
+ "current_edges": [
+  [
+   "Checkout Service",
+   "Payment Gateway"
+  ],
+  [
+   "Checkout Service",
+   "Orders DB"
+  ]
+ ],
+ "layer_of": {
+  "Checkout Service": "Service",
+  "Fraud Service": "Service",
+  "Payment Gateway": "External",
+  "Orders DB": "Data"
+ },
+ "affected_components": [
+  {
+   "component": "Checkout Service",
+   "distance": 0,
+   "direction": "source"
+  },
+  {
+   "component": "Fraud Service",
+   "distance": 1,
+   "direction": "downstream"
+  }
+ ],
+ "allowed_intermediary": null,
+ "ground_truth": {
+  "introducing_commit": "fa11fa11",
+  "expected_status": "SUPPORTED",
+  "root_cause_keywords": [
+   "disable",
+   "fraud",
+   "launch"
+  ],
+  "affected": [
+   "Checkout Service",
+   "Fraud Service"
+  ],
+  "expected_fix": {
+   "add": [
+    [
+     "Checkout Service",
+     "Fraud Service"
+    ]
+   ],
+   "remove": []
+  }
+ }
+}

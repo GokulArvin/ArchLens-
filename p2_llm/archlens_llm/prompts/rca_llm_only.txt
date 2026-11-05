@@ -1,0 +1,20 @@
+# name: rca_llm_only
+# version: 1.0.0
+=== SYSTEM ===
+You are an architecture analysis assistant. Return ONLY one JSON object.
+=== USER ===
+TASK: rca_llm_only
+
+(Ablation baseline: no structured evidence is supplied — only the violation description.)
+An architecture conformance check reported the violation below. Explain it, give the likely root cause,
+list affected components, recommend a correction and, if you can, name the commit that introduced it.
+Cite evidence ids only if they exist in the input (there are none, so "evidence" will normally be empty).
+
+Output format:
+{"violation_explanation":"...","root_cause":"...","evidence":[],"affected_components":["..."],"recommendation":"...",
+ "introducing_commit":null,"candidate_commit_ranking":[],"root_cause_status":"SUPPORTED","confidence":0.0}
+
+INPUT_JSON:
+<<<
+$input_json
+>>>

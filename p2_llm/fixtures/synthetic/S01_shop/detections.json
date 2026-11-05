@@ -1,0 +1,101 @@
+[
+ {
+  "id": "c1",
+  "bbox": [
+   44,
+   35,
+   224,
+   115
+  ],
+  "class": "architecture_component",
+  "confidence": 0.78
+ },
+ {
+  "id": "c2",
+  "bbox": [
+   297,
+   36,
+   495,
+   105
+  ],
+  "class": "architecture_component",
+  "confidence": 0.89
+ },
+ {
+  "id": "c3",
+  "bbox": [
+   562,
+   35,
+   753,
+   110
+  ],
+  "class": "architecture_component",
+  "confidence": 0.71
+ },
+ {
+  "id": "c4",
+  "bbox": [
+   555,
+   187,
+   747,
+   262
+  ],
+  "class": "architecture_component",
+  "confidence": 0.87
+ },
+ {
+  "id": "c5",
+  "bbox": [
+   822,
+   187,
+   1015,
+   264
+  ],
+  "class": "architecture_component",
+  "confidence": 0.9
+ },
+ {
+  "id": "c6",
+  "bbox": [
+   820,
+   337,
+   1011,
+   413
+  ],
+  "class": "architecture_component",
+  "confidence": 0.78
+ },
+ {
+  "id": "c7",
+  "bbox": [
+   294,
+   346,
+   496,
+   406
+  ],
+  "class": "architecture_component",
+  "confidence": 0.8
+ },
+ {
+  "id": "c8",
+  "bbox": [
+   556,
+   337,
+   756,
+   409
+  ],
+  "class": "architecture_component",
+  "confidence": 0.73
+ },
+ {
+  "id": "c9",
+  "bbox": [
+   560,
+   485,
+   749,
+   559
+  ],
+  "class": "architecture_component",
+  "confidence": 0.87
+ }
+]

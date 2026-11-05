@@ -1,0 +1,22 @@
+{
+  "_comment": "Switch provider.kind to 'gemini' or 'openai_compatible' for real runs. Model ids change: check your provider's current model list before freezing.",
+  "provider": {"kind": "mock"},
+  "providers_examples": {
+    "gemini":  {"kind": "gemini", "model": "gemini-2.5-flash", "api_key_env": "GEMINI_API_KEY"},
+    "ollama":  {"kind": "openai_compatible", "model": "qwen2.5vl:7b", "base_url": "http://localhost:11434/v1", "supports_images": true},
+    "openai":  {"kind": "openai_compatible", "model": "gpt-4o-mini", "base_url": "https://api.openai.com/v1", "api_key_env": "OPENAI_API_KEY"},
+    "groq":    {"kind": "openai_compatible", "model": "llama-3.3-70b-versatile", "base_url": "https://api.groq.com/openai/v1", "api_key_env": "GROQ_API_KEY", "supports_images": false}
+  },
+  "gateway": {"temperature": 0.0, "max_retries": 3, "timeout_s": 90, "cache": true, "max_repairs": 2},
+  "thresholds": {
+    "relation_uncertain_below": 0.5,
+    "component_abstain_below": 0.35,
+    "alignment_accept_at": 0.6,
+    "alignment_token_accept": 0.8,
+    "alignment_token_margin": 0.15,
+    "rca_uncertain_below": 0.45,
+    "impact_abstain_below": 0.4
+  },
+  "extraction": {"mode": "cv_vlm_geometry", "fewshot": true},
+  "rca": {"variant": "grounded_full"}
+}

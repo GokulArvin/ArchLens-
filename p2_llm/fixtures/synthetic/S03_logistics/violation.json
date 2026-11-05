@@ -1,0 +1,144 @@
+{
+ "violation_id": "S03_logistics-V1",
+ "violation": {
+  "type": "unexpected_coupling",
+  "source": "Billing Svc",
+  "target": "Inventory Svc",
+  "verdict": "VIOLATION"
+ },
+ "architecture_rule": {
+  "allowed": [
+   "Shipping Svc->Inventory Svc",
+   "Inventory Svc->Inv DB",
+   "Shipping Svc->Ship Queue",
+   "Billing Svc->Pmt Svc"
+  ],
+  "forbidden": [],
+  "policy": "service-to-service edges absent from the intended graph are UNEXPECTED"
+ },
+ "code": {
+  "file": "billing/src/InvoiceBuilder.java",
+  "lines": "88-97",
+  "snippet": "InventoryClient inv = new InventoryClient(INVENTORY_URL);\nif (!inv.inStock(sku)) throw ..."
+ },
+ "dependency_path": [
+  "Billing Svc",
+  "Inventory Svc"
+ ],
+ "commit": {
+  "hash": "77aa88bb",
+  "message": "Billing: check stock before invoicing",
+  "files": [
+   "billing/src/InvoiceBuilder.java"
+  ],
+  "diff": "+InventoryClient inv = new InventoryClient(INVENTORY_URL);\n+if (!inv.inStock(sku)) throw new OutOfStock();"
+ },
+ "candidate_commits": [
+  {
+   "hash": "77aa88bb",
+   "message": "Billing: check stock before invoicing",
+   "files": [
+    "billing/src/InvoiceBuilder.java"
+   ],
+   "diff": "+InventoryClient inv = new InventoryClient(INVENTORY_URL);\n+if (!inv.inStock(sku)) throw new OutOfStock();"
+  },
+  {
+   "hash": "33cc44dd",
+   "message": "Rename invoice fields",
+   "files": [
+    "billing/src/Invoice.java"
+   ],
+   "diff": "-amt\n+amount"
+  }
+ ],
+ "intended_edges": [
+  [
+   "Shipping Svc",
+   "Inventory Svc"
+  ],
+  [
+   "Inventory Svc",
+   "Inv DB"
+  ],
+  [
+   "Shipping Svc",
+   "Ship Queue"
+  ],
+  [
+   "Billing Svc",
+   "Pmt Svc"
+  ]
+ ],
+ "current_edges": [
+  [
+   "Shipping Svc",
+   "Inventory Svc"
+  ],
+  [
+   "Inventory Svc",
+   "Inv DB"
+  ],
+  [
+   "Shipping Svc",
+   "Ship Queue"
+  ],
+  [
+   "Billing Svc",
+   "Pmt Svc"
+  ],
+  [
+   "Billing Svc",
+   "Inventory Svc"
+  ]
+ ],
+ "layer_of": {
+  "Shipping Svc": "Service",
+  "Inventory Svc": "Service",
+  "Billing Svc": "Service",
+  "Pmt Svc": "Service",
+  "Inv DB": "Data",
+  "Ship Queue": "Messaging"
+ },
+ "affected_components": [
+  {
+   "component": "Billing Svc",
+   "distance": 0,
+   "direction": "source"
+  },
+  {
+   "component": "Inventory Svc",
+   "distance": 1,
+   "direction": "downstream"
+  },
+  {
+   "component": "Inv DB",
+   "distance": 2,
+   "direction": "downstream"
+  }
+ ],
+ "allowed_intermediary": null,
+ "ground_truth": {
+  "introducing_commit": "77aa88bb",
+  "expected_status": "SUPPORTED",
+  "root_cause_keywords": [
+   "stock",
+   "invoicing",
+   "billing",
+   "inventory"
+  ],
+  "affected": [
+   "Billing Svc",
+   "Inv DB",
+   "Inventory Svc"
+  ],
+  "expected_fix": {
+   "remove": [
+    [
+     "Billing Svc",
+     "Inventory Svc"
+    ]
+   ],
+   "add": []
+  }
+ }
+}
