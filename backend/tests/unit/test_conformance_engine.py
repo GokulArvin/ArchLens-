@@ -1,11 +1,16 @@
-
 """
 Unit tests for the Conformance Engine (Module E).
 """
 
 import pytest
-from app.modules.conformance_engine.engine import ConformanceEngine, VIOLATION, CONFORMANT, MISSING
 
+from app.modules.conformance_engine.engine import (
+    ConformanceEngine,
+    VIOLATION,
+    CONFORMANT,
+    MISSING,
+    UNCERTAIN,
+)
 
 @pytest.fixture
 def engine():
@@ -148,3 +153,23 @@ def test_graph_builder_does_not_create_implicit_nodes(engine):
 
     with pytest.raises(ValueError):
         engine.build_graph(graph)
+
+def test_uncertain_verdict_for_unknown_component_layer(engine):
+    """Explicitly unknown component layer should produce UNCERTAIN."""
+    components = [
+        {
+            "id": "service",
+            "name": "OrderService",
+            "type": "service",
+            "metadata": {"layer": "unknown"},
+            "confidence": 1.0,
+        }
+    ]
+
+    G_I = make_graph(components, [])
+    G_C = make_graph(components, [])
+
+    result = engine.check_conformance(G_I, G_C)
+
+    assert result["verdict"] == UNCERTAIN
+    assert len(result["violations"]) == 0

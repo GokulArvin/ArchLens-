@@ -19,7 +19,7 @@ import networkx as nx
 logger = logging.getLogger(__name__)
 
 
-# ─── Verdict constants ────────────────────────────────────────────────────────
+# Verdict constants
 
 CONFORMANT = "CONFORMANT"
 VIOLATION = "VIOLATION"
@@ -28,7 +28,7 @@ UNEXPECTED = "UNEXPECTED"
 UNCERTAIN = "UNCERTAIN"
 
 
-# ─── Architectural rules ─────────────────────────────────────────────────────
+# Architectural rules
 
 class LayeredArchitectureRule:
     """Enforce layered architecture constraints."""
@@ -61,7 +61,6 @@ class ConformanceRule:
         raise NotImplementedError
 
 
-
 class ForbiddenDependencyRule(ConformanceRule):
     """Detect forbidden architectural dependencies."""
 
@@ -71,7 +70,7 @@ class ForbiddenDependencyRule(ConformanceRule):
         self.forbidden_pairs = {
             (
                 str(source).strip().lower(),
-                str(target).strip().lower()
+                str(target).strip().lower(),
             )
             for source, target in forbidden_pairs
         }
@@ -94,36 +93,29 @@ class ForbiddenDependencyRule(ConformanceRule):
             or target_data.get("type", "")
         )
 
-        # Normalize values to avoid capitalization mismatches.
         src_type = str(src_type).strip().lower()
         tgt_type = str(tgt_type).strip().lower()
 
-        # Check against forbidden architectural dependencies.
         if (src_type, tgt_type) in self.forbidden_pairs:
 
             edge_data = G_C.get_edge_data(
                 source,
                 target,
-                default={}
+                default={},
             )
 
             return {
                 "verdict": VIOLATION,
                 "rule": self.name,
                 "violation_type": "forbidden_dependency",
-
                 "source": source,
                 "target": target,
-
                 "source_component": source,
                 "target_component": target,
-
                 "severity": "high",
-
                 "confidence": float(
                     edge_data.get("confidence", 1.0)
                 ),
-
                 "evidence": {
                     "source_layer": src_type,
                     "target_layer": tgt_type,
@@ -134,17 +126,13 @@ class ForbiddenDependencyRule(ConformanceRule):
                         )
                     ),
                 },
-
                 "description": (
                     f"Forbidden architectural dependency: "
                     f"{src_type} -> {tgt_type}."
                 ),
             }
 
-        return {
-            "verdict": CONFORMANT
-        }
-
+        return {"verdict": CONFORMANT}
 
 
 class MissingDependencyRule(ConformanceRule):
@@ -153,8 +141,15 @@ class MissingDependencyRule(ConformanceRule):
     name = "missing_dependency"
 
     def apply(self, G_I, G_C, source, target):
-        if G_I.has_edge(source, target) and not G_C.has_edge(source, target):
-            edge_data = G_I.get_edge_data(source, target, default={})
+
+        if G_I.has_edge(source, target) and not G_C.has_edge(
+            source, target
+        ):
+            edge_data = G_I.get_edge_data(
+                source,
+                target,
+                default={},
+            )
 
             return {
                 "verdict": MISSING,
@@ -165,7 +160,9 @@ class MissingDependencyRule(ConformanceRule):
                 "source_component": source,
                 "target_component": target,
                 "severity": "medium",
-                "confidence": float(edge_data.get("confidence", 1.0)),
+                "confidence": float(
+                    edge_data.get("confidence", 1.0)
+                ),
                 "evidence": {
                     "expected_relationship": edge_data,
                     "found_in": "intended_graph",
@@ -186,8 +183,15 @@ class UnexpectedDependencyRule(ConformanceRule):
     name = "unexpected_dependency"
 
     def apply(self, G_I, G_C, source, target):
-        if G_C.has_edge(source, target) and not G_I.has_edge(source, target):
-            edge_data = G_C.get_edge_data(source, target, default={})
+
+        if G_C.has_edge(source, target) and not G_I.has_edge(
+            source, target
+        ):
+            edge_data = G_C.get_edge_data(
+                source,
+                target,
+                default={},
+            )
 
             return {
                 "verdict": UNEXPECTED,
@@ -198,7 +202,9 @@ class UnexpectedDependencyRule(ConformanceRule):
                 "source_component": source,
                 "target_component": target,
                 "severity": "medium",
-                "confidence": float(edge_data.get("confidence", 1.0)),
+                "confidence": float(
+                    edge_data.get("confidence", 1.0)
+                ),
                 "evidence": {
                     "actual_relationship": edge_data,
                     "found_in": "current_graph",
@@ -222,13 +228,18 @@ class CycleDetectionRule(ConformanceRule):
         results = []
 
         for cycle in nx.simple_cycles(G_C):
-            cycle_edges = list(zip(cycle, cycle[1:] + cycle[:1]))
+
+            cycle_edges = list(
+                zip(cycle, cycle[1:] + cycle[:1])
+            )
 
             edge_confidences = [
                 float(
-                    G_C.get_edge_data(src, tgt, default={}).get(
-                        "confidence", 1.0
-                    )
+                    G_C.get_edge_data(
+                        src,
+                        tgt,
+                        default={},
+                    ).get("confidence", 1.0)
                 )
                 for src, tgt in cycle_edges
             ]
@@ -248,7 +259,10 @@ class CycleDetectionRule(ConformanceRule):
                 "evidence": {
                     "cycle_nodes": cycle,
                     "cycle_edges": [
-                        {"source": src, "target": tgt}
+                        {
+                            "source": src,
+                            "target": tgt,
+                        }
                         for src, tgt in cycle_edges
                     ],
                 },
@@ -262,7 +276,7 @@ class CycleDetectionRule(ConformanceRule):
         return results
 
 
-# ─── Main Conformance Engine ─────────────────────────────────────────────────
+# Main Conformance Engine
 
 class ConformanceEngine:
     """Compare intended and current architecture graphs."""
@@ -273,6 +287,8 @@ class ConformanceEngine:
         ("gateway", "repository"),
         ("controller", "database"),
     ]
+
+    UNCERTAINTY_THRESHOLD = 0.5
 
     def __init__(self):
         self.rules = [
@@ -374,13 +390,89 @@ class ConformanceEngine:
 
         return G
 
+    def _has_uncertain_evidence(
+        self,
+        intended_graph: Dict[str, Any],
+        current_graph: Dict[str, Any],
+    ) -> bool:
+        """
+        Determine whether available graph evidence is insufficient
+        for a confident conformance decision.
+
+        Uncertainty conditions:
+        - Component confidence below threshold.
+        - Relationship confidence below threshold.
+        - Explicitly unknown architectural layer.
+
+        Missing layer metadata alone does not imply uncertainty.
+        """
+
+        for graph in (intended_graph, current_graph):
+
+            for component in graph.get("components", []):
+
+                confidence = component.get("confidence", 1.0)
+
+                try:
+                    confidence = float(confidence)
+                except (TypeError, ValueError):
+                    raise ValueError(
+                        f"Invalid component confidence: {confidence}"
+                    )
+
+                if not 0.0 <= confidence <= 1.0:
+                    raise ValueError(
+                        "Component confidence must be between 0 and 1."
+                    )
+
+                if confidence < self.UNCERTAINTY_THRESHOLD:
+                    return True
+
+                metadata = component.get("metadata", {})
+
+                if not isinstance(metadata, dict):
+                    raise ValueError(
+                        "Component metadata must be a dictionary."
+                    )
+
+                # Missing layer alone does not trigger uncertainty.
+                layer = metadata.get("layer")
+
+                if (
+                    layer is not None
+                    and str(layer).strip().lower() == "unknown"
+                ):
+                    return True
+
+            for relationship in graph.get("relationships", []):
+
+                confidence = relationship.get("confidence", 1.0)
+
+                try:
+                    confidence = float(confidence)
+                except (TypeError, ValueError):
+                    raise ValueError(
+                        f"Invalid relationship confidence: {confidence}"
+                    )
+
+                if not 0.0 <= confidence <= 1.0:
+                    raise ValueError(
+                        "Relationship confidence must be between 0 and 1."
+                    )
+
+                if confidence < self.UNCERTAINTY_THRESHOLD:
+                    return True
+
+        return False
+
     def check_conformance(
         self,
         intended_graph: Dict[str, Any],
         current_graph: Dict[str, Any],
     ) -> Dict[str, Any]:
         """
-        Compare G_I and G_C and return a structured conformance report.
+        Compare intended and current architecture graphs
+        and return a structured conformance report.
         """
 
         G_I = self.build_graph(intended_graph)
@@ -407,7 +499,10 @@ class ConformanceEngine:
         for src, tgt in G_I.edges():
 
             result = missing_rule.apply(
-                G_I, G_C, src, tgt
+                G_I,
+                G_C,
+                src,
+                tgt,
             )
 
             if result.get("verdict") == MISSING:
@@ -432,7 +527,8 @@ class ConformanceEngine:
         for violation in violations:
 
             violation_type = violation.get(
-                "violation_type", "unknown"
+                "violation_type",
+                "unknown",
             )
 
             summary["by_type"][violation_type] = (
@@ -446,11 +542,27 @@ class ConformanceEngine:
 
             summary["severity_counts"][severity] += 1
 
-        verdict = VIOLATION if violations else CONFORMANT
+        # Determine the overall verdict.
+        has_uncertain_evidence = self._has_uncertain_evidence(
+            intended_graph,
+            current_graph,
+        )
+
+        # Definite violations take precedence over uncertainty.
+        if violations:
+            verdict = VIOLATION
+
+        elif has_uncertain_evidence:
+            verdict = UNCERTAIN
+
+        else:
+            verdict = CONFORMANT
 
         logger.info(
-            "Conformance check complete: %s violations found",
+            "Conformance check complete: "
+            "%s violations found; verdict=%s",
             len(violations),
+            verdict,
         )
 
         return {

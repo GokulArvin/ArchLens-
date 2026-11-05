@@ -31,14 +31,15 @@ class PythonASTParser:
     """Extract classes, imports, functions and calls from Python files."""
 
     EXCLUDED_DIRECTORIES = {
-        ".venv",
-        "venv",
-        "__pycache__",
-        ".git",
-        ".pytest_cache",
-        "site-packages",
-        "node_modules",
-    }
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".git",
+    ".pytest_cache",
+    "site-packages",
+    "node_modules",
+    "tests",
+}
 
     def parse_file(self, file_path: str) -> Dict[str, Any]:
         """Parse a Python file using the built-in AST module."""
