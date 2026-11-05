@@ -50,3 +50,7 @@ htmlcov/
 
 # Docker
 *.log
+
+# Local application database
+backend/data/
+*.db

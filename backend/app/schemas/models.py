@@ -2,12 +2,12 @@
 """
 Pydantic schemas for ArchLens data models.
 
-Shared across all modules for consistent JSON/graph schema.
-Includes architecture graphs, conformance findings, evidence,
-RCA outputs, and API request/response models.
+Shared across all modules for consistent graph, conformance,
+evidence, RCA, and report structures.
 """
 
 import uuid
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional, Literal
 
@@ -43,7 +43,7 @@ class ArchComponent(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
-# ─── Relationship / Edge ─────────────────────────────────────────────────────
+# ─── Relationship / Edge ────────────────────────────────────────────────────
 
 class RelationshipType(str, Enum):
     DEPENDS_ON = "depends_on"
@@ -64,10 +64,10 @@ class ArchRelationship(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
-# ─── Architecture Graph ──────────────────────────────────────────────────────
+# ─── Architecture Graph ─────────────────────────────────────────────────────
 
 class ArchGraph(BaseModel):
-    """Unified graph model for intended (G_I) and current (G_C) architectures."""
+    """Unified graph model for intended and current architectures."""
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
@@ -100,46 +100,31 @@ class ViolationType(str, Enum):
 
 
 class ArchViolation(BaseModel):
-    """
-    Standardized conformance finding.
-
-    Designed to support deterministic rule-engine findings
-    and evidence-grounded LLM root-cause analysis.
-    """
+    """Standardized conformance finding."""
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
-    # Classification
     verdict: ViolationVerdict
     violation_type: Optional[ViolationType] = None
     rule: Optional[str] = None
 
-    # Components involved in the finding
-    # Optional because some findings, such as cycles,
-    # may involve multiple components rather than one pair.
     source: Optional[str] = None
     target: Optional[str] = None
 
-    # Backward compatibility with earlier schema versions
     source_component: Optional[str] = None
     target_component: Optional[str] = None
 
-    # Expected versus actual architecture
     expected: Optional[str] = None
     actual: Optional[str] = None
 
-    # Finding details
     severity: Literal["low", "medium", "high", "critical"] = "medium"
     description: str = ""
 
-    # Evidence supporting the finding
     evidence: Dict[str, Any] = Field(default_factory=dict)
-
-    # Confidence score between 0 and 1
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
 
 
-# ─── Conformance API Response ─────────────────────────────────────────────────
+# ─── Conformance API Response ────────────────────────────────────────────────
 
 class ConformanceSummary(BaseModel):
     total_violations: int = 0
@@ -154,8 +139,12 @@ class CheckConformanceResponse(BaseModel):
     violations: List[ArchViolation] = Field(default_factory=list)
     summary: ConformanceSummary = Field(default_factory=ConformanceSummary)
 
+    # References to the persisted report.
+    report_id: Optional[str] = None
+    run_id: Optional[str] = None
 
-# ─── Git Evidence ─────────────────────────────────────────────────────────────
+
+# ─── Git Evidence ────────────────────────────────────────────────────────────
 
 class GitCommit(BaseModel):
     hash: str
@@ -174,15 +163,10 @@ class GitEvidence(BaseModel):
     related_commits: List[GitCommit] = Field(default_factory=list)
 
 
-# ─── LLM RCA Output ───────────────────────────────────────────────────────────
+# ─── LLM RCA Output ──────────────────────────────────────────────────────────
 
 class RCAOutput(BaseModel):
-    """
-    Structured root-cause analysis output.
-
-    Evidence entries should reference evidence IDs from the
-    associated evidence package.
-    """
+    """Structured root-cause analysis output."""
 
     violation_id: str
     violation_explanation: str
@@ -193,12 +177,13 @@ class RCAOutput(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
 
 
-# ─── Conformance Report ───────────────────────────────────────────────────────
+# ─── Conformance Report ──────────────────────────────────────────────────────
 
 class ConformanceReport(BaseModel):
-    """Complete architecture conformance report."""
+    """Complete, persistable architecture conformance report."""
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    run_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
     repository: str
     diagram_path: Optional[str] = None
@@ -207,13 +192,29 @@ class ConformanceReport(BaseModel):
     current_graph: Optional[ArchGraph] = None
 
     violations: List[ArchViolation] = Field(default_factory=list)
+
+    # Structured evidence and RCA fields.
     git_evidence: List[GitEvidence] = Field(default_factory=list)
     rca_outputs: List[RCAOutput] = Field(default_factory=list)
 
+    # Preserve the complete raw evidence packages and RCA responses
+    # returned by the existing modules.
+    evidence_packages: List[Dict[str, Any]] = Field(default_factory=list)
+    rca_results: List[Dict[str, Any]] = Field(default_factory=list)
+
     summary: Dict[str, Any] = Field(default_factory=dict)
 
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
 
-# ─── API Request / Response Models ────────────────────────────────────────────
+    status: Literal["processing", "completed", "failed"] = "processing"
+
+
+# ─── API Request / Response Models ───────────────────────────────────────────
 
 class AnalyzeDiagramRequest(BaseModel):
     diagram_path: str
