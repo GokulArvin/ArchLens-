@@ -1,0 +1,10 @@
+S01_shop         ok       User:user, Web Frontend:frontend, API Gateway:gateway, Order Service:service, Payment Service:service, Stripe:external_system, Orders DB:database, Kafka:queue, Notification Service:service
+S02_layered      ok       Customer:user, Web UI:frontend, Order Controller:component, Order Service:service, Order Repository:component, Database:database
+S03_logistics    ok       Shipping Svc:service, Inventory Svc:service, Inv DB:database, Ship Queue:queue, Billing Svc:service, Pmt Svc:service
+S04_modular      ok       Search Module:module, Catalog API:interface, Catalog Module:module, Search Index:database, Catalog DB:database
+S05_cycle        ok       Auth Service:service, User Service:service, Profile Service:service, Users DB:database
+dependency_role: {'source_role': 'Controller', 'target_role': 'Repository', 'architectural_meaning': 'Direct invocation of data access logic from the presentation layer, bypassing the service layer.', 'confidence': 0.95}
+
+log: runs\smoke\llm_calls.jsonl   failures: 0
+--- failures:
+0
