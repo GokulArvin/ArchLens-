@@ -25,6 +25,28 @@ def test_gemini_payload_and_usage(monkeypatch):
     assert seen["payload"]["systemInstruction"]["parts"][0]["text"] == "sys"
 
 
+def test_gateway_max_tokens_and_finish_reason(monkeypatch, tmp_path):
+    import json
+    from archlens_llm.gateway import LLMGateway
+    from archlens_llm.schemas import DependencyRole
+    monkeypatch.setenv("GEMINI_API_KEY", "k")
+    seen = {}
+    answer = {"source_role": "Controller", "target_role": "Repository",
+              "architectural_meaning": "layer skip", "confidence": 0.9}
+
+    def fake_post(url, payload, headers, timeout_s):
+        seen.update(payload=payload)
+        return {"candidates": [{"content": {"parts": [{"text": json.dumps(answer)}]}, "finishReason": "STOP"}],
+                "usageMetadata": {"promptTokenCount": 11, "candidatesTokenCount": 3}}
+    monkeypatch.setattr(P, "_post", fake_post)
+    gw = LLMGateway(P.GeminiProvider(model="m-test"), run_dir=tmp_path, cache=False, max_tokens=8192)
+    r = gw.structured("dependency_role", {"input_json": {"source": "a", "target": "b"}}, DependencyRole)
+    assert r.ok
+    assert seen["payload"]["generationConfig"]["maxOutputTokens"] == 8192
+    rec = json.loads((tmp_path / "llm_calls.jsonl").read_text().splitlines()[-1])
+    assert rec["finish_reason"] == "STOP"
+
+
 def test_gemini_requires_key(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     with pytest.raises(ProviderError):

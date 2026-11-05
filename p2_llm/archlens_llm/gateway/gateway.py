@@ -42,8 +42,9 @@ class StructuredResult:
 class LLMGateway:
     def __init__(self, provider, run_dir: str | Path = "runs/default", cache: bool = True,
                  max_retries: int = 3, timeout_s: float = 60.0, temperature: float = 0.0,
-                 backoff_s: float = 1.5):
+                 backoff_s: float = 1.5, max_tokens: int = 8192):
         self.provider = provider
+        self.max_tokens = max_tokens
         self.run_dir = Path(run_dir)
         self.run_dir.mkdir(parents=True, exist_ok=True)
         self.log_path = self.run_dir / "llm_calls.jsonl"
@@ -108,7 +109,7 @@ class LLMGateway:
         for attempt in range(max_repairs + 1):
             res.attempts += 1
             req = LLMRequest(prompt=current_prompt, system=system, images=images or [],
-                             temperature=self.temperature)
+                             temperature=self.temperature, max_tokens=self.max_tokens)
             try:
                 resp = self.generate(req)
             except ProviderError as e:
@@ -155,6 +156,7 @@ class LLMGateway:
             "input_tokens": resp.input_tokens if resp else 0,
             "output_tokens": resp.output_tokens if resp else 0,
             "latency_s": round(resp.latency_s, 3) if resp else 0, "cached": resp.cached if resp else False,
+            "finish_reason": resp.finish_reason if resp else "",
             "meta": meta or {},
         }
         with self.log_path.open("a") as f:

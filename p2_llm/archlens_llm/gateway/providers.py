@@ -74,7 +74,8 @@ class GeminiProvider:
         return LLMResponse(text=text, provider=self.name, model=self.model,
                            input_tokens=usage.get("promptTokenCount", 0),
                            output_tokens=usage.get("candidatesTokenCount", 0),
-                           latency_s=time.time() - t0, raw=out)
+                           latency_s=time.time() - t0,
+                           finish_reason=out["candidates"][0].get("finishReason", ""), raw=out)
 
 
 class OpenAICompatibleProvider:
@@ -117,7 +118,8 @@ class OpenAICompatibleProvider:
         return LLMResponse(text=text, provider=self.name, model=self.model,
                            input_tokens=usage.get("prompt_tokens", 0),
                            output_tokens=usage.get("completion_tokens", 0),
-                           latency_s=time.time() - t0, raw=out)
+                           latency_s=time.time() - t0,
+                           finish_reason=out["choices"][0].get("finish_reason", "") or "", raw=out)
 
 
 def build_provider(cfg: dict):

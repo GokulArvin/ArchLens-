@@ -7,7 +7,7 @@
     "openai":  {"kind": "openai_compatible", "model": "gpt-4o-mini", "base_url": "https://api.openai.com/v1", "api_key_env": "OPENAI_API_KEY"},
     "groq":    {"kind": "openai_compatible", "model": "llama-3.3-70b-versatile", "base_url": "https://api.groq.com/openai/v1", "api_key_env": "GROQ_API_KEY", "supports_images": false}
   },
-  "gateway": {"temperature": 0.0, "max_retries": 3, "timeout_s": 90, "cache": true, "max_repairs": 2},
+  "gateway": {"temperature": 0.0, "max_retries": 3, "timeout_s": 90, "cache": true, "max_repairs": 2, "max_tokens": 8192},
   "thresholds": {
     "relation_uncertain_below": 0.5,
     "component_abstain_below": 0.35,

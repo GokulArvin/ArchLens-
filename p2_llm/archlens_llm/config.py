@@ -19,4 +19,5 @@ def make_gateway(cfg: dict | None = None, run_dir: str | Path = "runs/default", 
     g = cfg.get("gateway", {})
     provider = build_provider(provider_override or cfg["provider"])
     return LLMGateway(provider, run_dir=run_dir, cache=g.get("cache", True), max_retries=g.get("max_retries", 3),
-                      timeout_s=g.get("timeout_s", 60), temperature=g.get("temperature", 0.0))
+                      timeout_s=g.get("timeout_s", 60), temperature=g.get("temperature", 0.0),
+                      max_tokens=g.get("max_tokens", 8192))

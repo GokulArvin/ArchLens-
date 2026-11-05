@@ -25,6 +25,7 @@ class LLMResponse:
     output_tokens: int = 0
     latency_s: float = 0.0
     cached: bool = False
+    finish_reason: str = ""
     raw: dict = field(default_factory=dict)
 
 
