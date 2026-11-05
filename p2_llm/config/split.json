@@ -1,0 +1,14 @@
+{
+ "seed": 13,
+ "prompt_dev": [
+  "S01_shop",
+  "S04_modular",
+  "S05_cycle"
+ ],
+ "held_out_test": [
+  "S02_layered",
+  "S03_logistics",
+  "S06_missing"
+ ],
+ "sha256": "684490344d300e13"
+}
