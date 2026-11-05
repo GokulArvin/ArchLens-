@@ -27,6 +27,20 @@ ALLOWED_INPUT_EXTENSIONS = {".png", ".jpg", ".jpeg"}
 DEFAULT_MAX_SIZE = 1920  # longest side, in pixels; aspect ratio preserved
 
 
+def select_component_type(clip_scores: Dict[str, float]) -> str:
+    """Pick the winning CLIP type, or "unknown" if CLIP produced no real signal.
+
+    Audit-pass fix: CLIPClassifier.classify() returns all-zero scores when
+    no CLIP model is loaded. A bare max(scores, key=scores.get) tie-breaks
+    to the first entry in COMPONENT_TYPE_MAP ("database"), which silently
+    mistyped every single component as a database whenever CLIP wasn't
+    available - this guards that case explicitly instead.
+    """
+    if not clip_scores or not any(clip_scores.values()):
+        return "unknown"
+    return max(clip_scores, key=clip_scores.get)
+
+
 class CVPreprocessor:
     """Stage 1: Image preprocessing pipeline."""
 
@@ -190,8 +204,13 @@ class CLIPClassifier:
         try:
             import clip
             import torch
+
+            from app.modules.cv_pipeline.embeddings import DEFAULT_DOWNLOAD_ROOT
+
             device = "cuda" if torch.cuda.is_available() else "cpu"
-            self.model, self.preprocess_fn = clip.load("ViT-B/32", device=device)
+            # Shares the cache dir with ComponentEmbedder (embeddings.py) so
+            # the ~338MB ViT-B/32 weights are only ever downloaded once.
+            self.model, self.preprocess_fn = clip.load("ViT-B/32", device=device, download_root=str(DEFAULT_DOWNLOAD_ROOT))
             self.device = device
             logger.info("CLIP model loaded successfully")
         except Exception as e:
@@ -246,21 +265,26 @@ class CVPipeline:
         # Stage 1: Preprocess
         img = self.preprocessor.preprocess(image_path)
 
-        # Stage 2: Edge detection
+        # Stage 2: Edge detection (diagnostic signal; Stage 8 computes its
+        # own Canny internally via geometry_relations.detect_lines, tuned
+        # specifically for line/connector detection rather than this
+        # stage's general-purpose edge map)
         edges = self.edge_detector.canny(img)
+        edge_pixel_count = int((edges > 0).sum())
 
         # Stage 3: Component detection
         raw_detections = self.component_detector.detect(img)
 
         # Stage 6: CLIP classification on each detected region
         components = []
-        for det in raw_detections:
+        for i, det in enumerate(raw_detections):
             x1, y1, x2, y2 = [int(v) for v in det["bbox"]]
             region = img[y1:y2, x1:x2]
             clip_scores = self.clip_classifier.classify(region)
-            comp_type = max(clip_scores, key=clip_scores.get)
+            comp_type = select_component_type(clip_scores)
 
             components.append({
+                "id": str(i),
                 "name": det.get("class_name", "unknown"),
                 "type": comp_type,
                 "bbox": {"x1": x1, "y1": y1, "x2": x2, "y2": y2},
@@ -268,14 +292,15 @@ class CVPipeline:
                 "clip_scores": clip_scores,
             })
 
-        # Stage 8: Relationship extraction (geometry-based placeholder)
-        relationships = self._extract_relationships(components, edges)
+        # Stage 8: Geometry-based relationship extraction (Sprint 5)
+        relationships = self._extract_relationships(components, img)
 
         result = {
             "graph_type": "intended",
             "source": image_path,
             "components": components,
             "relationships": relationships,
+            "edge_pixel_count": edge_pixel_count,
         }
         logger.info(
             f"CV pipeline complete: {len(components)} components, "
@@ -286,11 +311,25 @@ class CVPipeline:
     def _extract_relationships(
         self,
         components: List[Dict],
-        edges: np.ndarray,
+        img: np.ndarray,
     ) -> List[Dict[str, Any]]:
         """
-        Placeholder: geometry-based relationship extraction.
-        Full implementation in Sprint 5.
+        Stage 8: geometry-based relationship extraction (Sprint 5).
+
+        Wires in the real Hough-line extractor from geometry_relations.py -
+        the project's strongest CV baseline (F1=0.581 on the full dataset,
+        see docs/sprint5_vit_geometry_report.md) - rather than a placeholder.
         """
-        # TODO: use Hough lines + component proximity + VLM to extract arrows
-        return []
+        if not components:
+            return []
+
+        from app.modules.cv_pipeline.geometry_relations import detect_lines, propose_relations
+        from app.schemas.models import ArchComponent, BoundingBox
+
+        arch_components = [
+            ArchComponent(id=c["id"], name=c["name"], type=c["type"], bbox=BoundingBox(**c["bbox"]), confidence=c["confidence"])
+            for c in components
+        ]
+        lines = detect_lines(img)
+        candidates = propose_relations(lines, arch_components)
+        return [c.to_dict() for c in candidates]

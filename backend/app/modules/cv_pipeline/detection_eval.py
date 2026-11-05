@@ -95,7 +95,7 @@ def evaluate_detections(
 
     # all pairwise IoUs, sorted best-first, greedily assigned
     pairs = []
-    for gi, (gt_id, gt_box) in enumerate(gt_boxes):
+    for gi, (_gt_id, gt_box) in enumerate(gt_boxes):
         for pi, pred_box in enumerate(predicted_boxes):
             score = iou(gt_box, pred_box)
             if score >= iou_threshold:
@@ -105,7 +105,7 @@ def evaluate_detections(
     matched_gt: set[int] = set()
     matched_pred: set[int] = set()
     matched_pairs: list[tuple[str, int]] = []
-    for score, gi, pi in pairs:
+    for _score, gi, pi in pairs:
         if gi in matched_gt or pi in matched_pred:
             continue
         matched_gt.add(gi)

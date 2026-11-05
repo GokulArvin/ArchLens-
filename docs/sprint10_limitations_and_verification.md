@@ -1,5 +1,13 @@
 # Sprint 10: Limitations & Claim Verification (D49)
 
+> **Note**: a further audit pass happened after this doc was first written
+> (see `docs/audit_findings.md`), fixing two real bugs in `pipeline.py`
+> (the `CVPipeline` orchestrator's relationship extraction and a CLIP-
+> fallback mistyping issue). None of the quantitative results in
+> `docs/cv_method_results_report.md` were affected - no evaluation script
+> used `CVPipeline.analyze()`, all exercised their modules directly - but
+> it's noted here for anyone reading chronologically.
+
 ## Verification process
 
 Every quantitative claim in `docs/cv_method_results_report.md` (D48) was

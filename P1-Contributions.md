@@ -201,6 +201,16 @@ consistent real example (`notebooks/03_final_demo_walkthrough.ipynb`).
 
 ## All 10 sprints (Days 1-50) complete.
 
+## Post-sprint audit
+
+A full logic/dead-code/missed-implementation review across every module
+found and fixed two real bugs in the `CVPipeline` orchestrator (relationship
+extraction was a stale no-op placeholder despite Sprint 5 building the real
+thing; a CLIP-fallback path silently mistyped every component as
+"database"), plus a duplicate-model-download inconsistency and stale docs.
+Full record: `docs/audit_findings.md`. 6 new regression tests added
+(89 total); full suite passes, lint clean.
+
 ---
 
 ## Dataset Allocation Duty (ongoing, not day-specific)
