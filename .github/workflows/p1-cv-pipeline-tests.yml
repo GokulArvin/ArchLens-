@@ -34,6 +34,6 @@ jobs:
         working-directory: backend
         run: python -m pytest tests/unit/ -v
 
-      - name: Lint (ruff)
+      - name: Lint (ruff) — P1-owned paths only
         working-directory: backend
-        run: python -m ruff check --select F,E,W --ignore E501 .
+        run: python -m ruff check --select F,E,W --ignore E501 app/modules/cv_pipeline/ app/schemas/ scripts/ tests/unit/
