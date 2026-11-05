@@ -1,0 +1,16 @@
+{
+  "_version": "1.0.0",
+  "examples": [
+    {"convention": "Cylinder shape, label 'Orders'", "output": {"name": "Orders", "type": "database", "evidence": ["visual:cylinder", "ocr:Orders"]}},
+    {"convention": "Stick figure or person icon with text 'Customer' below it", "output": {"name": "Customer", "type": "user", "evidence": ["visual:person icon", "ocr:Customer (below icon)"]}},
+    {"convention": "Box labelled 'Order Svc'", "output": {"name": "Order Service", "type": "service", "evidence": ["ocr:Order Svc", "abbrev:svc=service"]}},
+    {"convention": "Box labelled 'Kafka' or 'RabbitMQ' or 'orders-topic'", "output": {"name": "Kafka", "type": "queue", "evidence": ["ocr:Kafka", "known product: message broker"]}},
+    {"convention": "Cloud shape or box outside the system boundary labelled 'Stripe'", "output": {"name": "Stripe", "type": "external_system", "evidence": ["visual:outside boundary", "known product: payment provider"]}},
+    {"convention": "Dashed arrow from Order Service to Kafka", "output": {"relation_type": "publishes_to", "status": "candidate", "evidence": ["dashed arrow = async message"]}},
+    {"convention": "Arrow from Notification Service pointing to Kafka labelled 'subscribe'", "output": {"relation_type": "reads_from", "note": "the arrow direction is drawn, but the label says consumer; report source=Notification Service, target=Kafka, type=reads_from"}},
+    {"convention": "Line with arrowheads at both ends between A and B", "output": {"status": "uncertain", "confidence": 0.4, "evidence": ["double-headed arrow: direction ambiguous"]}},
+    {"convention": "Line with no arrowhead between A and B", "output": {"status": "uncertain", "confidence": 0.35, "evidence": ["undirected line"]}},
+    {"convention": "Large box 'Order Domain' containing boxes 'Order API' and 'Order Store'", "output": {"relation_type": "contains", "evidence": ["nesting"]}},
+    {"convention": "Blurry box where text cannot be read", "output": {"name": "", "type": "unknown", "abstain": true, "confidence": 0.2}}
+  ]
+}
