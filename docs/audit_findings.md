@@ -1,5 +1,50 @@
 # Final Audit: Logic Issues, Dead Code, Errors (Post-Sprint-10)
 
+> Two passes: an initial targeted review (below), then a full line-by-line
+> re-read of every module in `backend/app/modules/cv_pipeline/` and every
+> script in `backend/scripts/` specifically hunting for hardcoded values,
+> logic mismatches, and code-cleanliness issues. Second-pass findings:
+>
+> 1. **`CVPreprocessor._normalize()`/`denoise()` had genuinely hardcoded
+>    CLAHE/denoising parameters** (`clipLimit=2.0`, `tileGridSize=(8,8)`,
+>    `10, 10, 7, 21`) with no way to override them, inconsistent with the
+>    rest of the class (`max_size` already a configurable constructor
+>    param). Fixed: promoted to named constants
+>    (`DEFAULT_CLAHE_CLIP_LIMIT`/`DEFAULT_CLAHE_TILE_GRID_SIZE`) and
+>    constructor/method parameters, same default behavior, now overridable.
+> 2. **`render_alignment_overlay.py` reloaded and re-parsed the entire
+>    manifest from disk inside `render()`**, called once per diagram -
+>    redundant I/O/parsing on every call. Fixed: manifest loaded once in
+>    `main()`, the right `ArchGraph` passed in directly. Verified the
+>    regenerated PNGs are byte-identical to the previous (correct) output -
+>    pure cleanup, no behavior change.
+> 3. **`evaluate_detection_baseline.py` rebuilt a linear-search list inside
+>    a loop** (`[e["diagram_id"] for e in baseline["results"]].index(...)`)
+>    to look up a diagram's entry by id, once per matched true-positive.
+>    Fixed: built a `{diagram_id: entry}` dict once instead. Verified
+>    byte-identical output.
+> 4. **`derive_bookinfo_diagram.py` had `import math` inside a loop body**
+>    (re-executed 3 times for no reason). Moved to the top of the file.
+>    Verified pixel-identical output (confirmed the image is unaffected;
+>    the file's PNG byte size varies a few dozen bytes run-to-run from
+>    Pillow's encoder regardless of this change - already investigated and
+>    confirmed harmless in Sprint 10's D46 reproducibility check).
+> 5. **`scipy` is directly imported** (`EdgeDetector.log()`,
+>    `from scipy.ndimage import gaussian_laplace`) **but was never declared
+>    in `backend/requirements.txt`** - only present by luck, as a
+>    transitive dependency of `scikit-image`/`easyocr`/`ultralytics`. Added
+>    explicitly (`scipy==1.17.1`, the version actually resolved in this
+>    environment) so the dependency is correct regardless of what other
+>    packages happen to pull in.
+>
+> Everything else checked and found clean: all 17 `cv_pipeline` modules and
+> 19 scripts read in full; no other redundant-reload or loop-local-import
+> patterns found (`grep` for every `load_manifest()` call site); every
+> directly-imported third-party package cross-checked against
+> `requirements.txt`; every doc/notebook/experiment artifact referenced in
+> `P1-Contributions.md` confirmed to exist on disk. Full suite (89 tests)
+> passes and `ruff` is clean after every fix above.
+
 A full pass over every module built across Sprints 1-10, after all 10
 sprints were already committed: broader static analysis (`ruff` with
 bugbear/simplify/comprehension/ruff-specific rules, `vulture` for dead

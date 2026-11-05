@@ -203,11 +203,18 @@ consistent real example (`notebooks/03_final_demo_walkthrough.ipynb`).
 
 ## Post-sprint audit
 
-A full logic/dead-code/missed-implementation review across every module
-found and fixed two real bugs in the `CVPipeline` orchestrator (relationship
+Two full audit passes across every module and script in
+`backend/app/modules/cv_pipeline/` and `backend/scripts/`. First pass found
+and fixed two real bugs in the `CVPipeline` orchestrator (relationship
 extraction was a stale no-op placeholder despite Sprint 5 building the real
 thing; a CLIP-fallback path silently mistyped every component as
 "database"), plus a duplicate-model-download inconsistency and stale docs.
+A second, line-by-line pass specifically hunting for hardcoded values,
+logic mismatches, and cleanliness issues found: genuinely hardcoded (no
+override) CLAHE/denoise parameters, a manifest reloaded-in-a-loop
+inefficiency, a linear-search-in-a-loop lookup, a loop-local `import math`,
+and a direct `scipy` import never declared in `requirements.txt`. All
+fixed, all verified byte-identical/pixel-identical output where applicable.
 Full record: `docs/audit_findings.md`. 6 new regression tests added
 (89 total); full suite passes, lint clean.
 

@@ -26,9 +26,7 @@ ALIGNMENT_PATH = REPO_ROOT / "experiments" / "baselines" / "sprint6_graph_alignm
 OUT_DIR = REPO_ROOT / "experiments" / "results"
 
 
-def render(diagram_id: str, alignment_by_component: dict[str, dict]):
-    graphs = {g.id: g for g in load_manifest()}
-    g = graphs[diagram_id]
+def render(g, alignment_by_component: dict[str, dict]):
     img_path = DIAGRAMS_DIR / Path(g.source).name
 
     fig, ax = plt.subplots(figsize=(14, 10))
@@ -52,11 +50,11 @@ def render(diagram_id: str, alignment_by_component: dict[str, dict]):
             bbox=dict(facecolor="white", alpha=0.85, edgecolor="none", pad=1),
         )
 
-    ax.set_title(f"{diagram_id}: diagram node -> real code module alignment (Sprint 6)")
+    ax.set_title(f"{g.id}: diagram node -> real code module alignment (Sprint 6)")
     ax.axis("off")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUT_DIR / f"sprint6_alignment_overlay_{diagram_id}.png"
+    out_path = OUT_DIR / f"sprint6_alignment_overlay_{g.id}.png"
     fig.savefig(out_path, bbox_inches="tight", dpi=120)
     plt.close(fig)
     print(f"Wrote {out_path}")
@@ -68,8 +66,9 @@ def main():
     for r in alignment_data["results"]:
         by_diagram.setdefault(r["diagram_id"], {})[r["component_id"]] = r
 
+    graphs = {g.id: g for g in load_manifest()}
     for diagram_id, alignment_by_component in by_diagram.items():
-        render(diagram_id, alignment_by_component)
+        render(graphs[diagram_id], alignment_by_component)
 
 
 if __name__ == "__main__":

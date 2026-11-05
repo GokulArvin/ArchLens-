@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 # here so it's enforced, not just described.
 ALLOWED_INPUT_EXTENSIONS = {".png", ".jpg", ".jpeg"}
 DEFAULT_MAX_SIZE = 1920  # longest side, in pixels; aspect ratio preserved
+DEFAULT_CLAHE_CLIP_LIMIT = 2.0
+DEFAULT_CLAHE_TILE_GRID_SIZE = (8, 8)
 
 
 def select_component_type(clip_scores: Dict[str, float]) -> str:
@@ -44,8 +46,15 @@ def select_component_type(clip_scores: Dict[str, float]) -> str:
 class CVPreprocessor:
     """Stage 1: Image preprocessing pipeline."""
 
-    def __init__(self, max_size: int = DEFAULT_MAX_SIZE):
+    def __init__(
+        self,
+        max_size: int = DEFAULT_MAX_SIZE,
+        clahe_clip_limit: float = DEFAULT_CLAHE_CLIP_LIMIT,
+        clahe_tile_grid_size: tuple = DEFAULT_CLAHE_TILE_GRID_SIZE,
+    ):
         self.max_size = max_size
+        self.clahe_clip_limit = clahe_clip_limit
+        self.clahe_tile_grid_size = clahe_tile_grid_size
 
     def load(self, image_path: str) -> np.ndarray:
         """Validate format policy and load an image as BGR (OpenCV default)."""
@@ -103,12 +112,19 @@ class CVPreprocessor:
     def _normalize(self, img: np.ndarray) -> np.ndarray:
         # CLAHE for contrast enhancement
         lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        clahe = cv2.createCLAHE(clipLimit=self.clahe_clip_limit, tileGridSize=self.clahe_tile_grid_size)
         lab[:, :, 0] = clahe.apply(lab[:, :, 0])
         return cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
 
-    def denoise(self, img: np.ndarray) -> np.ndarray:
-        return cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
+    def denoise(
+        self,
+        img: np.ndarray,
+        h: float = 10,
+        h_color: float = 10,
+        template_window_size: int = 7,
+        search_window_size: int = 21,
+    ) -> np.ndarray:
+        return cv2.fastNlMeansDenoisingColored(img, None, h, h_color, template_window_size, search_window_size)
 
 
 class EdgeDetector:

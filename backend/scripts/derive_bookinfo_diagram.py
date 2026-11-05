@@ -20,6 +20,7 @@ Repo: https://github.com/istio/istio (Apache-2.0)
 Commit read: 399ef1bff5261a01708c13b73a93cdc20189b08a
 """
 
+import math
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -71,8 +72,6 @@ def render():
         x2, y2 = _box_center(BOXES[dst])
         draw.line((x1, y1, x2, y2), fill="black", width=2)
         # simple arrowhead
-        import math
-
         angle = math.atan2(y2 - y1, x2 - x1)
         ah = 10
         for a in (angle + 2.7, angle - 2.7):

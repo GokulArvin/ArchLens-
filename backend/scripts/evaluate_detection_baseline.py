@@ -32,6 +32,7 @@ def main():
 
     baseline = json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
     graphs = {g.id: g for g in load_manifest()}
+    baseline_by_diagram = {e["diagram_id"]: e for e in baseline["results"]}
 
     per_diagram = []
     totals = {"tp": 0, "fp": 0, "fn": 0}
@@ -115,7 +116,7 @@ def main():
     for r in per_diagram:
         for mp in r["matched_pairs"]:
             any_tp = True
-            pred = baseline["results"][[e["diagram_id"] for e in baseline["results"]].index(r["diagram_id"])]["mapped_detections"][mp["predicted_index"]]
+            pred = baseline_by_diagram[r["diagram_id"]]["mapped_detections"][mp["predicted_index"]]
             doc_lines.append(
                 f"- `{r['diagram_id']}`: COCO class \"{pred['raw_coco_class']}\" (conf {pred['confidence']:.2f}) spatially overlaps "
                 f"ground-truth component `{mp['ground_truth_component_id']}` at IoU>=0.5 - this is a coincidental spatial match, "
