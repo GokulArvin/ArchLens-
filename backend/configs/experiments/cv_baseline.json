@@ -1,0 +1,8 @@
+{
+    "name": "ecommerce_cv_baseline",
+    "mode": "cv",
+    "seed": 42,
+    "inputs": {
+        "diagram_path": "../../data/uploads/ecommerce_architecture.png"
+    }
+}

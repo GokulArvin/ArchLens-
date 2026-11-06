@@ -10,9 +10,10 @@ Sprint 1 (P3 Deliverables):
 """
 
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any, Literal
+from typing import List, Optional, Dict, Any, Literal, Union
 from enum import Enum
 import uuid
+from datetime import datetime, timezone
 
 
 # ─── Component / Node Vocabulary (Sprint 1 D1/D2) ────────────────────────────
@@ -174,6 +175,10 @@ class ArchViolation(BaseModel):
     confidence: float = 1.0
     description: str = ""
     rule_id: Optional[str] = None
+    rule: Optional[str] = None
+    source: Optional[str] = None
+    target: Optional[str] = None
+    evidence: Dict[str, Any] = Field(default_factory=dict)
 
 
 # ─── Git Evidence ─────────────────────────────────────────────────────────────
@@ -211,15 +216,37 @@ class RCAOutput(BaseModel):
 
 class ConformanceReport(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    run_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     repository: str
     diagram_path: Optional[str] = None
-    intended_graph: Optional[ArchGraph] = None
-    current_graph: Optional[ArchGraph] = None
+    intended_graph: Optional[Union[ArchGraph, Dict[str, Any]]] = None
+    current_graph: Optional[Union[ArchGraph, Dict[str, Any]]] = None
     ruleset: Optional[RuleSet] = None
     violations: List[ArchViolation] = Field(default_factory=list)
     git_evidence: List[GitEvidence] = Field(default_factory=list)
     rca_outputs: List[RCAOutput] = Field(default_factory=list)
     summary: Dict[str, Any] = Field(default_factory=dict)
+    evidence_packages: List[Dict[str, Any]] = Field(default_factory=list)
+    rca_results: List[Dict[str, Any]] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    status: Literal["processing", "completed", "failed"] = "processing"
+
+
+class ConformanceSummary(BaseModel):
+    total_violations: int = 0
+    verdicts: Dict[str, int] = Field(default_factory=dict)
+    by_type: Dict[str, int] = Field(default_factory=dict)
+    severity_counts: Dict[str, int] = Field(default_factory=dict)
+
+
+class CheckConformanceResponse(BaseModel):
+    verdict: ViolationVerdict
+    violations: List[ArchViolation] = Field(default_factory=list)
+    summary: ConformanceSummary = Field(default_factory=ConformanceSummary)
+    alignment: Optional[Dict[str, Any]] = None
+    report_id: Optional[str] = None
+    run_id: Optional[str] = None
 
 
 # ─── API Request / Response Models ───────────────────────────────────────────
@@ -238,8 +265,8 @@ class AnalyzeRepositoryRequest(BaseModel):
 class CheckConformanceRequest(BaseModel):
     intended_graph_id: Optional[str] = None
     current_graph_id: Optional[str] = None
-    intended_graph: Optional[ArchGraph] = None
-    current_graph: Optional[ArchGraph] = None
+    intended_graph: Optional[Union[ArchGraph, Dict[str, Any]]] = None
+    current_graph: Optional[Union[ArchGraph, Dict[str, Any]]] = None
     ruleset: Optional[RuleSet] = None
 
 
