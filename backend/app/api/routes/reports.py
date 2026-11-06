@@ -7,7 +7,7 @@ import json
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse, Response
 
-from app.database.report_store import (
+from app.services.report_service import (
     get_report as get_stored_report,
     list_reports as list_stored_reports,
 )

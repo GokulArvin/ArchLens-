@@ -19,7 +19,9 @@ import networkx as nx
 logger = logging.getLogger(__name__)
 
 
+# ---------------------------------------------------------------------
 # Verdict constants
+# ---------------------------------------------------------------------
 
 CONFORMANT = "CONFORMANT"
 VIOLATION = "VIOLATION"
@@ -28,7 +30,9 @@ UNEXPECTED = "UNEXPECTED"
 UNCERTAIN = "UNCERTAIN"
 
 
+# ---------------------------------------------------------------------
 # Architectural rules
+# ---------------------------------------------------------------------
 
 class LayeredArchitectureRule:
     """Enforce layered architecture constraints."""
@@ -276,7 +280,9 @@ class CycleDetectionRule(ConformanceRule):
         return results
 
 
+# ---------------------------------------------------------------------
 # Main Conformance Engine
+# ---------------------------------------------------------------------
 
 class ConformanceEngine:
     """Compare intended and current architecture graphs."""
@@ -298,6 +304,10 @@ class ConformanceEngine:
         ]
 
         self.cycle_rule = CycleDetectionRule()
+
+    # -----------------------------------------------------------------
+    # Graph construction and validation
+    # -----------------------------------------------------------------
 
     def build_graph(self, graph_data: Dict[str, Any]) -> nx.DiGraph:
         """
@@ -390,6 +400,10 @@ class ConformanceEngine:
 
         return G
 
+    # -----------------------------------------------------------------
+    # Uncertainty evaluation
+    # -----------------------------------------------------------------
+
     def _has_uncertain_evidence(
         self,
         intended_graph: Dict[str, Any],
@@ -403,12 +417,35 @@ class ConformanceEngine:
         - Component confidence below threshold.
         - Relationship confidence below threshold.
         - Explicitly unknown architectural layer.
+        - Incomplete or uncertain graph alignment.
 
         Missing layer metadata alone does not imply uncertainty.
         """
 
+        # IMPORTANT:
+        # Graph-level checks must be inside this loop because the
+        # variable 'graph' is assigned by the loop itself.
         for graph in (intended_graph, current_graph):
 
+            # Check graph-level alignment uncertainty.
+            graph_metadata = graph.get("metadata", {})
+
+            if not isinstance(graph_metadata, dict):
+                raise ValueError(
+                    "Graph metadata must be a dictionary."
+                )
+
+            alignment = graph_metadata.get("alignment", {})
+
+            if not isinstance(alignment, dict):
+                raise ValueError(
+                    "Graph alignment metadata must be a dictionary."
+                )
+
+            if alignment.get("has_uncertainty") is True:
+                return True
+
+            # Check component confidence and architectural layer.
             for component in graph.get("components", []):
 
                 confidence = component.get("confidence", 1.0)
@@ -444,6 +481,7 @@ class ConformanceEngine:
                 ):
                     return True
 
+            # Check relationship confidence.
             for relationship in graph.get("relationships", []):
 
                 confidence = relationship.get("confidence", 1.0)
@@ -463,7 +501,27 @@ class ConformanceEngine:
                 if confidence < self.UNCERTAINTY_THRESHOLD:
                     return True
 
+                # An explicitly unverified relationship is uncertain.
+                relationship_metadata = relationship.get(
+                    "metadata", {}
+                )
+
+                if not isinstance(relationship_metadata, dict):
+                    raise ValueError(
+                        "Relationship metadata must be a dictionary."
+                    )
+
+                if (
+                    relationship_metadata.get("direction_verified")
+                    is False
+                ):
+                    return True
+
         return False
+
+    # -----------------------------------------------------------------
+    # Main conformance checking
+    # -----------------------------------------------------------------
 
     def check_conformance(
         self,

@@ -7,7 +7,7 @@ from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException
 
-from app.database.report_store import get_report, save_report
+from app.services.report_service import get_report, save_report
 from app.modules.git_evidence.extractor import GitEvidenceExtractor
 from app.modules.llm_rca.analyzer import RCAAnalyzer
 from app.schemas.models import GitCommit, GitEvidence, RCAOutput
@@ -42,8 +42,8 @@ def _structured_git_evidence(
 ) -> GitEvidence:
     """Build the typed Git evidence representation."""
     commit = _commit_model(package.get("commit"))
-
     related_commits = []
+
     for item in package.get("recent_commits", []):
         converted = _commit_model(item)
         if converted:
@@ -54,7 +54,11 @@ def _structured_git_evidence(
 
     return GitEvidence(
         violation_id=str(violation.get("id", "unknown")),
-        file=str(context.get("file") or source_file),
+        file=str(
+            (context.get("file") if isinstance(context, dict) else None)
+            or source_file
+            or "Not supplied"
+        ),
         lines=lines,
         dependency_path=package.get("dependency_path", []),
         introducing_commit=commit,
@@ -86,11 +90,7 @@ def _structured_rca_output(
 
 @router.post("/analyze-violation", response_model=dict)
 async def analyze_violation(body: dict):
-    """
-    Collect Git/source evidence, run RCA, and optionally attach
-    both results to an existing conformance report.
-    """
-
+    """Collect evidence, run RCA, and optionally update a saved report."""
     repo_path = body.get("repo_path", "")
     violation = body.get("violation")
     source_file = body.get("source_file", "")
@@ -112,32 +112,29 @@ async def analyze_violation(body: dict):
                 detail=f"Report {report_id} not found.",
             )
 
-        # Prefer the canonical finding stored in the report
+        requested_id = violation.get("id")
+        if not requested_id:
+            raise HTTPException(
+                status_code=400,
+                detail="A violation ID is required when report_id is supplied.",
+            )
 
         report_violations = report.get("violations", [])
-        requested_id = violation.get("id")
+        matching = [
+            item for item in report_violations
+            if item.get("id") == requested_id
+        ]
+        if not matching:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "The supplied violation ID does not belong "
+                    "to the specified report."
+                ),
+            )
 
-    if not requested_id:
-        raise HTTPException(
-        status_code=400,
-        detail="A violation ID is required when report_id is supplied.",
-        )
-
-    matching = [
-    item for item in report_violations
-    if item.get("id") == requested_id
-    ]
-
-    if not matching:
-        raise HTTPException(
-        status_code=400,
-        detail=(
-            "The supplied violation ID does not belong "
-            "to the specified report."
-        ),
-        )
-
-    violation = matching[0]
+        # Always analyze the canonical stored finding, not client-edited data.
+        violation = matching[0]
 
     if repo_path and not source_file:
         raise HTTPException(
@@ -145,14 +142,11 @@ async def analyze_violation(body: dict):
             detail="source_file is required when repo_path is supplied.",
         )
 
-    # Start with a useful minimum evidence package.
     evidence_package: dict[str, Any] = {
         "violation": violation,
         "dependency_path": [
-            item for item in (
-                violation.get("source"),
-                violation.get("target"),
-            ) if item
+            item for item in (violation.get("source"), violation.get("target"))
+            if item
         ],
         "evidence_items": [],
         "evidence_metadata": {
@@ -161,17 +155,16 @@ async def analyze_violation(body: dict):
         },
     }
 
-    # Add graph context from the same persisted report.
+    graph_evidence = None
     if report:
-        evidence_package["intended_architecture"] = (
-            report.get("intended_graph") or {}
-        )
-        evidence_package["current_architecture"] = (
-            report.get("current_graph") or {}
-        )
-        evidence_package["report_id"] = report_id
-        evidence_package["run_id"] = report.get("run_id")
-
+        intended_graph = report.get("intended_graph") or {}
+        current_graph = report.get("current_graph") or {}
+        evidence_package.update({
+            "intended_architecture": intended_graph,
+            "current_architecture": current_graph,
+            "report_id": report_id,
+            "run_id": report.get("run_id"),
+        })
         graph_evidence = {
             "evidence_id": "E-GRAPH-001",
             "type": "architecture_graph",
@@ -181,13 +174,12 @@ async def analyze_violation(body: dict):
             ),
             "source": "conformance_report",
             "content": {
-                "intended_graph": report.get("intended_graph") or {},
-                "current_graph": report.get("current_graph") or {},
+                "intended_graph": intended_graph,
+                "current_graph": current_graph,
             },
         }
         evidence_package["evidence_items"].append(graph_evidence)
 
-    # Collect repository evidence.
     if repo_path and source_file:
         try:
             extractor = GitEvidenceExtractor(repo_path)
@@ -196,32 +188,24 @@ async def analyze_violation(body: dict):
                 source_file=source_file,
                 target_symbol=target_symbol or None,
             )
-
-            # Preserve all extractor evidence and metadata.
+            # Merge Git evidence without losing report graph evidence.
+            git_items = git_package.get("evidence_items", [])
             evidence_package.update(git_package)
+            evidence_package["evidence_items"] = list(git_items)
+            if graph_evidence:
+                evidence_package["evidence_items"].append(graph_evidence)
 
-            # Restore report context after merging the extractor package.
             if report:
-                evidence_package["intended_architecture"] = (
-                    report.get("intended_graph") or {}
-                )
-                evidence_package["current_architecture"] = (
-                    report.get("current_graph") or {}
-                )
-                evidence_package["report_id"] = report_id
-                evidence_package["run_id"] = report.get("run_id")
-
-                # Keep the graph evidence item alongside Git evidence.
-                evidence_package.setdefault("evidence_items", []).append(
-                    graph_evidence
-                )
-
+                evidence_package.update({
+                    "intended_architecture": report.get("intended_graph") or {},
+                    "current_architecture": report.get("current_graph") or {},
+                    "report_id": report_id,
+                    "run_id": report.get("run_id"),
+                })
         except Exception as exc:
             logger.exception("Git evidence extraction failed.")
             evidence_package["git_error"] = str(exc)
 
-    # Perform RCA. The analyzer uses its safe fallback if no LLM
-    # provider/API key is configured.
     try:
         rca_result = rca_analyzer.analyze(evidence_package)
 
@@ -235,34 +219,24 @@ async def analyze_violation(body: dict):
         rca_data["report_id"] = report_id
         rca_data["run_id"] = report.get("run_id") if report else None
 
-        # Attach both raw and structured representations to the same report.
         if report:
-            git_evidence = _structured_git_evidence(
-                evidence_package,
-                violation,
-                source_file,
-            )
-            structured_rca = _structured_rca_output(
-                rca_data,
-                violation,
-            )
-
-            report.setdefault("evidence_packages", []).append(
-                evidence_package
-            )
+            report.setdefault("evidence_packages", []).append(evidence_package)
             report.setdefault("rca_results", []).append(rca_data)
-
-            report.setdefault("git_evidence", []).append(
-                git_evidence.model_dump(mode="json")
-            )
             report.setdefault("rca_outputs", []).append(
-                structured_rca.model_dump(mode="json")
+                _structured_rca_output(
+                    rca_data, violation
+                ).model_dump(mode="json")
             )
 
-            report["updated_at"] = datetime.now(
-                timezone.utc
-            ).isoformat()
+            # Only record a GitEvidence object when Git extraction actually ran.
+            if repo_path and source_file:
+                report.setdefault("git_evidence", []).append(
+                    _structured_git_evidence(
+                        evidence_package, violation, source_file
+                    ).model_dump(mode="json")
+                )
 
+            report["updated_at"] = datetime.now(timezone.utc).isoformat()
             save_report(report)
 
         return {
@@ -273,7 +247,7 @@ async def analyze_violation(body: dict):
             "rca": rca_data,
             "persistence": {
                 "attached_to_report": bool(report),
-                "git_evidence_saved": bool(report),
+                "git_evidence_saved": bool(report and repo_path and source_file),
                 "rca_saved": bool(report),
             },
         }

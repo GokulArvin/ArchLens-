@@ -1,0 +1,8 @@
+{
+    "name": "ecommerce_rca_baseline",
+    "mode": "rca",
+    "seed": 42,
+    "inputs": {
+        "evidence_package": "../../data/evaluation/8d30ebdc-10f2-41e5-b643-6152688c41c9/output.json"
+    }
+}

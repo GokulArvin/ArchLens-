@@ -31,15 +31,15 @@ class PythonASTParser:
     """Extract classes, imports, functions and calls from Python files."""
 
     EXCLUDED_DIRECTORIES = {
-    ".venv",
-    "venv",
-    "__pycache__",
-    ".git",
-    ".pytest_cache",
-    "site-packages",
-    "node_modules",
-    "tests",
-}
+        ".venv",
+        "venv",
+        "__pycache__",
+        ".git",
+        ".pytest_cache",
+        "site-packages",
+        "node_modules",
+        "tests",
+    }
 
     def parse_file(self, file_path: str) -> Dict[str, Any]:
         """Parse a Python file using the built-in AST module."""
@@ -111,7 +111,6 @@ class PythonASTParser:
         results = []
 
         for py_file in sorted(root.rglob("*.py")):
-
             relative_parts = py_file.relative_to(root).parts
 
             if any(
@@ -139,7 +138,6 @@ class _PythonASTVisitor(ast.NodeVisitor):
     """Extract architectural information from Python AST nodes."""
 
     def __init__(self):
-
         self.classes: List[Dict[str, Any]] = []
         self.imports: List[str] = []
         self.from_imports: List[Dict[str, Any]] = []
@@ -147,7 +145,6 @@ class _PythonASTVisitor(ast.NodeVisitor):
         self.functions: List[str] = []
 
     def visit_ClassDef(self, node: ast.ClassDef):
-
         self.classes.append({
             "name": node.name,
             "bases": [
@@ -164,12 +161,10 @@ class _PythonASTVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Import(self, node: ast.Import):
-
         for alias in node.names:
             self.imports.append(alias.name)
 
     def visit_ImportFrom(self, node: ast.ImportFrom):
-
         self.from_imports.append({
             "module": node.module or "",
             "names": [
@@ -180,19 +175,16 @@ class _PythonASTVisitor(ast.NodeVisitor):
         })
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
-
         self.functions.append(node.name)
         self.generic_visit(node)
 
     visit_AsyncFunctionDef = visit_FunctionDef
 
     def visit_Call(self, node: ast.Call):
-
         try:
             self.function_calls.append(
                 ast.unparse(node.func)
             )
-
         except Exception:
             pass
 
@@ -211,10 +203,10 @@ class DependencyGraphBuilder:
         3. Architectural roles are stored separately in metadata.layer.
         4. Repeated analyses do not reuse previous graph state.
         5. Duplicate directed relationships are removed.
+        6. Multiple imported internal modules create separate edges.
     """
 
     def __init__(self):
-
         self.nodes: Dict[str, Dict[str, Any]] = {}
         self.edges: List[Dict[str, Any]] = []
 
@@ -292,7 +284,7 @@ class DependencyGraphBuilder:
             # Ordinary imports.
             for imported_module in file_data.get("imports", []):
 
-                target = self._resolve_import(
+                targets = self._resolve_imports(
                     module=imported_module,
                     names=[],
                     level=0,
@@ -300,42 +292,49 @@ class DependencyGraphBuilder:
                     available_modules=available_modules,
                 )
 
-                self._add_relationship(
-                    source,
-                    target,
-                    file_path,
-                    imported_module,
-                )
+                for target in targets:
+                    self._add_relationship(
+                        source,
+                        target,
+                        file_path,
+                        imported_module,
+                    )
 
             # From-import statements, including relative imports.
+            # One statement may resolve to multiple internal modules.
             for from_import in file_data.get("from_imports", []):
 
-                target = self._resolve_import(
-                    module=from_import.get("module", ""),
-                    names=from_import.get("names", []),
-                    level=from_import.get("level", 0),
+                module = from_import.get("module", "")
+                names = from_import.get("names", [])
+                level = from_import.get("level", 0)
+
+                targets = self._resolve_imports(
+                    module=module,
+                    names=names,
+                    level=level,
                     source_module=source,
                     available_modules=available_modules,
                 )
 
-                import_label = from_import.get("module", "")
+                for target in targets:
+                    import_label = (
+                        f"{module}.{target.rsplit('.', 1)[-1]}"
+                        if module and target.startswith(module + ".")
+                        else module or "." * level
+                    )
 
-                if not import_label:
-                    import_label = "." * from_import.get("level", 0)
-
-                self._add_relationship(
-                    source,
-                    target,
-                    file_path,
-                    import_label,
-                )
+                    self._add_relationship(
+                        source,
+                        target,
+                        file_path,
+                        import_label,
+                    )
 
         # ─── Pass 3: Remove duplicate relationships ─────────────────
 
         unique_edges = {}
 
         for edge in self.edges:
-
             key = (
                 edge["source"],
                 edge["target"],
@@ -402,6 +401,92 @@ class DependencyGraphBuilder:
             },
         })
 
+    def _resolve_imports(
+        self,
+        module: str,
+        names: List[str],
+        level: int,
+        source_module: str,
+        available_modules: Set[str],
+    ) -> List[str]:
+        """
+        Resolve imports to registered repository modules.
+
+        Imported child modules are checked before their parent package.
+
+        Examples:
+            from app.api.routes import diagram, repository
+                -> app.api.routes.diagram
+                -> app.api.routes.repository
+
+            from app.modules.engine import Engine
+                -> app.modules.engine
+
+            from .services import user
+                -> relative module resolution
+        """
+
+        candidates = []
+
+        if level > 0:
+            source_parts = source_module.split(".")[:-1]
+            trim_count = level - 1
+
+            if trim_count > len(source_parts):
+                return []
+
+            if trim_count:
+                source_parts = source_parts[:-trim_count]
+
+            base = ".".join(source_parts)
+
+            if module:
+                base = f"{base}.{module}" if base else module
+
+            candidates.append(base)
+
+        elif module:
+            candidates.append(module)
+
+        # First resolve imported names as possible child modules.
+        # This prevents a parent package from masking its children.
+        resolved = []
+
+        for base in candidates:
+            for name in names:
+                if name == "*":
+                    continue
+
+                candidate = f"{base}.{name}" if base else name
+
+                if candidate in available_modules:
+                    resolved.append(candidate)
+
+        if resolved:
+            return list(dict.fromkeys(resolved))
+
+        # No imported child module exists. The statement may import
+        # a class, function or constant from the base module itself.
+        for candidate in candidates:
+
+            if not candidate:
+                continue
+
+            if candidate in available_modules:
+                return [candidate]
+
+            # Fall back to the closest registered parent module.
+            parts = candidate.split(".")
+
+            while len(parts) > 1:
+                parts.pop()
+                parent = ".".join(parts)
+
+                if parent in available_modules:
+                    return [parent]
+
+        return []
+
     def _resolve_import(
         self,
         module: str,
@@ -411,85 +496,21 @@ class DependencyGraphBuilder:
         available_modules: Set[str],
     ) -> Optional[str]:
         """
-        Resolve an import to an existing repository module.
+        Backward-compatible single-target resolver.
 
-        Supports:
-            import app.services.user
-            from app.services import user
-            from .services import user
-            from ..models import user
+        Use _resolve_imports() for statements that may import
+        multiple internal modules.
         """
 
-        candidates = []
+        targets = self._resolve_imports(
+            module=module,
+            names=names,
+            level=level,
+            source_module=source_module,
+            available_modules=available_modules,
+        )
 
-        if level > 0:
-
-            # Relative imports are resolved from the source package.
-            source_parts = source_module.split(".")[:-1]
-
-            # Python relative-import level 1 means current package.
-            trim_count = level - 1
-
-            if trim_count > len(source_parts):
-                return None
-
-            if trim_count:
-                source_parts = source_parts[:-trim_count]
-
-            base = ".".join(source_parts)
-
-            if module:
-                base = (
-                    f"{base}.{module}"
-                    if base
-                    else module
-                )
-
-            candidates.append(base)
-
-        elif module:
-            candidates.append(module)
-
-        # Try imported names as possible submodules.
-        base_candidates = list(candidates)
-
-        for base in base_candidates:
-
-            for name in names:
-
-                if name == "*":
-                    continue
-
-                candidate = (
-                    f"{base}.{name}"
-                    if base
-                    else name
-                )
-
-                candidates.append(candidate)
-
-        # Prefer the most specific registered module.
-        for candidate in candidates:
-
-            if not candidate:
-                continue
-
-            if candidate in available_modules:
-                return candidate
-
-            # Resolve to the closest registered parent module.
-            parts = candidate.split(".")
-
-            while len(parts) > 1:
-
-                parts.pop()
-
-                parent = ".".join(parts)
-
-                if parent in available_modules:
-                    return parent
-
-        return None
+        return targets[0] if targets else None
 
     def _path_to_module(
         self,
@@ -510,9 +531,9 @@ class DependencyGraphBuilder:
             # Treat backend/ as the Python source root when
             # the repository uses the backend/app structure.
             if (
-            len(parts) > 1
-            and parts[0] == "backend"
-            and (repo_root / "backend" / "app").is_dir()
+                len(parts) > 1
+                and parts[0] == "backend"
+                and (repo_root / "backend" / "app").is_dir()
             ):
                 parts = parts[1:]
 
@@ -527,8 +548,8 @@ class DependencyGraphBuilder:
                 "File is outside repository root: %s",
                 file_path,
             )
-        return ""
 
+        return ""
 
     def _map_component_type(self, layer: str) -> str:
         """
@@ -547,58 +568,86 @@ class DependencyGraphBuilder:
         module_name: str,
         file_data: Dict[str, Any],
     ) -> str:
-        """Infer an architectural layer from module names."""
+        """
+        Infer an architectural layer using complete module-path segments.
 
-        name_lower = module_name.lower()
+        Avoid substring matching because names such as 'report_service'
+        contain 'repo' without representing a repository layer.
+        """
 
+        parts = [
+            part.lower()
+            for part in module_name.split(".")
+            if part
+        ]
+
+        # Controller / API layer.
         if any(
-            keyword in name_lower
-            for keyword in [
-                "controller",
-                "router",
-                "view",
+            part in {
                 "api",
-            ]
+                "routes",
+                "routers",
+                "controller",
+                "controllers",
+                "views",
+            }
+            for part in parts
         ):
             return "controller"
 
+        # Repository / persistence layer.
         if any(
-            keyword in name_lower
-            for keyword in [
+            part in {
                 "repository",
+                "repositories",
                 "repo",
+                "repos",
                 "dao",
-            ]
+                "database",
+                "db",
+            }
+            or part.endswith(("_repository", "_repo", "_dao"))
+            for part in parts
         ):
             return "repository"
 
+        # Service / business layer.
         if any(
-            keyword in name_lower
-            for keyword in [
+            part in {
                 "service",
+                "services",
                 "business",
                 "domain",
-            ]
+            }
+            or part.endswith(("_service", "_services"))
+            for part in parts
         ):
             return "service"
 
+        # Schema / model layer.
         if any(
-            keyword in name_lower
-            for keyword in [
+            part in {
                 "model",
+                "models",
                 "schema",
+                "schemas",
                 "entity",
-            ]
+                "entities",
+            }
+            for part in parts
         ):
             return "model"
 
+        # Utility layer.
         if any(
-            keyword in name_lower
-            for keyword in [
+            part in {
                 "util",
+                "utils",
                 "helper",
+                "helpers",
                 "common",
-            ]
+            }
+            for part in parts
         ):
             return "utility"
 
@@ -611,7 +660,6 @@ class ArchitectureRecoveryPipeline:
     """Orchestrates repository analysis and current graph generation."""
 
     def __init__(self):
-
         self.python_parser = PythonASTParser()
         self.graph_builder = DependencyGraphBuilder()
 

@@ -1,0 +1,9 @@
+{
+    "name": "static_repository_baseline",
+    "mode": "static",
+    "seed": 42,
+    "inputs": {
+        "repo_path": "..",
+        "language": "python"
+    }
+}

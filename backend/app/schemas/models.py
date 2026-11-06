@@ -132,12 +132,16 @@ class ConformanceSummary(BaseModel):
     severity_counts: Dict[str, int] = Field(default_factory=dict)
 
 
+
 class CheckConformanceResponse(BaseModel):
     """Structured response returned by conformance checking."""
 
     verdict: ViolationVerdict
     violations: List[ArchViolation] = Field(default_factory=list)
     summary: ConformanceSummary = Field(default_factory=ConformanceSummary)
+
+    # Graph alignment details, populated by aligned workflows.
+    alignment: Optional[Dict[str, Any]] = None
 
     # References to the persisted report.
     report_id: Optional[str] = None

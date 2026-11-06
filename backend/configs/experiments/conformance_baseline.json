@@ -1,0 +1,9 @@
+{
+    "name": "ecommerce_conformance_baseline",
+    "mode": "conformance",
+    "seed": 42,
+    "inputs": {
+        "intended_graph": "../../data/evaluation/9dbd8e51-77f6-42b3-906a-fbbdfbf6b172/output.json",
+        "current_graph": "../../data/evaluation/9dbd8e51-77f6-42b3-906a-fbbdfbf6b172/output.json"
+    }
+}
