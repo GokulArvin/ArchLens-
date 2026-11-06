@@ -11,9 +11,17 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import cv2
+try:
+    import cv2
+except ImportError:
+    cv2 = None
 import numpy as np
-import torch
+
+try:
+    import torch
+except ImportError:
+    torch = None
+
 from PIL import Image
 
 DEFAULT_MODEL_NAME = "ViT-B/32"
@@ -24,6 +32,8 @@ class ComponentEmbedder:
     """Pretrained CLIP image encoder, used as a fixed feature extractor."""
 
     def __init__(self, model_name: str = DEFAULT_MODEL_NAME, download_root: Path | str = DEFAULT_DOWNLOAD_ROOT):
+        if torch is None:
+            raise RuntimeError("torch is required to instantiate ComponentEmbedder.")
         import clip  # imported lazily - heavy, optional dependency
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -32,6 +42,8 @@ class ComponentEmbedder:
 
     def embed_region(self, region_bgr: np.ndarray) -> list[float]:
         """Embed a cropped BGR region into CLIP's normalized embedding space."""
+        if torch is None or cv2 is None:
+            raise RuntimeError("torch and cv2 are required for embed_region.")
         pil_img = Image.fromarray(cv2.cvtColor(region_bgr, cv2.COLOR_BGR2RGB))
         image_input = self.preprocess_fn(pil_img).unsqueeze(0).to(self.device)
         with torch.no_grad():
