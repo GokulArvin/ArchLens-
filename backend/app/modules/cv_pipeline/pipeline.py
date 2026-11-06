@@ -19,7 +19,7 @@ except ImportError:
     cv2 = None
 import numpy as np
 from pathlib import Path
-from typing import List, Tuple, Dict, Any, Optional
+from typing import List, Dict, Any, Optional
 from abc import ABC, abstractmethod
 import logging
 
@@ -248,7 +248,6 @@ class FasterRCNNDetector(BaseComponentDetector):
         if self._model is None and not self._init_attempted:
             self._init_attempted = True
             try:
-                import torch
                 import torchvision
                 weights = torchvision.models.detection.FasterRCNN_ResNet50_FPN_Weights.DEFAULT
                 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=weights)
