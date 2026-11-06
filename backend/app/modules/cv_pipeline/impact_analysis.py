@@ -10,12 +10,12 @@ rules and produce machine-readable impact summaries.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Set
 
 import networkx as nx
 
-from app.schemas.models import ArchGraph, ViolationType
+from app.schemas.models import ArchGraph
 from app.schemas.vocabulary import DEFAULT_FORBIDDEN_DEPENDENCIES
 
 

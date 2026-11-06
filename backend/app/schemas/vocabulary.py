@@ -11,11 +11,7 @@ Defines:
 
 from app.schemas.models import (
     ComponentType,
-    RelationshipType,
     ViolationVerdict,
-    ViolationType,
-    RuleAction,
-    RuleCategory,
 )
 
 # ─── Verdict Descriptions (Sprint 1 D1 / D3) ─────────────────────────────────

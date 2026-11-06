@@ -12,24 +12,14 @@ Supports:
 """
 
 import ast
-import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Set, Tuple
+from typing import List, Dict, Any, Optional, Tuple
 import logging
 
 from app.schemas.models import ComponentType, RelationshipType
 
 logger = logging.getLogger(__name__)
-
-# Optional tree-sitter imports — module still loads if tree-sitter-java is not installed
-try:
-    from tree_sitter import Language, Parser as TSParser
-    import tree_sitter_java as tsjava
-    _TREE_SITTER_AVAILABLE = True
-except ImportError:
-    _TREE_SITTER_AVAILABLE = False
-
 
 # ---------------------------------------------------------------------------
 # Task 3.1 — BaseLanguageParser ABC
@@ -290,9 +280,6 @@ class JavaTreeSitterParser(BaseLanguageParser):
     # Class-level singleton to avoid repeated Language/Parser construction
     _language: Optional[Any] = None
     _parser: Optional[Any] = None
-    # Sentinel so we can distinguish "not tried yet" from "tried and failed"
-    _init_attempted: bool = False
-
     # Sentinel so we can distinguish "not tried yet" from "tried and failed"
     _init_attempted: bool = False
 

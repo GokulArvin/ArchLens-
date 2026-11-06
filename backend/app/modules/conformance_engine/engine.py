@@ -8,7 +8,7 @@ CONFORMANT | VIOLATION | MISSING | UNEXPECTED | UNCERTAIN
 """
 
 import networkx as nx
-from typing import List, Dict, Any, Optional, Set, Tuple, Union
+from typing import List, Dict, Any, Optional, Tuple, Union
 import logging
 
 from app.schemas.models import (
