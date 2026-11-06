@@ -1,0 +1,68 @@
+{
+ "diagram_id": "S06_missing",
+ "image": "diagram.png",
+ "annotator": "synthetic",
+ "components": [
+  {
+   "id": "c1",
+   "name": "Checkout Service",
+   "type": "service",
+   "bbox": [
+    40,
+    40,
+    230,
+    110
+   ]
+  },
+  {
+   "id": "c2",
+   "name": "Fraud Service",
+   "type": "service",
+   "bbox": [
+    300,
+    40,
+    490,
+    110
+   ]
+  },
+  {
+   "id": "c3",
+   "name": "Payment Gateway",
+   "type": "external_system",
+   "bbox": [
+    560,
+    40,
+    750,
+    110
+   ]
+  },
+  {
+   "id": "c4",
+   "name": "Orders DB",
+   "type": "database",
+   "bbox": [
+    40,
+    190,
+    230,
+    260
+   ]
+  }
+ ],
+ "relationships": [
+  {
+   "source": "c1",
+   "target": "c2",
+   "type": "depends_on"
+  },
+  {
+   "source": "c1",
+   "target": "c3",
+   "type": "depends_on"
+  },
+  {
+   "source": "c1",
+   "target": "c4",
+   "type": "depends_on"
+  }
+ ]
+}

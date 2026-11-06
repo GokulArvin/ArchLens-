@@ -1,0 +1,46 @@
+[
+ {
+  "id": "c1",
+  "bbox": [
+   38,
+   41,
+   230,
+   116
+  ],
+  "class": "architecture_component",
+  "confidence": 0.76
+ },
+ {
+  "id": "c2",
+  "bbox": [
+   301,
+   44,
+   495,
+   105
+  ],
+  "class": "architecture_component",
+  "confidence": 0.97
+ },
+ {
+  "id": "c3",
+  "bbox": [
+   554,
+   37,
+   745,
+   112
+  ],
+  "class": "architecture_component",
+  "confidence": 0.85
+ },
+ {
+  "id": "c4",
+  "bbox": [
+   306,
+   186,
+   491,
+   261
+  ],
+  "class": "architecture_component",
+  "confidence": 0.97
+ }
+]

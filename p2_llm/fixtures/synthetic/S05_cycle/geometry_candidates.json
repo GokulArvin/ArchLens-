@@ -1,0 +1,26 @@
+[
+ {
+  "id": "g1",
+  "source": "c1",
+  "target": "c2",
+  "confidence": 0.94
+ },
+ {
+  "id": "g2",
+  "source": "c2",
+  "target": "c3",
+  "confidence": 0.42
+ },
+ {
+  "id": "g3",
+  "source": "c2",
+  "target": "c4",
+  "confidence": 0.91
+ },
+ {
+  "id": "g4",
+  "source": "c4",
+  "target": "c1",
+  "confidence": 0.3
+ }
+]

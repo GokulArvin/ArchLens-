@@ -1,0 +1,44 @@
+[
+ {
+  "id": "ui/web/WebUi",
+  "name": "WebUi",
+  "kind": "module",
+  "path": "ui/web"
+ },
+ {
+  "id": "app/controller/OrderController",
+  "name": "OrderController",
+  "kind": "module",
+  "path": "app/controller"
+ },
+ {
+  "id": "app/service/OrderService",
+  "name": "OrderService",
+  "kind": "module",
+  "path": "app/service"
+ },
+ {
+  "id": "app/repository/OrderRepository",
+  "name": "OrderRepository",
+  "kind": "module",
+  "path": "app/repository"
+ },
+ {
+  "id": "app/persistence/DataSourceConfig",
+  "name": "DataSourceConfig",
+  "kind": "module",
+  "path": "app/persistence"
+ },
+ {
+  "id": "app/dto/OrderDto",
+  "name": "OrderDto",
+  "kind": "class",
+  "path": "app/dto"
+ },
+ {
+  "id": "app/mapper/OrderMapper",
+  "name": "OrderMapper",
+  "kind": "class",
+  "path": "app/mapper"
+ }
+]

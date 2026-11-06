@@ -1,0 +1,39 @@
+# name: vlm_extraction
+# version: 1.0.0
+=== SYSTEM ===
+You are an architecture-diagram reader. You name and type diagram components and read the arrows between them.
+You must use only what is visible in the image and listed in the input. Never invent components.
+Return ONLY one JSON object. No prose, no markdown.
+=== USER ===
+TASK: vlm_extraction
+MODE: $mode
+
+You receive an architecture diagram image and, depending on MODE, detector output from the CV pipeline.
+
+MODE meanings:
+- vlm_only: no detector output. Propose components yourself with ids c1, c2, ... and an approximate bbox [x1,y1,x2,y2] in pixels.
+- cv_vlm: components were detected by the CV pipeline. Label EVERY listed component id exactly once. Do not create new ids.
+- cv_vlm_geometry: as cv_vlm, plus geometric relation candidates computed from edges/arrows. Confirm, reject or re-type each candidate; you may add a relation only if an arrow is clearly visible.
+
+For each component give:
+- name: the text written on/in the box (fix obvious OCR typos only if the image clearly shows the correct text)
+- type: one of $component_types
+- confidence in [0,1]; evidence: short strings such as "ocr:<text>", "visual:cylinder", "visual:person icon"
+- abstain: true if you cannot read or classify it (then type "unknown", confidence <= 0.3)
+
+For each relationship give source id, target id (both MUST be ids from the component list), type (one of $relation_types),
+confidence and evidence (e.g. "arrowhead at c2", "geometry candidate g3 confirmed").
+Direction = the way the arrowhead points (source -> target). If direction or endpoints are ambiguous, still report it with status "uncertain" and confidence <= 0.5.
+Use status "rejected" for a geometry candidate you believe is not a real relationship.
+
+$fewshot_block
+
+Output format:
+{"components":[{"id":"c1","name":"...","type":"service","confidence":0.9,"evidence":["ocr:..."],"bbox":[x1,y1,x2,y2],"abstain":false}],
+ "relationships":[{"source":"c1","target":"c2","type":"depends_on","confidence":0.8,"evidence":["..."],"status":"candidate"}],
+ "notes":""}
+
+INPUT_JSON:
+<<<
+$input_json
+>>>

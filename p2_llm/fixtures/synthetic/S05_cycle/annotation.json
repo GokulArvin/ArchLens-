@@ -1,0 +1,68 @@
+{
+ "diagram_id": "S05_cycle",
+ "image": "diagram.png",
+ "annotator": "synthetic",
+ "components": [
+  {
+   "id": "c1",
+   "name": "Auth Service",
+   "type": "service",
+   "bbox": [
+    40,
+    40,
+    230,
+    110
+   ]
+  },
+  {
+   "id": "c2",
+   "name": "User Service",
+   "type": "service",
+   "bbox": [
+    300,
+    40,
+    490,
+    110
+   ]
+  },
+  {
+   "id": "c3",
+   "name": "Profile Service",
+   "type": "service",
+   "bbox": [
+    560,
+    40,
+    750,
+    110
+   ]
+  },
+  {
+   "id": "c4",
+   "name": "Users DB",
+   "type": "database",
+   "bbox": [
+    300,
+    190,
+    490,
+    260
+   ]
+  }
+ ],
+ "relationships": [
+  {
+   "source": "c1",
+   "target": "c2",
+   "type": "depends_on"
+  },
+  {
+   "source": "c2",
+   "target": "c3",
+   "type": "depends_on"
+  },
+  {
+   "source": "c2",
+   "target": "c4",
+   "type": "depends_on"
+  }
+ ]
+}

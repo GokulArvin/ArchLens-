@@ -1,0 +1,7 @@
+{
+ "c1": "modules/search/search",
+ "c2": "modules/catalog/api/CatalogApi",
+ "c3": "modules/catalog/catalog",
+ "c4": "modules/search/index/ElasticIndex",
+ "c5": "modules/catalog/db/CatalogDatabase"
+}

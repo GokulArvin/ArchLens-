@@ -1,0 +1,100 @@
+{
+ "diagram_id": "S02_layered",
+ "image": "diagram.png",
+ "annotator": "synthetic",
+ "components": [
+  {
+   "id": "c1",
+   "name": "Customer",
+   "type": "user",
+   "bbox": [
+    40,
+    40,
+    230,
+    110
+   ]
+  },
+  {
+   "id": "c2",
+   "name": "Web UI",
+   "type": "frontend",
+   "bbox": [
+    300,
+    40,
+    490,
+    110
+   ]
+  },
+  {
+   "id": "c3",
+   "name": "Order Controller",
+   "type": "component",
+   "bbox": [
+    560,
+    40,
+    750,
+    110
+   ]
+  },
+  {
+   "id": "c4",
+   "name": "Order Service",
+   "type": "service",
+   "bbox": [
+    560,
+    190,
+    750,
+    260
+   ]
+  },
+  {
+   "id": "c5",
+   "name": "Order Repository",
+   "type": "component",
+   "bbox": [
+    560,
+    340,
+    750,
+    410
+   ]
+  },
+  {
+   "id": "c6",
+   "name": "Database",
+   "type": "database",
+   "bbox": [
+    300,
+    340,
+    490,
+    410
+   ]
+  }
+ ],
+ "relationships": [
+  {
+   "source": "c1",
+   "target": "c2",
+   "type": "depends_on"
+  },
+  {
+   "source": "c2",
+   "target": "c3",
+   "type": "depends_on"
+  },
+  {
+   "source": "c3",
+   "target": "c4",
+   "type": "depends_on"
+  },
+  {
+   "source": "c4",
+   "target": "c5",
+   "type": "depends_on"
+  },
+  {
+   "source": "c5",
+   "target": "c6",
+   "type": "depends_on"
+  }
+ ]
+}

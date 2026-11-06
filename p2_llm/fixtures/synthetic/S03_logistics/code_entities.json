@@ -1,0 +1,44 @@
+[
+ {
+  "id": "shipping/src/ShippingService",
+  "name": "ShippingService",
+  "kind": "module",
+  "path": "shipping/src"
+ },
+ {
+  "id": "inventory/src/InventoryService",
+  "name": "InventoryService",
+  "kind": "module",
+  "path": "inventory/src"
+ },
+ {
+  "id": "inventory/db/InventoryDatabase",
+  "name": "InventoryDatabase",
+  "kind": "module",
+  "path": "inventory/db"
+ },
+ {
+  "id": "shipping/events/ShipmentEventsTopic",
+  "name": "ShipmentEventsTopic",
+  "kind": "module",
+  "path": "shipping/events"
+ },
+ {
+  "id": "billing/src/BillingService",
+  "name": "BillingService",
+  "kind": "module",
+  "path": "billing/src"
+ },
+ {
+  "id": "payment/src/PaymentService",
+  "name": "PaymentService",
+  "kind": "module",
+  "path": "payment/src"
+ },
+ {
+  "id": "billing/test/InventoryClientMock",
+  "name": "InventoryClientMock",
+  "kind": "class",
+  "path": "billing/test"
+ }
+]

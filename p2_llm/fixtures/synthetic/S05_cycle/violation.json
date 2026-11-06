@@ -1,0 +1,131 @@
+{
+ "violation_id": "S05_cycle-V1",
+ "violation": {
+  "type": "circular_dependency",
+  "source": "Profile Service",
+  "target": "Auth Service",
+  "verdict": "VIOLATION"
+ },
+ "architecture_rule": {
+  "allowed": [
+   "Auth Service->User Service",
+   "User Service->Profile Service",
+   "User Service->Users DB"
+  ],
+  "forbidden": [
+   "Profile Service->Auth Service"
+  ],
+  "policy": "no dependency cycles between services"
+ },
+ "code": {
+  "file": "profile/src/AvatarController.java",
+  "lines": "30-33",
+  "snippet": "if (!authService.validate(token)) return 401;"
+ },
+ "dependency_path": [
+  "Profile Service",
+  "Auth Service",
+  "User Service",
+  "Profile Service"
+ ],
+ "commit": null,
+ "candidate_commits": [
+  {
+   "hash": "1111aaaa",
+   "message": "Add avatar upload size limit",
+   "files": [
+    "profile/src/AvatarController.java"
+   ],
+   "diff": "+if (file.size() > MAX) return 413;"
+  },
+  {
+   "hash": "2222bbbb",
+   "message": "Squash-import profile module",
+   "files": [
+    "profile/README.md"
+   ],
+   "diff": "+profile module"
+  }
+ ],
+ "intended_edges": [
+  [
+   "Auth Service",
+   "User Service"
+  ],
+  [
+   "User Service",
+   "Profile Service"
+  ],
+  [
+   "User Service",
+   "Users DB"
+  ]
+ ],
+ "current_edges": [
+  [
+   "Auth Service",
+   "User Service"
+  ],
+  [
+   "User Service",
+   "Profile Service"
+  ],
+  [
+   "User Service",
+   "Users DB"
+  ],
+  [
+   "Profile Service",
+   "Auth Service"
+  ]
+ ],
+ "layer_of": {
+  "Auth Service": "Service",
+  "User Service": "Service",
+  "Profile Service": "Service",
+  "Users DB": "Data"
+ },
+ "affected_components": [
+  {
+   "component": "Profile Service",
+   "distance": 0,
+   "direction": "source"
+  },
+  {
+   "component": "User Service",
+   "distance": 1,
+   "direction": "upstream"
+  },
+  {
+   "component": "Auth Service",
+   "distance": 1,
+   "direction": "upstream"
+  },
+  {
+   "component": "Users DB",
+   "distance": 3,
+   "direction": "downstream"
+  }
+ ],
+ "allowed_intermediary": null,
+ "ground_truth": {
+  "introducing_commit": null,
+  "expected_status": "UNCERTAIN",
+  "root_cause_keywords": [],
+  "affected": [
+   "Auth Service",
+   "Profile Service",
+   "User Service",
+   "Users DB"
+  ],
+  "expected_fix": {
+   "remove": [
+    [
+     "Profile Service",
+     "Auth Service"
+    ]
+   ],
+   "add": []
+  }
+ }
+}

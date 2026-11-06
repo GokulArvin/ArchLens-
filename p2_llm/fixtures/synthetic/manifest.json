@@ -1,0 +1,41 @@
+{
+ "synthetic": true,
+ "systems": [
+  {
+   "system_id": "S01_shop",
+   "style": "clean",
+   "violation_type": "forbidden_dependency",
+   "dir": "S01_shop"
+  },
+  {
+   "system_id": "S02_layered",
+   "style": "noisy",
+   "violation_type": "layer_violation",
+   "dir": "S02_layered"
+  },
+  {
+   "system_id": "S03_logistics",
+   "style": "abbrev",
+   "violation_type": "unexpected_coupling",
+   "dir": "S03_logistics"
+  },
+  {
+   "system_id": "S04_modular",
+   "style": "clean",
+   "violation_type": "boundary_violation",
+   "dir": "S04_modular"
+  },
+  {
+   "system_id": "S05_cycle",
+   "style": "noisy",
+   "violation_type": "circular_dependency",
+   "dir": "S05_cycle"
+  },
+  {
+   "system_id": "S06_missing",
+   "style": "abbrev",
+   "violation_type": "missing_dependency",
+   "dir": "S06_missing"
+  }
+ ]
+}
