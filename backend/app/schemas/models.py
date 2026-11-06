@@ -188,8 +188,8 @@ class ConformanceReport(BaseModel):
     repository: str
     diagram_path: Optional[str] = None
 
-    intended_graph: Optional[ArchGraph] = None
-    current_graph: Optional[ArchGraph] = None
+    intended_graph: Optional[Dict[str, Any]] = None
+    current_graph: Optional[Dict[str, Any]] = None
 
     violations: List[ArchViolation] = Field(default_factory=list)
 
