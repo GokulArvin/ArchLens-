@@ -1,0 +1,35 @@
+name: P2 LLM/VLM Tests
+
+"on":
+  push:
+    paths:
+      - "p2_llm/**"
+      - ".github/workflows/p2_llm_ci.yml"
+  pull_request:
+    paths:
+      - "p2_llm/**"
+      - ".github/workflows/p2_llm_ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: p2_llm/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r p2_llm/requirements.txt
+
+      - name: Run p2_llm tests
+        run: cd p2_llm && python -m pytest -q

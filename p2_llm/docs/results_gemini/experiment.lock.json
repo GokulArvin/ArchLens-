@@ -1,0 +1,23 @@
+{
+ "prompt_versions": {
+  "dependency_role": "1.0.0+1f6fd9a1",
+  "impact_recommendation": "1.0.0+8db86c3d",
+  "rca_grounded": "1.0.0+b0a3711c",
+  "rca_llm_only": "1.0.0+e2b82740",
+  "repair": "1.0.0+580781a4",
+  "semantic_alignment": "1.0.0+a3f41590",
+  "vlm_extraction": "1.0.0+399e0378"
+ },
+ "fewshot_sha": "0abb2c449d873467",
+ "config_sha": "ac695947dc5767ea",
+ "split_sha": "684490344d300e13",
+ "provider": {
+  "kind": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "api_key_env": "GEMINI_API_KEY"
+ },
+ "temperature": 0.0,
+ "package_version": "0.1.0",
+ "frozen_at": "2026-11-05T11:58:21",
+ "python": "3.13.14"
+}

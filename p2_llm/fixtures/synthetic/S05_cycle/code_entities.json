@@ -1,0 +1,32 @@
+[
+ {
+  "id": "auth/src/AuthService",
+  "name": "AuthService",
+  "kind": "module",
+  "path": "auth/src"
+ },
+ {
+  "id": "users/src/UserService",
+  "name": "UserService",
+  "kind": "module",
+  "path": "users/src"
+ },
+ {
+  "id": "profile/src/ProfileService",
+  "name": "ProfileService",
+  "kind": "module",
+  "path": "profile/src"
+ },
+ {
+  "id": "users/db/UsersDatabase",
+  "name": "UsersDatabase",
+  "kind": "module",
+  "path": "users/db"
+ },
+ {
+  "id": "common/auth/AuthTokenUtil",
+  "name": "AuthTokenUtil",
+  "kind": "class",
+  "path": "common/auth"
+ }
+]

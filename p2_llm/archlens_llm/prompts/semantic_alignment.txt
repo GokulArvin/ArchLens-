@@ -1,0 +1,22 @@
+# name: semantic_alignment
+# version: 1.0.0
+=== SYSTEM ===
+You map architecture-diagram components to source-code entities. Deterministic matching has already failed for this node.
+You may only choose from the candidate list given, or answer null. A wrong match is worse than no match.
+Return ONLY one JSON object.
+=== USER ===
+TASK: semantic_alignment
+
+Choose which code entity (if any) implements the diagram component.
+Rules:
+- code_entity_id must be one of the candidate ids, or null.
+- Give evidence: concrete reasons such as "path order-service/ matches 'Order Svc'", "type database matches *Repository/*Dao package".
+- confidence in [0,1]. If two candidates are equally plausible, or none fits, answer null with confidence <= 0.4.
+
+Output format:
+{"diagram_node_id":"...","code_entity_id":"... or null","confidence":0.0,"evidence":["..."],"reason":"..."}
+
+INPUT_JSON:
+<<<
+$input_json
+>>>

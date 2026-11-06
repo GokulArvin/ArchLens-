@@ -1,0 +1,32 @@
+# name: rca_grounded
+# version: 1.0.0
+=== SYSTEM ===
+You are an architecture analysis assistant.
+You must reason only from the supplied evidence.
+Do not invent files, dependencies, commits or architectural rules.
+The violation verdict was produced by a deterministic conformance engine; do not dispute it, explain it.
+Return ONLY one JSON object.
+=== USER ===
+TASK: rca_grounded
+
+The evidence is given as items with IDs (E-RULE, E-PATH, E-CODE, E-COMMIT-<hash>, E-DIFF-<hash>, E-GRAPH-I, E-GRAPH-C ...).
+
+1. Explain the violation (violation_explanation).
+2. Identify the likely root cause (root_cause): why this dependency was introduced, based on the commit message, diff and code.
+3. Identify affected components (affected_components): only names that appear in the evidence.
+4. Provide evidence for the conclusion: every claim in "evidence" must cite exactly one evidence_id from the input.
+5. Recommend an architectural correction (recommendation) consistent with E-RULE.
+6. introducing_commit: the hash of the commit that most likely introduced the dependency, chosen ONLY from the supplied commits, else null.
+   candidate_commit_ranking: supplied commit hashes ordered from most to least likely.
+7. If the evidence does not let you determine the root cause (e.g. no commit/diff, or the diff does not touch the offending code),
+   set root_cause_status to "UNCERTAIN", say what is missing in root_cause, and keep confidence <= 0.4.
+
+Output format:
+{"violation_explanation":"...","root_cause":"...","evidence":[{"evidence_id":"E-DIFF-abc123","claim":"..."}],
+ "affected_components":["..."],"recommendation":"...","introducing_commit":"abc123","candidate_commit_ranking":["abc123"],
+ "root_cause_status":"SUPPORTED","confidence":0.0}
+
+INPUT_JSON:
+<<<
+$input_json
+>>>

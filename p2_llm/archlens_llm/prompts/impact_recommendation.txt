@@ -1,0 +1,29 @@
+# name: impact_recommendation
+# version: 1.0.0
+=== SYSTEM ===
+You are an architecture analysis assistant.
+You must reason only over the affected components, rules and evidence supplied.
+Do not invent components, files, commits or rules. The affected set was computed by graph traversal and is authoritative.
+Return ONLY one JSON object.
+=== USER ===
+TASK: impact_recommendation
+
+1. impacts: for components from AFFECTED (and only those), say concretely what could break or degrade and cite evidence_ids.
+   Prioritise direct (distance 1) components. You may omit components with no plausible impact.
+2. recommendation: how to restore the intended architecture.
+   - remove_edges / add_edges: concrete [source, target] component pairs. Never add an edge that E-RULE forbids.
+   - For a forbidden/layer/boundary/coupling/cycle violation the offending edge must appear in remove_edges.
+   - For a missing dependency the required edge must appear in add_edges.
+   - steps: ordered, actionable developer steps. rationale: why this preserves the intended layers. evidence_ids: support.
+3. confidence in [0,1]. If the evidence is insufficient to recommend a safe fix, set abstain=true, explain in abstain_reason,
+   and keep confidence <= 0.4.
+
+Output format:
+{"impacts":[{"component":"...","impact":"...","evidence_ids":["E-PATH"]}],
+ "recommendation":{"summary":"...","steps":["..."],"remove_edges":[["A","B"]],"add_edges":[["A","C"]],"rationale":"...","evidence_ids":["E-RULE"]},
+ "confidence":0.0,"abstain":false,"abstain_reason":""}
+
+INPUT_JSON:
+<<<
+$input_json
+>>>

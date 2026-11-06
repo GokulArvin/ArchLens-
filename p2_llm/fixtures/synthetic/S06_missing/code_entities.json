@@ -1,0 +1,32 @@
+[
+ {
+  "id": "checkout/src/CheckoutService",
+  "name": "CheckoutService",
+  "kind": "module",
+  "path": "checkout/src"
+ },
+ {
+  "id": "fraud/src/FraudService",
+  "name": "FraudService",
+  "kind": "module",
+  "path": "fraud/src"
+ },
+ {
+  "id": "checkout/db/OrdersDatabase",
+  "name": "OrdersDatabase",
+  "kind": "module",
+  "path": "checkout/db"
+ },
+ {
+  "id": "fraud/rules/FraudRulesEngine",
+  "name": "FraudRulesEngine",
+  "kind": "class",
+  "path": "fraud/rules"
+ },
+ {
+  "id": "checkout/clients/FraudServiceClient",
+  "name": "FraudServiceClient",
+  "kind": "class",
+  "path": "checkout/clients"
+ }
+]

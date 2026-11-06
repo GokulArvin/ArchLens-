@@ -1,0 +1,6 @@
+{
+ "c1": "auth/src/AuthService",
+ "c2": "users/src/UserService",
+ "c3": "profile/src/ProfileService",
+ "c4": "users/db/UsersDatabase"
+}

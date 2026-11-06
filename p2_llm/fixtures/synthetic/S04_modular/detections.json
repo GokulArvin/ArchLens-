@@ -1,0 +1,57 @@
+[
+ {
+  "id": "c1",
+  "bbox": [
+   40,
+   36,
+   235,
+   111
+  ],
+  "class": "architecture_component",
+  "confidence": 0.79
+ },
+ {
+  "id": "c2",
+  "bbox": [
+   295,
+   45,
+   493,
+   107
+  ],
+  "class": "architecture_component",
+  "confidence": 0.77
+ },
+ {
+  "id": "c3",
+  "bbox": [
+   557,
+   42,
+   753,
+   104
+  ],
+  "class": "architecture_component",
+  "confidence": 0.73
+ },
+ {
+  "id": "c4",
+  "bbox": [
+   38,
+   192,
+   228,
+   266
+  ],
+  "class": "database",
+  "confidence": 0.87
+ },
+ {
+  "id": "c5",
+  "bbox": [
+   560,
+   195,
+   756,
+   264
+  ],
+  "class": "database",
+  "confidence": 0.73
+ }
+]

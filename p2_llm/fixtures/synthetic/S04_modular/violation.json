@@ -1,0 +1,144 @@
+{
+ "violation_id": "S04_modular-V1",
+ "violation": {
+  "type": "boundary_violation",
+  "source": "Search Module",
+  "target": "Catalog Module",
+  "verdict": "VIOLATION"
+ },
+ "architecture_rule": {
+  "allowed": [
+   "Search->CatalogPublic",
+   "CatalogPublic->CatalogInternal",
+   "Search->Data",
+   "CatalogInternal->Data"
+  ],
+  "forbidden": [
+   "Search->CatalogInternal"
+  ]
+ },
+ "code": {
+  "file": "modules/search/RankingService.java",
+  "lines": "20-24",
+  "snippet": "import catalog.internal.PriceCalculatorImpl;\ndouble p = new PriceCalculatorImpl().effectivePrice(item);"
+ },
+ "dependency_path": [
+  "Search Module",
+  "Catalog Module"
+ ],
+ "commit": {
+  "hash": "c0ffee11",
+  "message": "Rank search results by effective price",
+  "files": [
+   "modules/search/RankingService.java"
+  ],
+  "diff": "+import catalog.internal.PriceCalculatorImpl;\n+double p = new PriceCalculatorImpl().effectivePrice(item);"
+ },
+ "candidate_commits": [
+  {
+   "hash": "c0ffee11",
+   "message": "Rank search results by effective price",
+   "files": [
+    "modules/search/RankingService.java"
+   ],
+   "diff": "+import catalog.internal.PriceCalculatorImpl;\n+double p = new PriceCalculatorImpl().effectivePrice(item);"
+  },
+  {
+   "hash": "beef2222",
+   "message": "Tune index refresh",
+   "files": [
+    "modules/search/index/Config.java"
+   ],
+   "diff": "-refresh=1s\n+refresh=5s"
+  }
+ ],
+ "intended_edges": [
+  [
+   "Search Module",
+   "Catalog API"
+  ],
+  [
+   "Catalog API",
+   "Catalog Module"
+  ],
+  [
+   "Search Module",
+   "Search Index"
+  ],
+  [
+   "Catalog Module",
+   "Catalog DB"
+  ]
+ ],
+ "current_edges": [
+  [
+   "Search Module",
+   "Catalog API"
+  ],
+  [
+   "Catalog API",
+   "Catalog Module"
+  ],
+  [
+   "Search Module",
+   "Search Index"
+  ],
+  [
+   "Catalog Module",
+   "Catalog DB"
+  ],
+  [
+   "Search Module",
+   "Catalog Module"
+  ]
+ ],
+ "layer_of": {
+  "Search Module": "Search",
+  "Catalog API": "CatalogPublic",
+  "Catalog Module": "CatalogInternal",
+  "Search Index": "Data",
+  "Catalog DB": "Data"
+ },
+ "affected_components": [
+  {
+   "component": "Search Module",
+   "distance": 0,
+   "direction": "source"
+  },
+  {
+   "component": "Catalog Module",
+   "distance": 1,
+   "direction": "downstream"
+  },
+  {
+   "component": "Catalog DB",
+   "distance": 2,
+   "direction": "downstream"
+  }
+ ],
+ "allowed_intermediary": "Catalog API",
+ "ground_truth": {
+  "introducing_commit": "c0ffee11",
+  "expected_status": "SUPPORTED",
+  "root_cause_keywords": [
+   "price",
+   "internal",
+   "ranking",
+   "catalog"
+  ],
+  "affected": [
+   "Catalog DB",
+   "Catalog Module",
+   "Search Module"
+  ],
+  "expected_fix": {
+   "remove": [
+    [
+     "Search Module",
+     "Catalog Module"
+    ]
+   ],
+   "add": []
+  }
+ }
+}
