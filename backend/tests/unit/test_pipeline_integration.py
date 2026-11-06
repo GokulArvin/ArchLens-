@@ -66,3 +66,30 @@ def test_extract_relationships_uses_real_geometry_extraction():
     assert len(relationships) > 0  # this diagram has real connectors Hough should find
     for r in relationships:
         assert "source" in r and "target" in r and "confidence" in r
+
+
+def test_analyze_uses_region_proposals_when_detector_has_no_model(monkeypatch):
+    """The default detector fallback must produce explicit, reviewable candidates."""
+    from types import SimpleNamespace
+    import numpy as np
+
+    pipeline = CVPipeline.__new__(CVPipeline)
+    pipeline.config = {"use_region_fallback": True, "max_region_proposals": 10}
+    pipeline.use_region_fallback = True
+    pipeline.preprocessor = SimpleNamespace(preprocess=lambda _: np.zeros((100, 100, 3), dtype=np.uint8))
+    pipeline.edge_detector = SimpleNamespace(canny=lambda image: np.zeros((100, 100), dtype=np.uint8))
+    pipeline.component_detector = SimpleNamespace(detect=lambda _: [])
+    pipeline.region_segmenter = SimpleNamespace(propose_regions=lambda _: [
+        SimpleNamespace(bbox=[10.0, 10.0, 40.0, 40.0], area=700.0, contour_points=[[10.0, 10.0]]),
+        SimpleNamespace(bbox=[10.0, 10.0, 40.0, 40.0], area=650.0, contour_points=[[11.0, 11.0]]),
+        SimpleNamespace(bbox=[60.0, 60.0, 90.0, 90.0], area=700.0, contour_points=[[60.0, 60.0]]),
+    ])
+    pipeline.clip_classifier = SimpleNamespace(classify=lambda _: {"database": 0.0, "service": 0.0})
+    pipeline._extract_relationships = lambda components, image: []
+
+    result = pipeline.analyze("diagram.png")
+
+    assert len(result["components"]) == 2
+    assert result["metadata"]["component_detection_method"] == "region_proposal"
+    assert all(component["type"] == "unknown" for component in result["components"])
+    assert all(component["metadata"]["detection_method"] == "region_proposal" for component in result["components"])

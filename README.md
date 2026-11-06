@@ -5,7 +5,7 @@
 [![React](https://img.shields.io/badge/React-18.3+-61DAFB.svg?logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6.0+-646CFF.svg?logo=vite)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4+-38B2AC.svg?logo=tailwindcss)](https://tailwindcss.com/)
-[![Tests](https://img.shields.io/badge/Tests-5%20passed-brightgreen.svg)](backend/tests/)
+[![Tests](https://img.shields.io/badge/Tests-322%20passed-brightgreen.svg)](backend/tests/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > **Architecture Conformance Checking with Computer Vision, Static Program Analysis, and Evidence-Grounded LLM Reasoning**
@@ -137,7 +137,7 @@ flowchart TD
 | **Module D** | `backend/app/modules/architecture_recovery/` | Static program analysis using Python AST and Tree-sitter for deterministic dependency extraction. |
 | **Module E** | `backend/app/modules/conformance_engine/` | Deterministic graph comparison against layered architecture rules and cycle detection algorithms. |
 | **Git Evidence** | `backend/app/modules/git_evidence/` | Git blame, commit history mining, and pickaxe (`git log -S`) extraction of introducing diffs. |
-| **Module F** | `backend/app/modules/llm_rca/` | Multi-provider LLM Gateway (OpenAI, Gemini, Anthropic) generating evidence-grounded root causes and recommendations. |
+| **Module F** | `backend/app/modules/llm_rca/` | Multi-provider LLM Gateway (OpenAI, Gemini, Anthropic, Ollama) generating evidence-grounded root causes and recommendations. |
 | **Module G** | `backend/app/modules/evaluation/` | Baseline comparisons (LLM-only, Static-only, CV-only), ablations, and precision/recall/F1 metrics. |
 
 ---
@@ -151,7 +151,7 @@ flowchart TD
 - **Program Analysis:** Python `ast` (built-in), `tree-sitter` 0.23+
 - **Graph Analytics:** NetworkX 3.4+
 - **Version Control Analysis:** GitPython 3.1+
-- **LLM Providers:** OpenAI API (`gpt-4o`), Google Generative AI (`gemini-1.5-pro`/`gemini-2.0-flash`), Anthropic SDK (`claude-3-5-sonnet`)
+- **LLM Providers:** OpenAI API (`gpt-4o`), Google Generative AI (`gemini-1.5-pro`/`gemini-2.0-flash`), Anthropic SDK (`claude-3-5-sonnet`), and local Ollama models
 - **Resilience:** Tenacity (exponential backoff retry policies)
 - **Testing:** Pytest 8.3+, pytest-asyncio, pytest-cov
 
@@ -284,14 +284,30 @@ ArchLens/
 
 4. **Configure environment variables:**
    ```bash
-   cp .env.example .env
+   cp backend/.env.example backend/.env
    ```
-   Edit `.env` to supply your API keys if performing LLM-based root cause analysis:
+   For local, no-API-key RCA, install [Ollama](https://ollama.com/download), then download and start a model:
    ```env
-   OPENAI_API_KEY=sk-...
-   GOOGLE_API_KEY=AIza...
-   ANTHROPIC_API_KEY=sk-ant-...
+   ollama pull qwen2.5-coder:7b
+   ollama serve
    ```
+   Set these values in `backend/.env`:
+   ```env
+   LLM_PROVIDER=ollama
+   LLM_MODEL=qwen2.5-coder:7b
+   OLLAMA_BASE_URL=http://localhost:11434/v1
+   CV_YOLO_MODEL_PATH=
+   CV_ENABLE_REGION_FALLBACK=True
+   ```
+   Leave the YOLO path empty to use the local contour-proposal fallback. Set
+   it to a compatible weights file to enable YOLO detections. Ollama must be
+   running locally when requesting live root-cause analysis. Other hosted LLM
+   providers remain available by changing `LLM_PROVIDER` and configuring their
+   corresponding API key.
+
+   When using Docker Compose, set `LLM_PROVIDER`, `LLM_MODEL`, and
+   `OLLAMA_BASE_URL` in the root `.env`. The Compose default points to Ollama
+   running on the host machine via `host.docker.internal`.
 
 5. **Start the FastAPI development server:**
    ```bash
@@ -367,10 +383,16 @@ tests/unit/test_conformance_engine.py::test_summary_counts PASSED            [10
 |---|---|---|
 | `POST` | `/api/v1/analyze-diagram` | Upload a diagram image; runs the CV pipeline to extract intended graph $G_I$. |
 | `POST` | `/api/v1/analyze-repository` | Supply a repo path; runs AST parser to extract current graph $G_C$. |
+| `POST` | `/api/v1/analyze-and-check` | Multipart workflow: diagram extraction → repository analysis → graph alignment → conformance report persistence. |
 | `POST` | `/api/v1/check-conformance/inline` | Compare $G_I$ and $G_C$ inline to detect violations and cycle anomalies. |
 | `POST` | `/api/v1/analyze-violation` | Mine Git history for an introducing commit and run evidence-grounded LLM RCA. |
 | `GET` | `/api/v1/report/{id}` | Retrieve a stored conformance audit report. |
 | `GET` | `/health` | Service health status check. |
+
+`analyze-and-check` accepts `file`, `repo_path`, `language`, and optional
+`manual_mappings_json` / `ruleset_json` multipart fields. Configure a trained
+detector with `CV_YOLO_MODEL_PATH`; when it is unset or produces no boxes,
+the API uses low-confidence region proposals that may need manual mappings.
 
 ---
 

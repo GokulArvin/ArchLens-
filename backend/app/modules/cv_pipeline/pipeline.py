@@ -23,6 +23,8 @@ from typing import List, Dict, Any, Optional
 from abc import ABC, abstractmethod
 import logging
 
+from app.modules.cv_pipeline.segmentation import RegionProposalSegmenter
+
 logger = logging.getLogger(__name__)
 
 # Sprint 1 / D2 resolution policy (see docs/cv_pipeline_note.md). Centralized
@@ -380,6 +382,8 @@ class CVPipeline:
             model_path=self.config.get("yolo_model_path"),
             confidence=self.config.get("confidence", 0.5),
         )
+        self.region_segmenter = RegionProposalSegmenter()
+        self.use_region_fallback = self.config.get("use_region_fallback", True)
         self.clip_classifier = CLIPClassifier()
 
     def analyze(self, image_path: str) -> Dict[str, Any]:
@@ -400,7 +404,15 @@ class CVPipeline:
         edge_pixel_count = int((edges > 0).sum())
 
         # Stage 3: Component detection
-        raw_detections = self.component_detector.detect(img)
+        try:
+            raw_detections = self.component_detector.detect(img)
+        except Exception as exc:
+            logger.warning("Component detector failed; trying region proposals: %s", exc)
+            raw_detections = []
+        detection_method = "yolo"
+        if not raw_detections and self.use_region_fallback:
+            raw_detections = self._region_proposal_detections(img)
+            detection_method = "region_proposal"
 
         # Stage 6: CLIP classification on each detected region
         components = []
@@ -417,6 +429,10 @@ class CVPipeline:
                 "bbox": {"x1": x1, "y1": y1, "x2": x2, "y2": y2},
                 "confidence": det["confidence"],
                 "clip_scores": clip_scores,
+                "metadata": {
+                    "detection_method": detection_method,
+                    **({"contour_points": det["contour_points"]} if det.get("contour_points") else {}),
+                },
             })
 
         # Stage 8: Geometry-based relationship extraction (Sprint 5)
@@ -428,12 +444,65 @@ class CVPipeline:
             "components": components,
             "relationships": relationships,
             "edge_pixel_count": edge_pixel_count,
+            "metadata": {
+                "component_detection_method": detection_method,
+                "component_count": len(components),
+                "relationship_count": len(relationships),
+            },
         }
         logger.info(
             f"CV pipeline complete: {len(components)} components, "
             f"{len(relationships)} relationships"
         )
         return result
+
+    def _region_proposal_detections(self, img: np.ndarray) -> List[Dict[str, Any]]:
+        """Turn the retained contour segmenter into a conservative detector fallback.
+
+        Region proposals are candidates, not semantic classifications. Their
+        low confidence and provenance stay attached so alignment can abstain
+        or a reviewer can supply explicit mappings.
+        """
+        proposals = self.region_segmenter.propose_regions(img)
+        height, width = img.shape[:2]
+        selected: List[Dict[str, Any]] = []
+
+        for proposal in sorted(proposals, key=lambda item: item.area, reverse=True):
+            x1, y1, x2, y2 = proposal.bbox
+            box_area = max(0.0, x2 - x1) * max(0.0, y2 - y1)
+            if box_area <= 0 or width <= 0 or height <= 0:
+                continue
+
+            # Suppress nested/near-duplicate contours while retaining separate
+            # adjacent components. The threshold is intentionally permissive.
+            duplicate = False
+            for existing in selected:
+                a1, b1, a2, b2 = existing["bbox"]
+                ix1, iy1 = max(x1, a1), max(y1, b1)
+                ix2, iy2 = min(x2, a2), min(y2, b2)
+                intersection = max(0.0, ix2 - ix1) * max(0.0, iy2 - iy1)
+                union = box_area + existing["box_area"] - intersection
+                if union and intersection / union >= 0.85:
+                    duplicate = True
+                    break
+            if duplicate:
+                continue
+
+            selected.append({
+                "bbox": [x1, y1, x2, y2],
+                "confidence": 0.35,
+                "class_id": -1,
+                "class_name": f"region_{len(selected) + 1}",
+                "contour_points": proposal.contour_points,
+                "box_area": box_area,
+            })
+
+            if len(selected) >= int(self.config.get("max_region_proposals", 100)):
+                break
+
+        for detection in selected:
+            detection.pop("box_area", None)
+        return selected
 
     def _extract_relationships(
         self,

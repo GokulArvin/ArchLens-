@@ -49,26 +49,25 @@ placeholder even after Sprint 5 built the real implementation separately).
 2. **Edge detection** (`EdgeDetector`) - Canny, used both as a Sprint 2/4
    diagnostic (`analyze()` reports `edge_pixel_count`) and internally by
    Stage 4's segmentation and Stage 8's relationship extraction.
-3. **Component detection** (`ComponentDetector`) - pretrained YOLOv8n/COCO
-   (Sprint 3). Empirically finds almost nothing real on architecture
-   diagrams (`docs/sprint3_detection_baseline.md`) - a documented, expected
-   limitation, not a bug.
-4. **Segmentation** - `RegionProposalSegmenter` (Sprint 4), the project's
-   retained MVP approach after pretrained segmentation was tested and found
-   not viable. Not yet called from `CVPipeline.analyze()` (detection is the
-   primary path there); available standalone via
-   `backend/scripts/evaluate_segmentation_baseline.py`.
+3. **Component detection** (`ComponentDetector`) - an optional YOLO model
+   configured with `CV_YOLO_MODEL_PATH`. The COCO baseline found almost
+   nothing real on architecture diagrams (`docs/sprint3_detection_baseline.md`),
+   so an empty or failed detector now falls through to the retained region
+   proposal baseline.
+4. **Segmentation fallback** (`RegionProposalSegmenter`) - edge-assisted
+   contour regions are deduplicated and emitted as low-confidence, unknown-type
+   candidates with provenance. These are reviewable candidates, not claims of
+   semantic component classification; manual graph mappings may be needed.
 5. **CLIP zero-shot classification** (`CLIPClassifier`) - classifies each
    detected region; degrades to `"unknown"` (not an arbitrary type) if CLIP
    isn't installed - an audit-pass fix, since the original fallback silently
    mistyped every component as `"database"` via an unguarded `max()` tie-break
    on all-zero scores.
 6. **Relationship extraction** (`CVPipeline._extract_relationships`) - wired
-   to the real Sprint 5 geometry extractor (`geometry_relations.py`, the
-   project's strongest CV baseline, F1=0.591) as of this audit pass. Returns
-   `[]` only when there are zero detected components to relate (there is
-   nothing to wire into when detection finds nothing, which - per Stage 3 -
-   is most diagrams in this dataset).
+   to the Sprint 5 geometry extractor (`geometry_relations.py`). It runs for
+   both YOLO detections and region proposals, and retains confidence and
+   evidence so ambiguous candidates can be reviewed or excluded during
+   alignment.
 
 ## What Sprint 1 actually delivers here
 

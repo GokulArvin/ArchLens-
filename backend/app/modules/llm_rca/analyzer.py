@@ -7,7 +7,7 @@ The deterministic ConformanceEngine remains the sole authority
 for determining conformance verdicts.
 
 Features:
-- OpenAI, Gemini and Anthropic support
+- OpenAI, Gemini, Anthropic and local Ollama support
 - Configurable timeout and retry handling
 - In-memory response caching with TTL
 - Evidence ID validation
@@ -147,6 +147,7 @@ class LLMGateway:
     - OpenAI
     - Google Gemini
     - Anthropic
+    - Ollama through its OpenAI-compatible local API
 
     Includes timeout, retry and in-memory caching.
     """
@@ -230,6 +231,10 @@ class LLMGateway:
         if self.provider == "anthropic":
             return settings.ANTHROPIC_API_KEY or None
 
+        if self.provider == "ollama":
+            # Ollama serves locally and does not require an API key.
+            return "ollama"
+
         raise ValueError(
             f"Unsupported LLM provider: {self.provider}"
         )
@@ -240,19 +245,23 @@ class LLMGateway:
         if self._client is not None:
             return self._client
 
-        if not self.api_key:
+        if not self.api_key and self.provider != "ollama":
             raise RuntimeError(
                 f"No API key configured for provider: {self.provider}"
             )
 
-        if self.provider == "openai":
+        if self.provider in {"openai", "ollama"}:
             from openai import OpenAI
 
-            self._client = OpenAI(
-                api_key=self.api_key,
-                timeout=self.timeout,
-                max_retries=0,
-            )
+            client_options = {
+                "api_key": self.api_key,
+                "timeout": self.timeout,
+                "max_retries": 0,
+            }
+            if self.provider == "ollama":
+                client_options["base_url"] = settings.OLLAMA_BASE_URL
+
+            self._client = OpenAI(**client_options)
 
         elif self.provider == "gemini":
             import google.generativeai as genai
@@ -351,7 +360,7 @@ class LLMGateway:
 
         client = self._get_client()
 
-        if self.provider == "openai":
+        if self.provider in {"openai", "ollama"}:
 
             response = client.chat.completions.create(
                 model=self.model,
@@ -376,7 +385,7 @@ class LLMGateway:
 
             if not content:
                 raise ValueError(
-                    "OpenAI returned an empty response."
+                    f"{self.provider.capitalize()} returned an empty response."
                 )
 
             return content
@@ -487,8 +496,8 @@ class RCAAnalyzer:
     Evidence-grounded root cause analysis.
 
     If no explicit gateway is supplied, a configured gateway
-    is created automatically when a provider API key exists.
-    Otherwise, safe placeholder mode is used.
+    is created automatically when provider credentials exist, or
+    when the selected provider is local Ollama.
     """
 
     def __init__(
@@ -507,6 +516,8 @@ class RCAAnalyzer:
                     if settings.LLM_PROVIDER.lower() == "gemini"
                     else settings.ANTHROPIC_API_KEY
                     if settings.LLM_PROVIDER.lower() == "anthropic"
+                    else "ollama"
+                    if settings.LLM_PROVIDER.lower() == "ollama"
                     else None
                 )
 

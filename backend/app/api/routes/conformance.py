@@ -29,7 +29,6 @@ from app.services.report_service import save_report
 
 router = APIRouter()
 
-engine = ConformanceEngine()
 recovery_pipeline = ArchitectureRecoveryPipeline()
 
 
@@ -94,7 +93,8 @@ def run_conformance_check(
 ) -> CheckConformanceResponse:
     """Run the deterministic conformance engine."""
 
-    result = engine.check_conformance(intended, current, ruleset)
+    # Instantiate per request so a custom ruleset cannot leak into later runs.
+    result = ConformanceEngine(ruleset=ruleset).check_conformance(intended, current)
 
     return format_conformance_response(result)
 

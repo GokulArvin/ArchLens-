@@ -4,9 +4,13 @@ ArchLens Configuration Settings
 Centralized application configuration using Pydantic Settings.
 """
 
+from pathlib import Path
 from typing import List
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+BACKEND_ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
 
 
 class Settings(BaseSettings):
@@ -45,11 +49,14 @@ class Settings(BaseSettings):
     CV_CONFIDENCE_THRESHOLD: float = 0.5
     CV_NMS_THRESHOLD: float = 0.4
     MAX_IMAGE_SIZE: int = 1920
+    CV_YOLO_MODEL_PATH: str = ""
+    CV_ENABLE_REGION_FALLBACK: bool = True
 
     # ─── LLM Configuration ────────────────────────────────────────
 
     LLM_PROVIDER: str = "openai"
     LLM_MODEL: str = "gpt-4o"
+    OLLAMA_BASE_URL: str = "http://localhost:11434/v1"
 
     LLM_MAX_TOKENS: int = 4096
     LLM_TEMPERATURE: float = 0.1
@@ -74,7 +81,7 @@ class Settings(BaseSettings):
     # ─── Environment Configuration ────────────────────────────────
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(Path.cwd() / ".env", BACKEND_ENV_FILE),
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
