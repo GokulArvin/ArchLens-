@@ -14,6 +14,8 @@ import pytest
 
 from app.modules.conformance_engine.engine import (
     ConformanceEngine,
+    LayerViolationRule,
+    BoundaryViolationRule,
     CONFORMANT,
     VIOLATION,
     MISSING,
@@ -327,12 +329,6 @@ def test_example_json_fixtures(engine):
 # Sprint 7 / D29–D30 (P3) — Layer, boundary and circular-dependency checks
 # =============================================================================
 
-from app.modules.conformance_engine.engine import (
-    LayerViolationRule,
-    BoundaryViolationRule,
-)
-
-
 # ─── Layer violation ─────────────────────────────────────────────────────────
 
 def test_layer_violation_upward_dependency(engine):
@@ -415,11 +411,6 @@ def test_boundary_violation_cross_domain_not_in_gi(engine):
     ], "current")
 
     result = engine.check_conformance(G_I, G_C)
-    boundary_violations = [
-        v for v in result["violations"]
-        if "boundary" in v.get("description", "").lower()
-           or v.get("violation_type") == "forbidden_dependency"
-    ]
     # Should flag as a violation (boundary or forbidden)
     assert result["verdict"] == VIOLATION
 

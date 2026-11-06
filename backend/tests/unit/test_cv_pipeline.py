@@ -10,6 +10,8 @@ so we can assert that edge detectors produce non-zero output in the right places
 import numpy as np
 import pytest
 
+from app.modules.cv_pipeline.pipeline import CVPreprocessor, EdgeDetector
+
 try:
     import cv2
     _CV2_AVAILABLE = True
@@ -17,9 +19,6 @@ except ImportError:
     _CV2_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(not _CV2_AVAILABLE, reason="opencv-python not installed")
-
-
-from app.modules.cv_pipeline.pipeline import CVPreprocessor, EdgeDetector
 
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────

@@ -14,7 +14,6 @@ Tests cover:
 import textwrap
 from pathlib import Path
 
-import pytest
 
 from app.modules.architecture_recovery.ast_parser import (
     PythonASTParser,

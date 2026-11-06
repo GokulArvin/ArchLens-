@@ -9,7 +9,6 @@ import pytest
 
 from app.modules.evaluation.conformance_metrics import (
     ConformanceEvaluator,
-    EvaluationResult,
     RCAEvaluator,
 )
 

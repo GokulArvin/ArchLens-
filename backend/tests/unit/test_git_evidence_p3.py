@@ -7,7 +7,6 @@ functions in git_evidence_p3.py WITHOUT requiring a real cloned repository.
 
 from __future__ import annotations
 
-import pytest
 
 from app.modules.cv_pipeline.git_evidence_p3 import (
     DependencyEvidence,

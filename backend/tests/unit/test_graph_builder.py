@@ -21,7 +21,7 @@ import pytest
 import networkx as nx
 
 from app.modules.graph.builder import ArchGraphBuilder, PackageGraphAggregator
-from app.modules.graph.integrity import GraphIntegrityChecker, IssueSeverity
+from app.modules.graph.integrity import GraphIntegrityChecker
 
 
 # ---------------------------------------------------------------------------
@@ -108,7 +108,7 @@ class TestArchGraphBuilder:
 
     def test_pydantic_model_accepted(self):
         """ArchGraphBuilder.build() accepts a Pydantic ArchGraph model."""
-        from app.schemas.models import ArchGraph, ArchComponent, ArchRelationship
+        from app.schemas.models import ArchGraph, ArchComponent
         graph = ArchGraph(
             name="PydanticGraph",
             graph_type="current",

@@ -11,7 +11,9 @@ Acceptance Criteria:
 - Default MODULE component  → inference_confidence == 0.6
 """
 
-import pytest
+
+from hypothesis import given, settings as h_settings, HealthCheck
+from hypothesis import strategies as st
 
 from app.modules.architecture_recovery.ast_parser import DependencyGraphBuilder
 from app.modules.conformance_engine.engine import ConformanceEngine, UNCERTAIN
@@ -184,9 +186,6 @@ def test_build_from_python_nodes_have_inference_confidence():
 
 
 # ─── Property-based tests (Tasks 9.2–9.5) ────────────────────────────────────
-
-from hypothesis import given, settings as h_settings, HealthCheck
-from hypothesis import strategies as st
 
 # Reusable strategy: valid Python identifier-like strings (no dots, no spaces)
 _ident = st.text(

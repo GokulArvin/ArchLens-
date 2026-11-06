@@ -10,7 +10,7 @@ from app.modules.architecture_recovery.ast_parser import (
     DependencyGraphBuilder,
     ArchitectureRecoveryPipeline,
 )
-from app.schemas.models import ComponentType, RelationshipType, CurrentGraph
+from app.schemas.models import ComponentType, CurrentGraph
 
 
 @pytest.fixture

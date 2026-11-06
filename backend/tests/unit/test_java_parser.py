@@ -12,9 +12,12 @@ Acceptance Criteria:
 
 import shutil
 import tempfile
+import os
 from pathlib import Path
 
 import pytest
+from hypothesis import given, settings as h_settings, HealthCheck
+from hypothesis import strategies as st
 
 from app.modules.architecture_recovery.ast_parser import (
     BaseLanguageParser,
@@ -253,12 +256,6 @@ def test_pipeline_python_mode_unchanged(pipeline):
 
 
 # ─── Property-based tests (Tasks 8.2–8.6) ────────────────────────────────────
-
-import tempfile
-import os
-from hypothesis import given, settings as h_settings, HealthCheck
-from hypothesis import strategies as st
-
 
 # Feature: archlens-sprint2-p3, Property 1: Java ParseResult structural completeness
 @h_settings(max_examples=50, suppress_health_check=[HealthCheck.too_slow])

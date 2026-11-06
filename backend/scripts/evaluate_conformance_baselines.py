@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List
@@ -24,11 +23,11 @@ from typing import Any, Dict, List
 _BACKEND_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_BACKEND_DIR))
 
-from app.modules.architecture_recovery.ast_parser import ArchitectureRecoveryPipeline
-from app.modules.conformance_engine.engine import ConformanceEngine
-from app.modules.graph.builder import ArchGraphBuilder
-from app.modules.evaluation.conformance_metrics import ConformanceEvaluator, EvaluationResult
-from app.schemas.models import RuleSet, ArchitectureRule, RuleAction, RuleCategory
+from app.modules.architecture_recovery.ast_parser import ArchitectureRecoveryPipeline  # noqa: E402
+from app.modules.conformance_engine.engine import ConformanceEngine  # noqa: E402
+from app.modules.graph.builder import ArchGraphBuilder  # noqa: E402
+from app.modules.evaluation.conformance_metrics import ConformanceEvaluator, EvaluationResult  # noqa: E402
+from app.schemas.models import RuleSet, ArchitectureRule, RuleAction, RuleCategory  # noqa: E402
 
 logging.basicConfig(level=logging.WARNING)
 

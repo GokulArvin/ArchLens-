@@ -34,10 +34,9 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
 logger = logging.getLogger(__name__)
@@ -47,7 +46,6 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 try:
     import cv2
-    import numpy as np
     _CV_AVAILABLE = True
 except ImportError:
     _CV_AVAILABLE = False

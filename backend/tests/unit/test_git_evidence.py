@@ -12,9 +12,11 @@ network-independent by default.
 from pathlib import Path
 
 import pytest
+from git import Repo
 
 from app.modules.cv_pipeline.code_retrieval import AffectedCodeNotFoundError, retrieve_file_content, retrieve_line_range
 from app.modules.cv_pipeline.git_evidence import build_git_evidence, find_candidate_commits
+from app.modules.git_evidence.extractor import GitEvidenceExtractor
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 CLONE_PATH = REPO_ROOT / "data" / "repositories" / "flask-microservice-demo"
@@ -76,11 +78,6 @@ def test_retrieve_file_content_reads_a_real_file():
 def test_retrieve_file_content_raises_for_missing_file():
     with pytest.raises(AffectedCodeNotFoundError):
         retrieve_file_content(str(CLONE_PATH), "backend/src/does_not_exist.py")
-
-from git import Repo, Actor
-
-from app.modules.git_evidence.extractor import GitEvidenceExtractor
-
 
 def create_repo(tmp_path):
     repo = Repo.init(tmp_path)
