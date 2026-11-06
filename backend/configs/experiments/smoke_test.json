@@ -1,0 +1,20 @@
+
+{
+    "name": "experiment_runner_smoke_test",
+    "description": "Verify the ArchLens experiment runner.",
+    "command": [
+        "python",
+        "-c",
+        "print('ArchLens experiment runner is working.')"
+    ],
+    "working_directory": "../..",
+    "seed": 42,
+    "dataset": null,
+    "split": {
+        "type": "not_applicable"
+    },
+    "parameters": {
+        "purpose": "runner_validation"
+    },
+    "timeout_seconds": 60
+}

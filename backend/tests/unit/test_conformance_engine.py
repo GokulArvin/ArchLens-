@@ -3,8 +3,14 @@ Unit tests for the Conformance Engine (Module E).
 """
 
 import pytest
-from app.modules.conformance_engine.engine import ConformanceEngine, VIOLATION, CONFORMANT, MISSING
 
+from app.modules.conformance_engine.engine import (
+    ConformanceEngine,
+    VIOLATION,
+    CONFORMANT,
+    MISSING,
+    UNCERTAIN,
+)
 
 @pytest.fixture
 def engine():
@@ -93,3 +99,77 @@ def test_summary_counts(engine):
 
     result = engine.check_conformance(G_I, G_C)
     assert result["summary"]["total_violations"] == len(result["violations"])
+
+
+def test_unexpected_dependency_detected(engine):
+    """Dependencies in G_C but not in G_I should be UNEXPECTED."""
+    components = [
+        {"id": "a", "name": "ServiceA", "type": "service"},
+        {"id": "b", "name": "ServiceB", "type": "service"},
+    ]
+
+    G_I = make_graph(components, [])
+    G_C = make_graph(
+        components,
+        [{"source": "a", "target": "b", "type": "depends_on"}]
+    )
+
+    result = engine.check_conformance(G_I, G_C)
+
+    unexpected = [
+        v for v in result["violations"]
+        if v["verdict"] == "UNEXPECTED"
+    ]
+
+    assert len(unexpected) == 1
+    assert unexpected[0]["source"] == "a"
+    assert unexpected[0]["target"] == "b"
+
+
+def test_case_insensitive_forbidden_dependency(engine):
+    """Forbidden dependency detection should ignore type capitalization."""
+    components = [
+        {"id": "ctrl", "name": "OrderController", "type": "Controller"},
+        {"id": "repo", "name": "OrderRepository", "type": "Repository"},
+    ]
+
+    G_I = make_graph(components, [])
+    G_C = make_graph(
+        components,
+        [{"source": "ctrl", "target": "repo"}]
+    )
+
+    result = engine.check_conformance(G_I, G_C)
+
+    assert result["verdict"] == VIOLATION
+
+
+def test_graph_builder_does_not_create_implicit_nodes(engine):
+    """Relationships referencing missing components should be rejected."""
+    graph = make_graph(
+        [{"id": "a", "name": "ServiceA", "type": "service"}],
+        [{"source": "a", "target": "missing"}]
+    )
+
+    with pytest.raises(ValueError):
+        engine.build_graph(graph)
+
+def test_uncertain_verdict_for_unknown_component_layer(engine):
+    """Explicitly unknown component layer should produce UNCERTAIN."""
+    components = [
+        {
+            "id": "service",
+            "name": "OrderService",
+            "type": "service",
+            "metadata": {"layer": "unknown"},
+            "confidence": 1.0,
+        }
+    ]
+
+    G_I = make_graph(components, [])
+    G_C = make_graph(components, [])
+
+    result = engine.check_conformance(G_I, G_C)
+
+    assert result["verdict"] == UNCERTAIN
+    assert len(result["violations"]) == 0

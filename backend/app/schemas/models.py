@@ -1,12 +1,17 @@
+
 """
 Pydantic schemas for ArchLens data models.
-Shared across all modules for consistent JSON/graph schema.
+
+Shared across all modules for consistent graph, conformance,
+evidence, RCA, and report structures.
 """
 
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any, Literal
-from enum import Enum
 import uuid
+from datetime import datetime, timezone
+from enum import Enum
+from typing import Any, Dict, List, Optional, Literal
+
+from pydantic import BaseModel, Field
 
 
 # ─── Component / Node ────────────────────────────────────────────────────────
@@ -34,11 +39,11 @@ class ArchComponent(BaseModel):
     name: str
     type: ComponentType = ComponentType.UNKNOWN
     bbox: Optional[BoundingBox] = None
-    confidence: float = 1.0
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
-# ─── Relationship / Edge ─────────────────────────────────────────────────────
+# ─── Relationship / Edge ────────────────────────────────────────────────────
 
 class RelationshipType(str, Enum):
     DEPENDS_ON = "depends_on"
@@ -52,27 +57,30 @@ class RelationshipType(str, Enum):
 
 class ArchRelationship(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    source: str  # component id
-    target: str  # component id
+    source: str
+    target: str
     type: RelationshipType = RelationshipType.DEPENDS_ON
-    confidence: float = 1.0
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
-# ─── Architecture Graph ───────────────────────────────────────────────────────
+# ─── Architecture Graph ─────────────────────────────────────────────────────
 
 class ArchGraph(BaseModel):
-    """Unified graph model for both intended (G_I) and current (G_C) architectures."""
+    """Unified graph model for intended and current architectures."""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     graph_type: Literal["intended", "current"] = "intended"
+
     components: List[ArchComponent] = Field(default_factory=list)
     relationships: List[ArchRelationship] = Field(default_factory=list)
-    source: Optional[str] = None  # e.g., diagram path or repo path
+
+    source: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
-# ─── Conformance / Violation ──────────────────────────────────────────────────
+# ─── Conformance / Violation ─────────────────────────────────────────────────
 
 class ViolationVerdict(str, Enum):
     CONFORMANT = "CONFORMANT"
@@ -92,18 +100,55 @@ class ViolationType(str, Enum):
 
 
 class ArchViolation(BaseModel):
+    """Standardized conformance finding."""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
     verdict: ViolationVerdict
     violation_type: Optional[ViolationType] = None
-    source_component: str
-    target_component: str
+    rule: Optional[str] = None
+
+    source: Optional[str] = None
+    target: Optional[str] = None
+
+    source_component: Optional[str] = None
+    target_component: Optional[str] = None
+
     expected: Optional[str] = None
     actual: Optional[str] = None
+
     severity: Literal["low", "medium", "high", "critical"] = "medium"
     description: str = ""
 
+    evidence: Dict[str, Any] = Field(default_factory=dict)
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
 
-# ─── Git Evidence ─────────────────────────────────────────────────────────────
+
+# ─── Conformance API Response ────────────────────────────────────────────────
+
+class ConformanceSummary(BaseModel):
+    total_violations: int = 0
+    by_type: Dict[str, int] = Field(default_factory=dict)
+    severity_counts: Dict[str, int] = Field(default_factory=dict)
+
+
+
+class CheckConformanceResponse(BaseModel):
+    """Structured response returned by conformance checking."""
+
+    verdict: ViolationVerdict
+    violations: List[ArchViolation] = Field(default_factory=list)
+    summary: ConformanceSummary = Field(default_factory=ConformanceSummary)
+
+    # Graph alignment details, populated by aligned workflows.
+    alignment: Optional[Dict[str, Any]] = None
+
+    # References to the persisted report.
+    report_id: Optional[str] = None
+    run_id: Optional[str] = None
+
+
+# ─── Git Evidence ────────────────────────────────────────────────────────────
 
 class GitCommit(BaseModel):
     hash: str
@@ -122,9 +167,11 @@ class GitEvidence(BaseModel):
     related_commits: List[GitCommit] = Field(default_factory=list)
 
 
-# ─── LLM RCA Output ───────────────────────────────────────────────────────────
+# ─── LLM RCA Output ──────────────────────────────────────────────────────────
 
 class RCAOutput(BaseModel):
+    """Structured root-cause analysis output."""
+
     violation_id: str
     violation_explanation: str
     root_cause: str
@@ -134,18 +181,41 @@ class RCAOutput(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
 
 
-# ─── Conformance Report ───────────────────────────────────────────────────────
+# ─── Conformance Report ──────────────────────────────────────────────────────
 
 class ConformanceReport(BaseModel):
+    """Complete, persistable architecture conformance report."""
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    run_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
     repository: str
     diagram_path: Optional[str] = None
-    intended_graph: Optional[ArchGraph] = None
-    current_graph: Optional[ArchGraph] = None
+
+    intended_graph: Optional[Dict[str, Any]] = None
+    current_graph: Optional[Dict[str, Any]] = None
+
     violations: List[ArchViolation] = Field(default_factory=list)
+
+    # Structured evidence and RCA fields.
     git_evidence: List[GitEvidence] = Field(default_factory=list)
     rca_outputs: List[RCAOutput] = Field(default_factory=list)
+
+    # Preserve the complete raw evidence packages and RCA responses
+    # returned by the existing modules.
+    evidence_packages: List[Dict[str, Any]] = Field(default_factory=list)
+    rca_results: List[Dict[str, Any]] = Field(default_factory=list)
+
     summary: Dict[str, Any] = Field(default_factory=dict)
+
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+
+    status: Literal["processing", "completed", "failed"] = "processing"
 
 
 # ─── API Request / Response Models ───────────────────────────────────────────
