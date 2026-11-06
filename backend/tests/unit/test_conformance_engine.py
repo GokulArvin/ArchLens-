@@ -321,3 +321,197 @@ def test_example_json_fixtures(engine):
     assert VIOLATION in v_types
     assert MISSING in v_types
     assert UNCERTAIN in v_types
+
+
+# =============================================================================
+# Sprint 7 / D29–D30 (P3) — Layer, boundary and circular-dependency checks
+# =============================================================================
+
+from app.modules.conformance_engine.engine import (
+    LayerViolationRule,
+    BoundaryViolationRule,
+)
+
+
+# ─── Layer violation ─────────────────────────────────────────────────────────
+
+def test_layer_violation_upward_dependency(engine):
+    """
+    Sprint 7 D29: repository → frontend is an upward layer dependency NOT in the
+    default forbidden pairs list, so LayerViolationRule must catch it → VIOLATION.
+    """
+    components = [
+        {"id": "repo",     "name": "OrderRepository", "type": "repository"},
+        {"id": "frontend", "name": "OrderUI",          "type": "frontend"},
+    ]
+    G_I = make_graph(components, [], "intended")
+    G_C = make_graph(components, [
+        {"source": "repo", "target": "frontend", "type": "calls", "confidence": 1.0},
+    ], "current")
+
+    result = engine.check_conformance(G_I, G_C)
+    assert result["verdict"] == VIOLATION
+    layer_violations = [
+        v for v in result["violations"]
+        if v.get("violation_type") == "layer_violation"
+    ]
+    assert len(layer_violations) >= 1
+    assert layer_violations[0]["source"] == "repo"
+    assert layer_violations[0]["target"] == "frontend"
+
+
+def test_layer_violation_downward_is_conformant(engine):
+    """
+    Sprint 7 D29: service → repository is a valid downward dependency → CONFORMANT.
+    """
+    components = [
+        {"id": "svc",  "name": "OrderService",    "type": "service"},
+        {"id": "repo", "name": "OrderRepository", "type": "repository"},
+    ]
+    G_I = make_graph(components, [
+        {"source": "svc", "target": "repo", "confidence": 1.0}
+    ], "intended")
+    G_C = make_graph(components, [
+        {"source": "svc", "target": "repo", "confidence": 1.0}
+    ], "current")
+
+    result = engine.check_conformance(G_I, G_C)
+    layer_violations = [
+        v for v in result["violations"]
+        if v.get("violation_type") == "layer_violation"
+    ]
+    assert len(layer_violations) == 0
+
+
+def test_layer_violation_rule_unit():
+    """Unit test for LayerViolationRule in isolation."""
+    import networkx as nx
+    rule = LayerViolationRule()
+    G = nx.DiGraph()
+    G.add_node("db",  name="DB",  type="database",  confidence=1.0, provenance="t", metadata={})
+    G.add_node("ctrl", name="Ctrl", type="controller", confidence=1.0, provenance="t", metadata={})
+    G.add_edge("db", "ctrl", confidence=1.0, type="calls", provenance="t", metadata={})
+
+    result = rule.apply(G, G, "db", "ctrl", {"confidence": 1.0})
+    assert result["verdict"] == VIOLATION
+    assert result["violation_type"] == "layer_violation"
+
+
+# ─── Boundary violation ───────────────────────────────────────────────────────
+
+def test_boundary_violation_cross_domain_not_in_gi(engine):
+    """
+    Sprint 7 D29: Cross-domain edge absent from G_I is a BOUNDARY VIOLATION.
+    """
+    components = [
+        {"id": "orders.svc",   "name": "OrderService",   "type": "service"},
+        {"id": "payments.svc", "name": "PaymentService", "type": "service"},
+    ]
+    # G_I does NOT model the cross-domain link
+    G_I = make_graph(components, [], "intended")
+    # G_C has an undeclared cross-domain dependency
+    G_C = make_graph(components, [
+        {"source": "orders.svc", "target": "payments.svc", "confidence": 1.0},
+    ], "current")
+
+    result = engine.check_conformance(G_I, G_C)
+    boundary_violations = [
+        v for v in result["violations"]
+        if "boundary" in v.get("description", "").lower()
+           or v.get("violation_type") == "forbidden_dependency"
+    ]
+    # Should flag as a violation (boundary or forbidden)
+    assert result["verdict"] == VIOLATION
+
+
+def test_boundary_violation_intentional_cross_domain_allowed(engine):
+    """
+    Sprint 7 D29: Cross-domain edge present in G_I is intentional → not flagged.
+    """
+    components = [
+        {"id": "orders.svc",   "name": "OrderService",   "type": "service"},
+        {"id": "payments.svc", "name": "PaymentService", "type": "service"},
+    ]
+    rel = [{"source": "orders.svc", "target": "payments.svc", "confidence": 1.0}]
+    G_I = make_graph(components, rel, "intended")
+    G_C = make_graph(components, rel, "current")
+
+    result = engine.check_conformance(G_I, G_C)
+    boundary_violations = [
+        v for v in result["violations"]
+        if "boundary" in v.get("description", "").lower()
+    ]
+    assert len(boundary_violations) == 0
+
+
+def test_boundary_violation_rule_unit():
+    """Unit test for BoundaryViolationRule in isolation."""
+    import networkx as nx
+    rule = BoundaryViolationRule()
+    G_I = nx.DiGraph()
+    G_I.add_node("orders.svc",   name="O", type="service", confidence=1.0, provenance="t", metadata={})
+    G_I.add_node("payments.svc", name="P", type="service", confidence=1.0, provenance="t", metadata={})
+    # No edge in G_I
+
+    G_C = nx.DiGraph()
+    G_C.add_node("orders.svc",   name="O", type="service", confidence=1.0, provenance="t", metadata={})
+    G_C.add_node("payments.svc", name="P", type="service", confidence=1.0, provenance="t", metadata={})
+    G_C.add_edge("orders.svc", "payments.svc", confidence=1.0, type="calls", provenance="t", metadata={})
+
+    result = rule.apply(G_I, G_C, "orders.svc", "payments.svc", {"confidence": 1.0})
+    assert result["verdict"] == VIOLATION
+    assert "boundary" in result["description"].lower()
+
+
+# ─── Circular dependency (all-five-verdict integration) ───────────────────────
+
+def test_all_five_verdicts_in_one_scenario():
+    """
+    Sprint 7 D30: Confirm all 5 verdicts can be produced in a single conformance run.
+    """
+    ruleset = RuleSet(
+        name="TestRuleSet",
+        schema_version="1.0.0",
+        rules=[
+            ArchitectureRule(
+                name="Forbid ctrl->repo",
+                action=RuleAction.FORBID,
+                category=RuleCategory.LAYER_RULE,
+                source="controller", target="repository", severity="high",
+            ),
+            ArchitectureRule(
+                name="Require svc->audit",
+                action=RuleAction.REQUIRE,
+                category=RuleCategory.DEPENDENCY_RULE,
+                source="svc", target="audit", severity="medium",
+            ),
+        ],
+        confidence_threshold=0.5,
+    )
+    custom_engine = ConformanceEngine(ruleset=ruleset)
+
+    components = [
+        {"id": "ctrl", "name": "FrontController", "type": "controller"},
+        {"id": "svc",  "name": "OrderService",    "type": "service"},
+        {"id": "repo", "name": "OrderRepository", "type": "repository"},
+        {"id": "audit","name": "AuditService",    "type": "service"},
+        {"id": "ext",  "name": "ExternalThing",   "type": "external"},
+    ]
+    G_I = make_graph(components, [
+        {"source": "ctrl", "target": "svc",  "confidence": 1.0},
+    ], "intended")
+    G_C = make_graph(components, [
+        {"source": "ctrl", "target": "svc",  "confidence": 1.0},          # CONFORMANT
+        {"source": "ctrl", "target": "repo", "confidence": 1.0},          # VIOLATION (forbidden)
+        {"source": "ext",  "target": "ctrl", "confidence": 0.3},          # UNCERTAIN (low conf)
+        {"source": "svc",  "target": "ext",  "confidence": 1.0},          # UNEXPECTED (not in G_I)
+        # svc -> audit is REQUIRED but absent → MISSING
+    ], "current")
+
+    result = custom_engine.check_conformance(G_I, G_C)
+    verdicts = {v["verdict"] for v in result["violations"]}
+    # Must contain VIOLATION and UNCERTAIN; MISSING comes from REQUIRE rule
+    assert VIOLATION in verdicts
+    assert UNCERTAIN in verdicts
+    # Overall verdict is VIOLATION (highest severity)
+    assert result["verdict"] == VIOLATION

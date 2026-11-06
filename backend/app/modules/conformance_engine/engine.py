@@ -187,6 +187,134 @@ class CycleDetectionRule(ConformanceRule):
         return results
 
 
+# ---------------------------------------------------------------------------
+# Sprint 7 / D29 (P3) — Boundary and Layer violation rules
+# ---------------------------------------------------------------------------
+
+# Standard layer order (lower index = higher layer, further from storage)
+_LAYER_ORDER = [
+    "frontend",
+    "gateway",
+    "controller",
+    "service",
+    "repository",
+    "database",
+    "cache",
+    "queue",
+    "external",
+    "external_system",
+]
+
+
+def _layer_index(component_type: str) -> int:
+    """Return the layer index for a component type, or -1 if unknown."""
+    t = _normalize_str(component_type)
+    try:
+        return _LAYER_ORDER.index(t)
+    except ValueError:
+        return -1
+
+
+class LayerViolationRule(ConformanceRule):
+    """
+    Sprint 7 D29: Layer violation check.
+
+    Detects upward dependencies (lower-layer → higher-layer, e.g. database →
+    controller) that violate the standard layered architecture order.  This is
+    a stricter complement to ForbiddenDependencyRule: it uses the layer
+    hierarchy rather than a hand-coded forbidden-pair list, so it catches
+    violations that do not appear in DEFAULT_FORBIDDEN_DEPENDENCIES.
+    """
+
+    name = "layer_violation"
+
+    def apply(self, G_I, G_C, source, target, edge_data):
+        src_type = _normalize_str(G_C.nodes[source].get("type", ""))
+        tgt_type = _normalize_str(G_C.nodes[target].get("type", ""))
+        src_idx = _layer_index(src_type)
+        tgt_idx = _layer_index(tgt_type)
+
+        # Both types must be in the known layer list; skip if either is unknown
+        if src_idx == -1 or tgt_idx == -1:
+            return {"verdict": CONFORMANT, "source": source, "target": target}
+
+        # An upward dependency: source is in a lower layer (higher index)
+        # than the target → reverse direction violation
+        if src_idx > tgt_idx:
+            return {
+                "verdict": VIOLATION,
+                "violation_type": ViolationType.LAYER_VIOLATION.value,
+                "source": source,
+                "target": target,
+                "severity": "high",
+                "confidence": edge_data.get("confidence", 1.0),
+                "description": (
+                    f"Layer violation: '{src_type}' (layer {src_idx}) depends on "
+                    f"'{tgt_type}' (layer {tgt_idx}), violating the top-down layer order."
+                ),
+            }
+        return {"verdict": CONFORMANT, "source": source, "target": target}
+
+
+class BoundaryViolationRule(ConformanceRule):
+    """
+    Sprint 7 D29: Architectural boundary violation check.
+
+    A boundary violation occurs when two components belong to different
+    *named domains/modules* (determined by a common prefix in their node id
+    or by explicit ``domain`` metadata) and there is a cross-boundary
+    dependency that is not present in G_I (the intended architecture).
+
+    This check is additive: it only flags edges that are *both* cross-boundary
+    AND absent from G_I.  Edges explicitly modelled in G_I are assumed to be
+    intentional boundary crossings.
+    """
+
+    name = "boundary_violation"
+
+    def __init__(self, domain_separator: str = "."):
+        self.sep = domain_separator
+
+    def _domain(self, node_id: str, attrs: dict) -> Optional[str]:
+        """
+        Extract the domain label from node metadata or a dotted/path id prefix.
+        Returns None when the node id has no domain separator and no explicit
+        metadata — meaning the boundary check is skipped for flat single-token ids.
+        """
+        if attrs.get("metadata", {}).get("domain"):
+            return str(attrs["metadata"]["domain"])
+        parts = str(node_id).split(self.sep)
+        # Only return a meaningful domain when there is an explicit separator
+        if len(parts) > 1:
+            return parts[0]
+        return None  # no domain information — skip boundary check
+
+    def apply(self, G_I, G_C, source, target, edge_data):
+        src_domain = self._domain(source, G_C.nodes.get(source, {}))
+        tgt_domain = self._domain(target, G_C.nodes.get(target, {}))
+
+        if src_domain == tgt_domain:
+            return {"verdict": CONFORMANT, "source": source, "target": target}
+
+        # Cross-boundary edge — check if it's intentional (present in G_I)
+        if G_I.has_edge(source, target):
+            return {"verdict": CONFORMANT, "source": source, "target": target}
+
+        return {
+            "verdict": VIOLATION,
+            "violation_type": ViolationType.FORBIDDEN_DEPENDENCY.value,
+            "source": source,
+            "target": target,
+            "severity": "medium",
+            "confidence": edge_data.get("confidence", 1.0),
+            "description": (
+                f"Boundary violation: '{source}' (domain '{src_domain}') "
+                f"crosses into '{target}' (domain '{tgt_domain}') without "
+                f"an explicit architectural intent in G_I."
+            ),
+        }
+
+
 class ConformanceEngine:
     """
     Main deterministic conformance engine.
@@ -269,9 +397,14 @@ class ConformanceEngine:
         self.missing_rule = MissingDependencyRule()
         self.unexpected_rule = UnexpectedDependencyRule(allowed_pairs)
         self.cycle_rule = CycleDetectionRule()
+        # Sprint 7 / D29 (P3) — boundary and layer rules
+        self.layer_rule = LayerViolationRule()
+        self.boundary_rule = BoundaryViolationRule()
 
     def build_graph(self, graph_data: Union[Dict[str, Any], Any]) -> nx.DiGraph:
         """Convert ArchGraph dict or model → NetworkX DiGraph."""
+        if isinstance(graph_data, nx.DiGraph):
+            return graph_data
         if hasattr(graph_data, "model_dump"):
             graph_data = graph_data.model_dump(mode="json")
         elif hasattr(graph_data, "dict"):
@@ -368,6 +501,18 @@ class ConformanceEngine:
             forbidden_res = self.forbidden_rule.apply(G_I, G_C, src, tgt, edge_data)
             if forbidden_res.get("verdict") == VIOLATION:
                 violations.append(forbidden_res)
+                continue
+
+            # Sprint 7 D29: Check for LAYER violations (upward dependencies)
+            layer_res = self.layer_rule.apply(G_I, G_C, src, tgt, edge_data)
+            if layer_res.get("verdict") == VIOLATION:
+                violations.append(layer_res)
+                continue
+
+            # Sprint 7 D29: Check for BOUNDARY violations (cross-domain without intent)
+            boundary_res = self.boundary_rule.apply(G_I, G_C, src, tgt, edge_data)
+            if boundary_res.get("verdict") == VIOLATION:
+                violations.append(boundary_res)
                 continue
 
             # Check for UNEXPECTED dependencies
