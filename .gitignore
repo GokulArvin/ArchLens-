@@ -59,3 +59,5 @@ htmlcov/
 # Local application database
 backend/data/
 *.db
+# Hypothesis test state
+.hypothesis/
